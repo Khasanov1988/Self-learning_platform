@@ -9,13 +9,14 @@ class Chapter(models.Model):
     Chapter class
     """
     title = models.CharField(max_length=100, verbose_name='Title')
-    description = models.CharField(max_length=2000, verbose_name='Description')
+    description = models.CharField(max_length=500, verbose_name='Description')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
-    made_date = models.DateField(default=timezone.now().date(), verbose_name='Creation date')
+    made_date = models.DateField(default=timezone.now, verbose_name='Creation date')
     last_update = models.DateField(default=None, null=True, blank=True, verbose_name='Last update date')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                               verbose_name='Owner')
     is_published = models.BooleanField(default=True, verbose_name='Publication Status')
+    views_count = models.PositiveIntegerField(default=0, verbose_name='Number of Views')
 
     def __str__(self):
         return f'Chapter - {self.title}'
@@ -33,7 +34,7 @@ class Material(models.Model):
     description = models.CharField(max_length=300, null=True, blank=True, verbose_name='Description')
     text = models.TextField(verbose_name='Text')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
-    made_date = models.DateField(default=timezone.now().date(), verbose_name='Creation date')
+    made_date = models.DateField(default=timezone.now, verbose_name='Creation date')
     last_update = models.DateField(default=None, null=True, blank=True, verbose_name='Last update date')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                               verbose_name='Owner')
