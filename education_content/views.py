@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 
@@ -32,7 +33,14 @@ class ChapterListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset(*args, **kwargs)
-        queryset = queryset.filter(is_published=True)  # Filter to show only published Chapters
+        if not (self.request.user.is_staff or self.request.user.is_superuser):
+            # Make Q-objects for filtering
+            published_condition = Q(is_published=True)
+            owner_condition = Q(owner=self.request.user)
+            # Combine them
+            final_condition = published_condition | owner_condition
+            # Filtering queryset
+            queryset = queryset.filter(final_condition)
         return queryset
 
 

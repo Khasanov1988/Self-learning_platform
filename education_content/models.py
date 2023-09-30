@@ -15,7 +15,7 @@ class Chapter(models.Model):
     last_update = models.DateField(default=None, null=True, blank=True, verbose_name='Last update date')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                               verbose_name='Owner')
-    is_published = models.BooleanField(default=True, verbose_name='Publication Status')
+    is_published = models.BooleanField(default=False, verbose_name='Publication Status')
     views_count = models.PositiveIntegerField(default=0, verbose_name='Number of Views')
 
     def __str__(self):
