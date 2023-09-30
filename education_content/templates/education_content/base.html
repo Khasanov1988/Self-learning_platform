@@ -1,6 +1,6 @@
 {% load static %}
 <!doctype html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="auto">
 <head>
     <script src="https://getbootstrap.com/docs/5.3/assets/js/color-modes.js"></script>
 
@@ -249,9 +249,50 @@
         </div>
     </div>
 </footer>
-<script src="https://getbootstrap.com/docs/5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Функция для получения текущей темы
+    function getCurrentTheme() {
+        return document.documentElement.getAttribute('data-bs-theme');
+    }
 
+    // Функция для обновления src изображения в зависимости от текущей темы
+    function updateImageSrc() {
+        const theme = getCurrentTheme();
+        const image = document.getElementById('themeImage');
+
+        // Установите разные src в зависимости от текущей темы
+        if (theme === 'light') {
+            image.src = '/media/decor/favicon_bl.ico';
+        } else if (theme === 'dark') {
+            image.src = '/media/decor/favicon.ico';
+        }
+    }
+
+    // Вызовите функцию при загрузке страницы и изменении темы
+    window.addEventListener('load', updateImageSrc);
+    document.addEventListener('themeChanged', updateImageSrc);
+</script>
+<script>
+    const themeButtons = document.querySelectorAll('[data-bs-theme-value]');
+
+    themeButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const themeValue = this.getAttribute('data-bs-theme-value');
+            document.documentElement.setAttribute('data-bs-theme', themeValue);
+
+            // Генерируйте событие themeChanged после смены темы
+            const event = new Event('themeChanged');
+            document.dispatchEvent(event);
+        });
+    });
+</script>
+<script>
+    function redirectToDetailView(objectId) {
+        // Здесь вы можете использовать JavaScript для перенаправления на страницу "/view/{{ object.id }}"
+        // Например, так:
+        window.location.href = `/view/${objectId}/`;
+    }
+</script>
 </body>
 </html>
