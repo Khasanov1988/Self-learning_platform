@@ -16,10 +16,16 @@
                         <label for="id_email">Email address</label>
                     </div>
                     <div class="form-floating mb-1">
-                        <input type="password" name="password" value="******" autocomplete="current-password"
+                        <input type="password" name="password1" autocomplete="current-password"
                                class="form-control"
-                               id="id_password" placeholder="Password">
-                        <label for="id_password">Password</label>
+                               id="id_password1" placeholder="Password">
+                        <label for="id_password1">New password</label>
+                    </div>
+                    <div class="form-floating mb-1">
+                        <input type="password" name="password2" autocomplete="current-password"
+                               class="form-control"
+                               id="id_password2" placeholder="Password">
+                        <label for="id_password2">Confirm new password</label>
                     </div>
                     <div class="form-floating mb-1">
                         {% if object.FIO %}
@@ -58,7 +64,8 @@
                         <label for="id_comment">Comment</label>
                     </div>
                     <button class="btn btn-primary" type="submit">Save changes</button>
-                    <a href="{% url 'users:generate_new_password' %}" class="btn btn-danger">Generate new password</a>
+                    <a href="{% url 'users:generate_new_password' %}" class="btn btn-danger">Generate new random
+                        password</a>
                 </form>
             </div>
         </div>

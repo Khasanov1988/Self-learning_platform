@@ -1,4 +1,5 @@
 import random
+import string
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
@@ -38,6 +39,18 @@ class ProfileView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
+    def form_valid(self, form):
+        # Method works with success validation
+        print(form.data.get('password1'))
+        print(form.data.get('password2'))
+        print(form.is_valid())
+        if form.is_valid():
+            self.object = form.save()
+            if form.data.get('password1') == form.data.get('password2') and form.data.get('password1') != "":
+                self.object.set_password(form.data.get('password1'))
+            self.object.save()
+        return super().form_valid(form)
+
 
 class LoginModifiedView(LoginView):
     model = User
@@ -46,8 +59,8 @@ class LoginModifiedView(LoginView):
 
 def generate_new_password(request):
     # Generate a new random password
-    new_password = ''.join([str(random.randint(0, 9)) for _ in range(12)])
-
+    characters = string.ascii_letters + string.digits + string.punctuation
+    new_password = ''.join(random.choice(characters) for _ in range(12))
     # Send an email to the user with the new password
     send_mail(
         subject='You have changed your password on Distribution App',
@@ -61,5 +74,5 @@ def generate_new_password(request):
     request.user.save()
 
     # Redirect the user to the home page
-    return redirect(reverse('distribution:home'))
+    return redirect(reverse('users:login'))
 

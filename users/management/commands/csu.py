@@ -6,6 +6,8 @@ from users.models import User
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        user = User.objects.get(email=CSU_USER_NAME)
+        user.delete()
         # Create a superuser with the specified email address
         user = User.objects.create(
             email=CSU_USER_NAME,
