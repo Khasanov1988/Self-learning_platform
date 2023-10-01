@@ -34,7 +34,7 @@ class RegisterView(CreateView):
 class ProfileView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
-    success_url = reverse_lazy('education_content:list')
+    success_url = reverse_lazy('users:profile')
 
     def get_object(self, queryset=None):
         return self.request.user

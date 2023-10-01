@@ -75,3 +75,11 @@
         flex: 1;
     }
 }
+
+@media (min-width: 768px) {
+    .custom-height {
+        --custom-height: 65px;
+        height: var(--custom-height);
+        overflow: hidden;
+    }
+}

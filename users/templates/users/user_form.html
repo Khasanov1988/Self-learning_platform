@@ -28,39 +28,25 @@
                         <label for="id_password2">Confirm new password</label>
                     </div>
                     <div class="form-floating mb-1">
-                        {% if object.FIO %}
-                            <input type="text" name="FIO" value="{{ object.FIO }}" autofocus autocapitalize="none"
-                                   autocomplete="username"
-                                   maxlength="100" class="form-control" id="id_FIO" placeholder="name@example.com">
-                        {% else %}
-                            <input type="text" name="FIO" autofocus autocapitalize="none"
-                                   autocomplete="username"
-                                   maxlength="100" class="form-control" id="id_FIO" placeholder="name@example.com">
-                        {% endif %}
+                        <input type="text" name="FIO" {% if object.FIO %}value="{{ object.FIO }}"{% endif %} autofocus
+                               autocapitalize="none"
+                               autocomplete="username"
+                               maxlength="100" class="form-control" id="id_FIO" placeholder="name@example.com">
                         <label for="id_FIO">Full name</label>
                     </div>
                     <div class="form-floating mb-1">
-                        {% if object.phone %}
-                            <input type="text" name="phone" value="{{ object.phone }}" autofocus autocapitalize="none"
-                                   autocomplete="username"
-                                   maxlength="35" class="form-control" id="id_phone" placeholder="name@example.com">
-                        {% else %}
-                            <input type="text" name="phone" autofocus autocapitalize="none" autocomplete="username"
-                                   maxlength="35" class="form-control" id="id_phone" placeholder="name@example.com">
-                        {% endif %}
+                        <input type="text" name="phone" {% if object.phone %}value="{{ object.phone }}"{% endif %}
+                               autofocus autocapitalize="none"
+                               autocomplete="username"
+                               maxlength="35" class="form-control" id="id_phone" placeholder="name@example.com">
                         <label for="id_phone">Phone Number</label>
                     </div>
                     <div class="form-floating mb-3">
-                        {% if object.comment %}
-                            <input type="text" name="comment" value="{{ object.comment }}" autofocus
-                                   autocapitalize="none"
-                                   autocomplete="username"
-                                   maxlength="150" class="form-control" id="id_comment" placeholder="name@example.com">
-                        {% else %}
-                            <input type="text" name="comment" autofocus autocapitalize="none"
-                                   autocomplete="username"
-                                   maxlength="150" class="form-control" id="id_comment" placeholder="name@example.com">
-                        {% endif %}
+                        <input type="text" name="comment" {% if object.comment %}value="{{ object.comment }}"{% endif %}
+                               autofocus
+                               autocapitalize="none"
+                               autocomplete="username"
+                               maxlength="150" class="form-control" id="id_comment" placeholder="name@example.com">
                         <label for="id_comment">Comment</label>
                     </div>
                     <button class="btn btn-primary" type="submit">Save changes</button>

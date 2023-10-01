@@ -38,6 +38,7 @@ class Material(models.Model):
     last_update = models.DateField(default=None, null=True, blank=True, verbose_name='Last update date')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                               verbose_name='Owner')
+    chapter = models.ForeignKey('education_content.Chapter', on_delete=models.CASCADE)
     is_published = models.BooleanField(default=True, verbose_name='Publication Status')
     views_count = models.PositiveIntegerField(default=0, verbose_name='Number of Views')
 
