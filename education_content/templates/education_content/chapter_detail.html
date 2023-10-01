@@ -8,9 +8,38 @@
                 <div class="col-lg-12 col-md-8 mx-auto">
                     <h1 class="fw-light">{{ object.title }}</h1>
                     <p class="lead text-body-secondary">{{ object.description }}</p>
-                    <p>
-                        <a href="#" class="btn btn-primary my-2">Main call to action</a>
-                        <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+                    {% if object.owner == user or user.is_staff %}
+                        <p>
+
+                        {% if not object.is_published_requested %}
+                            <a href="{% url 'education_content:chapter_edit' pk=object.pk %}"
+                               class="btn btn-primary my-2">Edit</a>
+                        {% endif %}
+
+                        <a href="{% url 'education_content:chapter_delete' pk=object.pk %}"
+                           class="btn btn-danger my-2">Delete</a>
+
+                        {% if not object.is_published and object.owner == user %}
+                            {% if object.is_published_requested %}
+                                <a href="{% url 'education_content:change_published_requested_status' model='Chapter' pk=object.pk %}"
+                                   class="btn btn-warning my-2">Stop publication request</a>
+                            {% else %}
+                                <a href="{% url 'education_content:change_published_requested_status' model='Chapter' pk=object.pk %}"
+                                   class="btn btn-success my-2">Request publication</a>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if user.is_staff and object.is_published_requested %}
+                            {% if not object.is_published %}
+                                <a href="{% url 'education_content:change_published_status' model="Chapter" pk=object.pk %}"
+                                   class="btn btn-success my-2">Start publication</a>
+                            {% else %}
+                                <a href="{% url 'education_content:change_published_status' model="Chapter" pk=object.pk %}"
+                                   class="btn btn-warning my-2">Stop publication</a>
+                            {% endif %}
+                        {% endif %}
+
+                    {% endif %}
                     </p>
                 </div>
             </div>

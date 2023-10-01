@@ -4,21 +4,21 @@
          style="border-radius: 21px 21px 0 0;">
         <div class="my-3 p-3">
             <h2 class="display-5 d-none d-md-block" style="height: 60px; overflow: hidden;">
-                <a href="/view/{{ object.id }}" style="text-decoration: none; color: inherit;">{{ object.title }}</a>
+                <a href="/chapter_view/{{ object.id }}" style="text-decoration: none; color: inherit;">{{ object.title }}</a>
             </h2>
             <h2 class="display-5 d-md-none">
-                <a href="/view/{{ object.id }}" style="text-decoration: none; color: inherit;">{{ object.title }}</a>
+                <a href="/chapter_view/{{ object.id }}" style="text-decoration: none; color: inherit;">{{ object.title }}</a>
             </h2>
             <p class="lead d-none d-md-block" style="height: 60px; overflow: hidden;">
-                <a href="/view/{{ object.id }}"
+                <a href="/chapter_view/{{ object.id }}"
                    style="text-decoration: none; color: inherit;">{{ object.description }}</a>
             </p>
             <p class="lead d-md-none">
-                <a href="/view/{{ object.id }}"
+                <a href="/chapter_view/{{ object.id }}"
                    style="text-decoration: none; color: inherit;">{{ object.description }}</a>
             </p>
         </div>
-        <a href="/view/{{ object.id }}">
+        <a href="/chapter_view/{{ object.id }}">
             <div class="bg-dark shadow-sm mx-auto" style="width: 90%; height: 300px; border-radius: 21px 21px 0 0;">
                 {% if object.preview %}
                     <img src="{{ object.preview|mediapath_filter }}" alt=""

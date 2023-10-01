@@ -16,6 +16,7 @@ class Chapter(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                               verbose_name='Owner')
     is_published = models.BooleanField(default=False, verbose_name='Publication Status')
+    is_published_requested = models.BooleanField(default=False, verbose_name='Publication request status')
     views_count = models.PositiveIntegerField(default=0, verbose_name='Number of Views')
 
     def __str__(self):
@@ -24,6 +25,12 @@ class Chapter(models.Model):
     class Meta:
         verbose_name = 'Chapter'
         verbose_name_plural = 'Chapters'
+        permissions = [
+            (
+                'set_published',
+                'Can publish posts'
+            )
+        ]
 
 
 class Material(models.Model):
@@ -39,8 +46,9 @@ class Material(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                               verbose_name='Owner')
     chapter = models.ForeignKey('education_content.Chapter', on_delete=models.CASCADE)
-    is_published = models.BooleanField(default=True, verbose_name='Publication Status')
-    views_count = models.PositiveIntegerField(default=0, verbose_name='Number of Views')
+    is_published = models.BooleanField(default=False, verbose_name='Publication status')
+    is_published_requested = models.BooleanField(default=False, verbose_name='Publication request status')
+    views_count = models.PositiveIntegerField(default=0, verbose_name='Number of views')
 
     def __str__(self):
         return f'Material - {self.topic}'
@@ -48,6 +56,12 @@ class Material(models.Model):
     class Meta:
         verbose_name = 'Material'
         verbose_name_plural = 'Materials'
+        permissions = [
+            (
+                'set_published',
+                'Can publish posts'
+            )
+        ]
 
 
 class MaterialPhotos(models.Model):
@@ -64,3 +78,4 @@ class MaterialPhotos(models.Model):
     class Meta:
         verbose_name = 'Figure'
         verbose_name_plural = 'Figures'
+
