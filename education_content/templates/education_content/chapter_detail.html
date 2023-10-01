@@ -11,36 +11,45 @@
                     {% if object.owner == user or user.is_staff %}
                         <p>
 
-                        {% if not object.is_published_requested %}
-                            <a href="{% url 'education_content:chapter_edit' pk=object.pk %}"
-                               class="btn btn-primary my-2">Edit</a>
-                        {% endif %}
-
-                        <a href="{% url 'education_content:chapter_delete' pk=object.pk %}"
-                           class="btn btn-danger my-2">Delete</a>
-
-                        {% if not object.is_published and object.owner == user %}
-                            {% if object.is_published_requested %}
-                                <a href="{% url 'education_content:change_published_requested_status' model='Chapter' pk=object.pk %}"
-                                   class="btn btn-warning my-2">Stop publication request</a>
-                            {% else %}
-                                <a href="{% url 'education_content:change_published_requested_status' model='Chapter' pk=object.pk %}"
-                                   class="btn btn-success my-2">Request publication</a>
+                            {% if not object.is_published_requested %}
+                                <a href="{% url 'education_content:chapter_edit' pk=object.pk %}"
+                                   class="btn btn-primary my-2">Edit</a>
                             {% endif %}
-                        {% endif %}
 
-                        {% if user.is_staff and object.is_published_requested %}
-                            {% if not object.is_published %}
-                                <a href="{% url 'education_content:change_published_status' model="Chapter" pk=object.pk %}"
-                                   class="btn btn-success my-2">Start publication</a>
-                            {% else %}
-                                <a href="{% url 'education_content:change_published_status' model="Chapter" pk=object.pk %}"
-                                   class="btn btn-warning my-2">Stop publication</a>
+                            <a href="{% url 'education_content:chapter_delete' pk=object.pk %}"
+                               class="btn btn-danger my-2">Delete</a>
+
+                            {% if not object.is_published and object.owner == user %}
+                                {% if object.is_published_requested %}
+                                    <a href="{% url 'education_content:change_published_requested_status' model='Chapter' pk=object.pk %}"
+                                       class="btn btn-warning my-2">Stop publication request</a>
+                                {% else %}
+                                    <a href="{% url 'education_content:change_published_requested_status' model='Chapter' pk=object.pk %}"
+                                       class="btn btn-success my-2">Request publication</a>
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
 
+                            {% if user.is_staff and object.is_published_requested %}
+                                {% if not object.is_published %}
+                                    <a href="{% url 'education_content:change_published_status' model="Chapter" pk=object.pk %}"
+                                       class="btn btn-success my-2">Start publication</a>
+                                {% else %}
+                                    <a href="{% url 'education_content:change_published_status' model="Chapter" pk=object.pk %}"
+                                       class="btn btn-warning my-2">Stop publication</a>
+                                {% endif %}
+                            {% endif %}
+                        </p>
                     {% endif %}
-                    </p>
+                    <div class="d-flex gap-3 justify-content-center lead fw-normal">
+                        <a class="icon-link"
+                           href="{% url 'education_content:material_create_for_special_chapter' chapter_pk=object.pk %}">
+                            Create new material for chapter "{{ object.title }}"
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                 class="bi">
+                                <use xlink:href="#chevron-right"/>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>

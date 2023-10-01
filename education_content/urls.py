@@ -29,12 +29,22 @@ urlpatterns = [
     path('view/changepublishedrequestedstatus/<str:model>/<int:pk>/', change_published_requested_status,
          name='change_published_requested_status'),
 
+    # URL pattern for creating a new material
+    path('material_create/', MaterialCreateView.as_view(), name='material_create'),
+
+    # URL pattern for creating a new material to special chapter
+    path('material_create/<int:chapter_pk>/', MaterialCreateChapterView.as_view(), name='material_create_for_special_chapter'),
+
     # URL pattern for listing material with a 60-second cache timeout
-    # TODO: Исправить chapter на material
-    path('', ChapterListView.as_view(), name='material_list'),
+    path('material_list/', MaterialListView.as_view(), name='material_list'),
 
     # URL pattern for viewing a single material
-    # TODO: Исправить chapter на material
-    path('chapter_view/<int:pk>/', ChapterDetailView.as_view(), name='material_view'),
+    path('material_view/<int:pk>/', MaterialDetailView.as_view(), name='material_view'),
+
+    # URL pattern for editing an existing material
+    path('material_edit/<int:pk>/', MaterialUpdateView.as_view(), name='material_edit'),
+
+    # URL pattern for deleting an existing material
+    path('material_delete/<int:pk>/', MaterialDeleteView.as_view(), name='material_delete'),
 
 ]
