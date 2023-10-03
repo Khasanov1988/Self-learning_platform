@@ -194,16 +194,14 @@ class MaterialDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
-        self.object.views_count += 1  # Increment the views count when viewing a Chapter
+        self.object.views_count += 1  # Increment the views count when viewing a Material
         self.object.save()
         return self.object
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        material_list = self.object.material_set.all()
-        if not (self.request.user.is_staff or self.request.user.is_superuser):
-            material_list = material_list.filter(self.get_final_conditions())
-        context_data['material_list'] = material_list
+        material_photos_list = self.object.materialphotos_set.all()
+        context_data['material_photos_list'] = material_photos_list
         return context_data
 
 

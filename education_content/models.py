@@ -37,7 +37,7 @@ class Material(models.Model):
     """
     Educational material class
     """
-    topic = models.CharField(max_length=100, verbose_name='Title')
+    topic = models.CharField(max_length=100, verbose_name='Topic')
     description = models.CharField(max_length=300, null=True, blank=True, verbose_name='Description')
     text = models.TextField(verbose_name='Text')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')

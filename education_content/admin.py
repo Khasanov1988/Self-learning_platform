@@ -12,7 +12,6 @@ class ChapterAdmin(admin.ModelAdmin):
 @admin.register(Material)
 class MaterialAdmin(admin.ModelAdmin):
     # Define how the Chapter model is displayed in the Django admin panel.
-
     list_filter = ('topic',)
 
 
