@@ -13,7 +13,12 @@ class ChapterForm(StyleFormMixin, forms.ModelForm):
 class MaterialForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Material
-        fields = ('topic', 'description', 'text', 'preview', 'chapter')
+        fields = ('topic', 'description', 'text', 'preview', 'chapter',)
+
+class MaterialUpdateForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = Material
+        fields = ('topic', 'description', 'text', 'preview',)
 
 
 class MaterialForChapterForm(StyleFormMixin, forms.ModelForm):

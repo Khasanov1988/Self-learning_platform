@@ -16,8 +16,10 @@
                                    class="btn btn-sm w-100 btn-outline-primary my-2">Edit</a>
                             {% endif %}
 
-                            <a href="{% url 'education_content:chapter_delete' pk=object.pk %}"
-                               class="btn btn-sm w-100 btn-outline-danger my-2">Delete</a>
+                            {% if not object.is_published or user.is_staff %}
+                                <a href="{% url 'education_content:chapter_delete' pk=object.pk %}"
+                                   class="btn btn-sm w-100 btn-outline-danger my-2">Delete</a>
+                            {% endif %}
 
                             {% if not object.is_published and object.owner == user %}
                                 {% if object.is_published_requested %}

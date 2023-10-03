@@ -7,7 +7,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 
-from education_content.forms import ChapterForm, MaterialForm, MaterialForChapterForm
+from education_content.forms import ChapterForm, MaterialForm, MaterialForChapterForm, MaterialUpdateForm
 from education_content.models import Chapter, Material
 
 
@@ -24,7 +24,7 @@ class GetFinalConditionsMixin:
         return published_condition | owner_condition
 
 
-class GetChapterListMixain:
+class GetChapterListMixin:
     """
 
     """
@@ -133,7 +133,7 @@ def change_published_requested_status(request, model: str, pk: int):
     return redirect(reverse(f'education_content:{model.lower()}_view', kwargs={'pk': pk}))
 
 
-class MaterialCreateView(LoginRequiredMixin, GetChapterListMixain, CreateView):
+class MaterialCreateView(LoginRequiredMixin, GetChapterListMixin, CreateView):
     model = Material
     form_class = MaterialForm
     success_url = reverse_lazy('education_content:material_list')
@@ -145,7 +145,7 @@ class MaterialCreateView(LoginRequiredMixin, GetChapterListMixain, CreateView):
         return super().form_valid(form)
 
 
-class MaterialCreateChapterView(LoginRequiredMixin, GetChapterListMixain, CreateView):
+class MaterialCreateChapterView(LoginRequiredMixin, GetChapterListMixin, CreateView):
     model = Material
     form_class = MaterialForm
 
@@ -166,9 +166,9 @@ class MaterialCreateChapterView(LoginRequiredMixin, GetChapterListMixain, Create
         return reverse_lazy('education_content:chapter_view', kwargs={'pk': chapter_pk})
 
 
-class MaterialUpdateView(LoginRequiredMixin, GetChapterListMixain, UpdateView):
+class MaterialUpdateView(LoginRequiredMixin, UpdateView):
     model = Material
-    form_class = MaterialForm
+    form_class = MaterialUpdateForm
 
     def get_success_url(self):
         return reverse('education_content:material_view', args=[self.kwargs.get('pk')])

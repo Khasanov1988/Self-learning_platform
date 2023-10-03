@@ -29,6 +29,7 @@
                                   rows="3" placeholder=" ">{{ object.text }}</textarea>
                         <label for="id_material_text">Text area</label>
                     </div>
+                    {% if chapter_list %}
                     {% if chapter_pk %}
                         <input type="hidden" name="chapter" value="{{ chapter_pk }}">
                     {% else %}
@@ -39,6 +40,7 @@
                                 <option value="{{ chapter.pk }}">{{ chapter.title }}</option>
                             {% endfor %}
                         </select>
+                    {% endif %}
                     {% endif %}
                     <div class="mb-3">
                         <input type="file" name="preview" accept="image/*"

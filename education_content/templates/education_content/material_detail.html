@@ -12,29 +12,31 @@
                         <p>
 
                             {% if not object.is_published_requested %}
-                                <a href="{% url 'education_content:chapter_edit' pk=object.pk %}"
+                                <a href="{% url 'education_content:material_edit' pk=object.pk %}"
                                    class="btn btn-sm w-100 btn-outline-primary my-2">Edit</a>
                             {% endif %}
 
-                            <a href="{% url 'education_content:chapter_delete' pk=object.pk %}"
-                               class="btn btn-sm w-100 btn-outline-danger my-2">Delete</a>
+                            {% if not object.is_published or user.is_staff %}
+                                <a href="{% url 'education_content:material_delete' pk=object.pk %}"
+                                   class="btn btn-sm w-100 btn-outline-danger my-2">Delete</a>
+                            {% endif %}
 
                             {% if not object.is_published and object.owner == user %}
                                 {% if object.is_published_requested %}
-                                    <a href="{% url 'education_content:change_published_requested_status' model='Chapter' pk=object.pk %}"
+                                    <a href="{% url 'education_content:change_published_requested_status' model='Material' pk=object.pk %}"
                                        class="btn btn-sm w-100 btn-outline-warning my-2">Stop publication request</a>
                                 {% else %}
-                                    <a href="{% url 'education_content:change_published_requested_status' model='Chapter' pk=object.pk %}"
+                                    <a href="{% url 'education_content:change_published_requested_status' model='Material' pk=object.pk %}"
                                        class="btn btn-sm w-100 btn-outline-success my-2">Request publication</a>
                                 {% endif %}
                             {% endif %}
 
                             {% if user.is_staff and object.is_published_requested %}
                                 {% if not object.is_published %}
-                                    <a href="{% url 'education_content:change_published_status' model="Chapter" pk=object.pk %}"
+                                    <a href="{% url 'education_content:change_published_status' model="Material" pk=object.pk %}"
                                        class="btn btn-sm w-100 btn-outline-success my-2">Start publication</a>
                                 {% else %}
-                                    <a href="{% url 'education_content:change_published_status' model="Chapter" pk=object.pk %}"
+                                    <a href="{% url 'education_content:change_published_status' model="Material" pk=object.pk %}"
                                        class="btn btn-sm w-100 btn-outline-warning my-2">Stop publication</a>
                                 {% endif %}
                             {% endif %}
@@ -43,16 +45,21 @@
                 </div>
             </div>
         </section>
-        {% if material_photos_list %}
         <div class="album py-5 bg-body-tertiary">
             <div class="container-fluid">
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                    {% for material_photo in material_photos_list %}
-                        {% include 'education_content/includes/inc_material_photo_card.html' %}
-                    {% endfor %}
-                </div>
+                <p class="lead text-body-secondary px-3">{{ object.text }}</p>
             </div>
         </div>
+        {% if material_photos_list %}
+            <div class="album py-5 bg-body-tertiary">
+                <div class="container-fluid">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                        {% for material_photo in material_photos_list %}
+                            {% include 'education_content/includes/inc_material_photo_card.html' %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         {% endif %}
 
     </main>

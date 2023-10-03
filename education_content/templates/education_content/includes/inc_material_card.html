@@ -3,7 +3,7 @@
     <div class="card shadow-sm">
         {% if request.path|slice:"0:15" == '/material_list/' %}
             <div class="card-header text-center">
-                <h3>{{ material.chapter.title }}</h3>
+                <h3>{{ material.chapter.title }}: {{ material.topic }}</h3>
             </div>
         {% endif %}
         {% if material.preview %}
