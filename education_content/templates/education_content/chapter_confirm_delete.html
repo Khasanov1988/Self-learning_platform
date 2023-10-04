@@ -9,7 +9,8 @@
                     <h1 class="h3 mb-3 fw-normal">Do you want to delete the chapter "{{ object.title }}"?</h1>
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Confirm</button>
-                    <button type="submit" class="btn btn-primary">Cancel</button>
+                    <a href="{% url 'education_content:chapter_list' %}"
+                                   class="btn btn-primary">Cancel</a>
                 </form>
             </div>
         </div>

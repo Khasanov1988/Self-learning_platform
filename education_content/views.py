@@ -106,8 +106,7 @@ def change_published_status(request, model: str, pk: int):
     current_value = getattr(got_object, 'is_published')
     new_value = not current_value
     setattr(got_object, 'is_published', new_value)
-    if not got_object.is_published:
-        got_object.is_published_requested = False
+    got_object.is_published_requested = False
     got_object.save()
     return redirect(reverse(f'education_content:{model.lower()}_view', kwargs={'pk': pk}))
 
@@ -123,7 +122,7 @@ def change_published_requested_status(request, model: str, pk: int):
     except got_model.DoesNotExist:
         raise Http404("Object not found")
 
-    if got_object.owner != request.user:
+    if not (got_object.owner == request.user or request.user.is_staff):
         raise Http404("Access denied")
 
     current_value = getattr(got_object, 'is_published_requested')

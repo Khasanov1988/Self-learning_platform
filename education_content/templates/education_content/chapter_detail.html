@@ -11,24 +11,20 @@
                     {% if object.owner == user or user.is_staff %}
                         <p>
 
-                            {% if not object.is_published_requested %}
+                            {% if not object.is_published %}
                                 <a href="{% url 'education_content:chapter_edit' pk=object.pk %}"
                                    class="btn btn-sm w-100 btn-outline-primary my-2">Edit</a>
-                            {% endif %}
 
-                            {% if not object.is_published or user.is_staff %}
                                 <a href="{% url 'education_content:chapter_delete' pk=object.pk %}"
                                    class="btn btn-sm w-100 btn-outline-danger my-2">Delete</a>
                             {% endif %}
 
-                            {% if not object.is_published and object.owner == user %}
-                                {% if object.is_published_requested %}
-                                    <a href="{% url 'education_content:change_published_requested_status' model='Chapter' pk=object.pk %}"
-                                       class="btn btn-sm w-100 btn-outline-warning my-2">Stop publication request</a>
-                                {% else %}
-                                    <a href="{% url 'education_content:change_published_requested_status' model='Chapter' pk=object.pk %}"
-                                       class="btn btn-sm w-100 btn-outline-success my-2">Request publication</a>
-                                {% endif %}
+                            {% if object.is_published_requested %}
+                                <a href="{% url 'education_content:change_published_requested_status' model='Chapter' pk=object.pk %}"
+                                   class="btn btn-sm w-100 btn-outline-warning my-2">Withdraw request to change publication status</a>
+                            {% else %}
+                                <a href="{% url 'education_content:change_published_requested_status' model='Chapter' pk=object.pk %}"
+                                   class="btn btn-sm w-100 btn-outline-success my-2">Request to change publication status</a>
                             {% endif %}
 
                             {% if user.is_staff and object.is_published_requested %}
