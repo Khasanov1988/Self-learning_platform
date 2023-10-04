@@ -2,13 +2,15 @@ from django.apps import apps
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.forms import inlineformset_factory
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 
-from education_content.forms import ChapterForm, MaterialForm, MaterialForChapterForm, MaterialUpdateForm
-from education_content.models import Chapter, Material
+from education_content.forms import ChapterForm, MaterialForm, MaterialForChapterForm, MaterialUpdateForm, \
+    MaterialPhotosForm
+from education_content.models import Chapter, Material, MaterialPhotos
 
 
 class GetFinalConditionsMixin:
@@ -208,3 +210,39 @@ class MaterialDeleteView(LoginRequiredMixin, DeleteView):
     model = Material
     success_url = reverse_lazy(
         'education_content:material_list')  # Redirect to the list of Chapters after deleting a Chapter
+
+
+class MaterialPhotosCreateMaterialView(LoginRequiredMixin, CreateView):
+    model = MaterialPhotos
+    form_class = MaterialPhotosForm
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        context_data['material_pk'] = self.kwargs['material_pk']
+        return context_data
+
+    def get_success_url(self):
+        # We dynamically construct the URL using reverse_lazy and the value of chapter_pk
+        material_pk = self.kwargs['material_pk']
+        return reverse_lazy('education_content:material_view', kwargs={'pk': material_pk})
+
+
+class MaterialPhotosCreateView(LoginRequiredMixin, CreateView):
+    model = MaterialPhotos
+    form_class = MaterialPhotosForm
+    success_url = reverse_lazy('education_content:materialphotos_list')
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        material_list = Material.objects.all()
+        context_data['material_list'] = material_list
+        return context_data
+
+
+class MaterialPhotosListView(LoginRequiredMixin, GetFinalConditionsMixin, ListView):
+    model = MaterialPhotos
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data()
+        context_data['material_photos_list'] = MaterialPhotos.objects.all()
+        return context_data

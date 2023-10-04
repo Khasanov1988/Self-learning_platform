@@ -68,12 +68,12 @@ class MaterialPhotos(models.Model):
     """
     Material figures
     """
-    signature = models.CharField(max_length=100, default=None, null=True, blank=True, verbose_name='Signature')
+    signature = models.CharField(max_length=300, default=None, null=True, blank=True, verbose_name='Signature')
     figure = models.ImageField(verbose_name='Figure')
     material = models.ForeignKey('education_content.Material', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'Figure - {self.signature}'
+        return f'{self.signature}'
 
     class Meta:
         verbose_name = 'Figure'

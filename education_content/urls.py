@@ -33,7 +33,8 @@ urlpatterns = [
     path('material_create/', MaterialCreateView.as_view(), name='material_create'),
 
     # URL pattern for creating a new material to special chapter
-    path('material_create/<int:chapter_pk>/', MaterialCreateChapterView.as_view(), name='material_create_for_special_chapter'),
+    path('material_create/<int:chapter_pk>/', MaterialCreateChapterView.as_view(),
+         name='material_create_for_special_chapter'),
 
     # URL pattern for listing material with a 60-second cache timeout
     path('material_list/', MaterialListView.as_view(), name='material_list'),
@@ -46,5 +47,15 @@ urlpatterns = [
 
     # URL pattern for deleting an existing material
     path('material_delete/<int:pk>/', MaterialDeleteView.as_view(), name='material_delete'),
+
+    # URL pattern for creating a new material to special chapter
+    path('materialphotos_create/<int:material_pk>/', MaterialPhotosCreateMaterialView.as_view(),
+         name='materialphotos_create_for_special_material'),
+
+    # URL pattern for creating a new materialphoto
+    path('materialphotos_create/', MaterialPhotosCreateView.as_view(), name='materialphotos_create'),
+
+    # URL pattern for listing materialphotos with a 60-second cache timeout
+    path('materialphotos_list/', MaterialPhotosListView.as_view(), name='materialphotos_list'),
 
 ]
