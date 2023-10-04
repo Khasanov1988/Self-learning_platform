@@ -6,10 +6,10 @@
             <div class="d-md-flex flex-md-equal container my-md-3 ps-md-3">
                 <form method="post" enctype="multipart/form-data">
                     <img class="mb-4" id="themeImage" src="/media/decor/favicon.ico" alt="" width="128" height="128">
-                    <h1 class="h3 mb-3 fw-normal">Do you want to delete the chapter "{{ object.title }}"?</h1>
+                    <h1 class="h3 mb-3 fw-normal">Do you want to delete material "{{ object }}"?</h1>
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Confirm</button>
-                    <a href="{% url 'education_content:chapter_view' pk=object.pk %}"
+                    <a href="{% url 'education_content:material_view' pk=object.pk %}"
                                    class="btn btn-primary">Cancel</a>
                 </form>
             </div>

@@ -6,7 +6,7 @@
         <section class="py-3 text-center container">
             <div class="row py-lg-5">
                 <div class="col-lg-12 col-md-8 mx-auto">
-                    <h1 class="fw-light">{{ object.topic }}</h1>
+                    <h1 class="fw-light">{{ object }}</h1>
                     <p class="lead text-body-secondary">{{ object.description }}</p>
                     {% if object.owner == user or user.is_staff %}
                         <p>
@@ -19,13 +19,17 @@
                                    class="btn btn-sm w-100 btn-outline-danger my-2">Delete</a>
                             {% endif %}
 
-                                {% if object.is_published_requested %}
-                                    <a href="{% url 'education_content:change_published_requested_status' model='Material' pk=object.pk %}"
-                                       class="btn btn-sm w-100 btn-outline-warning my-2">Withdraw request to change publication status</a>
-                                {% else %}
-                                    <a href="{% url 'education_content:change_published_requested_status' model='Material' pk=object.pk %}"
-                                       class="btn btn-sm w-100 btn-outline-success my-2">Request to change publication status</a>
-                                {% endif %}
+                            {% if object.is_published_requested %}
+                                <a href="{% url 'education_content:change_published_requested_status' model='Material' pk=object.pk %}"
+                                   class="btn btn-sm w-100 btn-outline-warning my-2">Withdraw request
+                                    {% if object.is_published %}to stop
+                                        publication{% else %}for publication{% endif %}</a>
+                            {% else %}
+                                <a href="{% url 'education_content:change_published_requested_status' model='Material' pk=object.pk %}"
+                                   class="btn btn-sm w-100 btn-outline-success my-2">Request
+                                    {% if object.is_published %}to stop
+                                        publication{% else %}for publication{% endif %}</a>
+                            {% endif %}
 
                             {% if user.is_staff and object.is_published_requested %}
                                 {% if not object.is_published %}
@@ -38,6 +42,16 @@
                             {% endif %}
                         </p>
                     {% endif %}
+                    <div class="d-flex gap-3 justify-content-center lead fw-normal">
+                        <a class="icon-link"
+                           href="{% url 'education_content:chapter_view' pk=object.chapter.pk %}">
+                            Return to chapter "{{ object.chapter }}"
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                 class="bi">
+                                <use xlink:href="#chevron-right"/>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>

@@ -10,7 +10,7 @@
                     <h1 class="h3 mb-3 fw-normal">Creating a new chapter</h1>
                     {% csrf_token %}
                     <div class="form-floating mb-1">
-                        <input type="text" name="title" value="{{ object.title }}" autofocus autocapitalize="none"
+                        <input type="text" name="title" value="{{ object }}" autofocus autocapitalize="none"
                                autocomplete="current-title"
                                maxlength="100" class="form-control" id="id_title" placeholder="name@example.com">
                         <label for="id_title">Title</label>

@@ -20,7 +20,7 @@ class Chapter(models.Model):
     views_count = models.PositiveIntegerField(default=0, verbose_name='Number of Views')
 
     def __str__(self):
-        return f'Chapter - {self.title}'
+        return f'{self.title}'
 
     class Meta:
         verbose_name = 'Chapter'
@@ -51,7 +51,7 @@ class Material(models.Model):
     views_count = models.PositiveIntegerField(default=0, verbose_name='Number of views')
 
     def __str__(self):
-        return f'Material - {self.topic}'
+        return f'{self.topic}'
 
     class Meta:
         verbose_name = 'Material'

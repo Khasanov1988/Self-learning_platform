@@ -1,9 +1,9 @@
 {% load my_tags %}
-<div class="col px-3" style="opacity: 0.3;">
+<div class="col px-3">
     <div class="card shadow-sm">
         {% if request.path|slice:"0:21" == '/material_photos_list/' %}
             <div class="card-header text-center">
-                <h3>{{ material_photo.material.topic }}</h3>
+                <h3>{{ material_photo.material }}</h3>
             </div>
         {% endif %}
 

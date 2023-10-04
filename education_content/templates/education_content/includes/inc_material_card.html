@@ -3,7 +3,7 @@
     <div class="card shadow-sm">
         {% if request.path|slice:"0:15" == '/material_list/' %}
             <div class="card-header text-center">
-                <h3>{{ material.chapter.title }}: {{ material.topic }}</h3>
+                <h3>{{ material.chapter }}: {{ material }}</h3>
             </div>
         {% endif %}
         {% if material.preview %}
@@ -14,7 +14,7 @@
         {% else %}
             <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
                  xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                 preserveAspectRatio="none" focusable="false"><title>{{ material.topic }}</title>
+                 preserveAspectRatio="none" focusable="false"><title>{{ material }}</title>
                 <rect width="100%" height="100%" fill="#55595c"></rect>
                 <text x="50%" y="50%" fill="#eceeef" dy=".3em">No preview</text>
             </svg>
@@ -25,8 +25,8 @@
             <p class="card-text d-md-none">{{ material.description }}.</p>
             <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                    <a href="{% url 'education_content:material_view' pk=material.pk %}" class="btn btn-sm btn-outline-secondary">View</a>
+                    <a href="{% url 'education_content:material_edit' pk=material.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
                 </div>
                 <small class="text-body-secondary">{{ material.owner }}</small>
             </div>

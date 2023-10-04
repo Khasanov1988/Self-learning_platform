@@ -10,7 +10,7 @@
                     <h1 class="h3 mb-3 fw-normal">Creating a new educational material</h1>
                     {% csrf_token %}
                     <div class="form-floating mb-1">
-                        <input type="text" name="topic" value="{{ object.topic }}" autofocus autocapitalize="none"
+                        <input type="text" name="topic" value="{{ object }}" autofocus autocapitalize="none"
                                autocomplete="current-topic"
                                maxlength="100" class="form-control" id="id_topic" placeholder="name@example.com">
                         <label for="id_topic">Topic</label>
@@ -35,9 +35,9 @@
                     {% else %}
                         <select class="form-select form-select-lg mb-1" name="chapter"
                                 aria-label="Large select example">
-                            <option selected>Chapter - {{ object.chapter.title }}</option>
+                            <option selected>Chapter - {{ object.chapter }}</option>
                             {% for chapter in chapter_list %}
-                                <option value="{{ chapter.pk }}">{{ chapter.title }}</option>
+                                <option value="{{ chapter.pk }}">{{ chapter }}</option>
                             {% endfor %}
                         </select>
                     {% endif %}
