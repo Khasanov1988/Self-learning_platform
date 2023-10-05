@@ -13,10 +13,17 @@
             </div>
         </a>
         <div class="card-footer p-1">
-            <p class="card-text d-none d-md-block pb-4 mb-1"
-               style="height: 18px; overflow: hidden;">{{ material_photo.signature }}.</p>
-            <p class="card-text d-md-none pb-4 mb-1">{{ material_photo.signature }}.</p>
-            <a href="{% url 'education_content:materialphotos_delete' pk=material_photo.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+            <div class="row">
+                <div class="col-9">
+                    <p class="card-text d-none d-md-block pb-4 mb-1"
+                       style="height: 18px; overflow: hidden;">{{ material_photo.signature }}.</p>
+                    <p class="card-text d-md-none pb-4 mb-1">{{ material_photo.signature }}.</p>
+                </div>
+                <div class="col-3">
+                    <a href="{% url 'education_content:materialphotos_delete' pk=material_photo.pk %}"
+                       class="btn btn-sm btn-outline-danger w-100">Delete</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
