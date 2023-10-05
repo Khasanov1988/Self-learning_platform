@@ -1,6 +1,6 @@
 {% load my_tags %}
 <div class="col-12 col-md-6 mb-3" style="{% if not object.is_published %} opacity: 0.3 {% endif %};">
-    <div class="bg-body-tertiary pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden"
+    <div class="{% if object.is_published_requested and user.is_staff %}text-bg-primary{% else %}bg-body-tertiary{% endif %} pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden"
          style="border-radius: 21px 21px 0 0;">
         <div class="my-3 p-3">
             <h2 class="display-5 d-none d-md-block" style="height: 60px; overflow: hidden;">

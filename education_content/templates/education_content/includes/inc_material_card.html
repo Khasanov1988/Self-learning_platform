@@ -1,6 +1,6 @@
 {% load my_tags %}
 <div class="col px-3" style="{% if not material.is_published %} opacity: 0.3 {% endif %};">
-    <div class="card shadow-sm">
+    <div class="card shadow-sm{% if material.is_published_requested and user.is_staff %} bg-primary{% endif %}">
         {% if request.path|slice:"0:15" == '/material_list/' %}
             <div class="card-header text-center">
                 <h3>{{ material.chapter }}: {{ material }}</h3>
