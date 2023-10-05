@@ -58,4 +58,10 @@ urlpatterns = [
     # URL pattern for listing materialphotos with a 60-second cache timeout
     path('materialphotos_list/', MaterialPhotosListView.as_view(), name='materialphotos_list'),
 
+    # URL pattern for viewing a single materialphoto
+    path('materialphotos_view/<int:pk>/', MaterialPhotosDetailView.as_view(), name='materialphotos_view'),
+
+    # URL pattern for deleting an existing materialphoto
+    path('materialphotos_delete/<int:pk>/', MaterialPhotosDeleteView.as_view(), name='materialphotos_delete'),
+
 ]

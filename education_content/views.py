@@ -246,3 +246,13 @@ class MaterialPhotosListView(LoginRequiredMixin, GetFinalConditionsMixin, ListVi
         context_data = super().get_context_data()
         context_data['material_photos_list'] = MaterialPhotos.objects.all()
         return context_data
+
+
+class MaterialPhotosDetailView(LoginRequiredMixin, DetailView):
+    model = MaterialPhotos
+
+
+class MaterialPhotosDeleteView(LoginRequiredMixin, DeleteView):
+    model = MaterialPhotos
+    success_url = reverse_lazy(
+        'education_content:materialphotos_list')  # Redirect to the MaterialPhotos list after deleting a Figure
