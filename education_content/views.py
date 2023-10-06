@@ -6,11 +6,25 @@ from django.forms import inlineformset_factory
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
+from django.utils import timezone
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 
 from education_content.forms import ChapterForm, MaterialForm, MaterialForChapterForm, MaterialUpdateForm, \
     MaterialPhotosForm
 from education_content.models import Chapter, Material, MaterialPhotos
+
+
+class GetLastUpdateMixin:
+    """
+    Mixin to update the "last_update" attribute
+    """
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.last_update = timezone.now
+        self.object.save()
+
+        return super().form_valid(form)
 
 
 class GetFinalConditionsMixin:
@@ -51,7 +65,7 @@ class ChapterCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ChapterUpdateView(LoginRequiredMixin, UpdateView):
+class ChapterUpdateView(LoginRequiredMixin, GetLastUpdateMixin, UpdateView):
     model = Chapter
     form_class = ChapterForm
 
@@ -167,7 +181,7 @@ class MaterialCreateChapterView(LoginRequiredMixin, GetChapterListMixin, CreateV
         return reverse_lazy('education_content:chapter_view', kwargs={'pk': chapter_pk})
 
 
-class MaterialUpdateView(LoginRequiredMixin, UpdateView):
+class MaterialUpdateView(LoginRequiredMixin, GetLastUpdateMixin, UpdateView):
     model = Material
     form_class = MaterialUpdateForm
 
