@@ -2,14 +2,13 @@ from django.apps import apps
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.forms import inlineformset_factory
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 
-from education_content.forms import ChapterForm, MaterialForm, MaterialForChapterForm, MaterialUpdateForm, \
+from education_content.forms import ChapterForm, MaterialForm, MaterialUpdateForm, \
     MaterialPhotosForm
 from education_content.models import Chapter, Material, MaterialPhotos
 
