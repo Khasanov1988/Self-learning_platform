@@ -12,6 +12,7 @@ class Test(models.Model):
     title = models.CharField(max_length=100, verbose_name='Title')
     description = models.CharField(max_length=500, null=True, blank=True, verbose_name='Description')
     material = models.ForeignKey('education_content.Material', on_delete=models.CASCADE)
+    preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     made_date = models.DateField(default=timezone.now, verbose_name='Creation date')
     last_update = models.DateField(default=timezone.now, verbose_name='Last update date')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,

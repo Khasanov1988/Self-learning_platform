@@ -1,0 +1,76 @@
+{% extends 'education_content/base.html' %}
+
+{% block content %}
+    <main>
+
+        <section class="py-3 text-center container">
+            <div class="row py-lg-5">
+                <div class="col-lg-12 col-md-8 mx-auto">
+                    <h1 class="fw-light">{{ object }}</h1>
+                    <p class="lead text-body-secondary">{{ object.description }}</p>
+                    {% if object.owner == user or user.is_staff %}
+                        <p>
+
+                            {% if not object.is_published %}
+                                <a href="{% url 'tests:test_edit' pk=object.pk %}"
+                                   class="btn btn-sm w-100 btn-outline-primary my-2">Edit</a>
+
+                                <a href="{% url 'tests:test_delete' pk=object.pk %}"
+                                   class="btn btn-sm w-100 btn-outline-danger my-2">Delete</a>
+                            {% endif %}
+
+                            {% if object.is_published_requested %}
+                                <a href="{% url 'tests:change_published_requested_status' model='Test' pk=object.pk %}"
+                                   class="btn btn-sm w-100 btn-outline-warning my-2">Withdraw request
+                                    {% if object.is_published %}to stop
+                                        publication{% else %}for publication{% endif %}</a>
+                            {% else %}
+                                <a href="{% url 'tests:change_published_requested_status' model='Test' pk=object.pk %}"
+                                   class="btn btn-sm w-100 btn-outline-success my-2">Request
+                                    {% if object.is_published %}to stop
+                                        publication{% else %}for publication{% endif %}</a>
+                            {% endif %}
+
+                            {% if user.is_staff and object.is_published_requested %}
+                                {% if not object.is_published %}
+                                    <a href="{% url 'tests:change_published_status' model="Test" pk=object.pk %}"
+                                       class="btn btn-sm w-100 btn-outline-success my-2">Start publication</a>
+                                {% else %}
+                                    <a href="{% url 'tests:change_published_status' model="Test" pk=object.pk %}"
+                                       class="btn btn-sm w-100 btn-outline-warning my-2">Stop publication</a>
+                                {% endif %}
+                            {% endif %}
+                        </p>
+                    {% endif %}
+                    <div class="d-flex gap-3 justify-content-center lead fw-normal">
+                        <a class="icon-link"
+                           href="{% url 'education_content:materialphotos_create_for_special_material' material_pk=object.pk %}">
+                            Take the test "{{ object }}"
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                 class="bi">
+                                <use xlink:href="#chevron-right"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="album py-5 bg-body-tertiary">
+            <div class="container-fluid">
+                <p class="lead text-body-secondary px-3">{{ object.text }}</p>
+            </div>
+        </div>
+        {% if material_photos_list %}
+            <div class="album py-5 bg-body-tertiary">
+                <div class="container-fluid">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                        {% for material_photo in material_photos_list %}
+                            {% include 'education_content/includes/inc_material_photo_card.html' %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+    </main>
+{% endblock %}

@@ -1,13 +1,71 @@
+from django.apps import apps
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404
+from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DeleteView, DetailView, UpdateView, CreateView
 
+from education_content.models import Material
 from education_content.views import GetFinalConditionsMixin, GetLastUpdateMixin
 from tests.forms import *
 from tests.models import *
 
 
-class TestCreateView(LoginRequiredMixin, CreateView):
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def change_published_status(request, model: str, pk: int):
+    """
+    Change publication or publication request status
+    """
+    got_model = apps.get_model('tests', model)
+    try:
+        got_object = got_model.objects.get(pk=pk)
+    except got_model.DoesNotExist:
+        raise Http404("Object not found")
+
+    current_value = getattr(got_object, 'is_published')
+    new_value = not current_value
+    setattr(got_object, 'is_published', new_value)
+    got_object.is_published_requested = False
+    got_object.save()
+    return redirect(reverse(f'tests:{model.lower()}_view', kwargs={'pk': pk}))
+
+
+@login_required
+def change_published_requested_status(request, model: str, pk: int):
+    """
+    Change publication request status
+    """
+    got_model = apps.get_model('tests', model)
+    try:
+        got_object = got_model.objects.get(pk=pk)
+    except got_model.DoesNotExist:
+        raise Http404("Object not found")
+
+    if not (got_object.owner == request.user or request.user.is_staff):
+        raise Http404("Access denied")
+
+    current_value = getattr(got_object, 'is_published_requested')
+    new_value = not current_value
+    setattr(got_object, 'is_published_requested', new_value)
+    got_object.save()
+    return redirect(reverse(f'tests:{model.lower()}_view', kwargs={'pk': pk}))
+
+
+class GetMaterialListMixin:
+    """
+    Include material list in context
+    """
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        material_list = Material.objects.all()
+        context_data['material_list'] = material_list
+        return context_data
+
+
+class TestCreateView(LoginRequiredMixin, GetMaterialListMixin, CreateView):
     model = Test
     form_class = TestForm
     success_url = reverse_lazy('tests:test_list')
@@ -19,7 +77,7 @@ class TestCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class TestCreateMaterialView(LoginRequiredMixin, CreateView):
+class TestCreateMaterialView(LoginRequiredMixin, GetMaterialListMixin, CreateView):
     model = Test
     form_class = TestForm
 

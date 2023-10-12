@@ -6,6 +6,14 @@ from tests.views import *
 app_name = TestsConfig.name
 
 urlpatterns = [
+    # View to change published status
+    path('view/changepublishedstatus/<str:model>/<int:pk>/', change_published_status,
+         name='change_published_status'),
+
+    # View to change some status
+    path('view/changepublishedrequestedstatus/<str:model>/<int:pk>/', change_published_requested_status,
+         name='change_published_requested_status'),
+
     # URL pattern for creating a new tests
     path('test_create/', TestCreateView.as_view(), name='test_create'),
 
