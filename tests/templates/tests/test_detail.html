@@ -60,12 +60,12 @@
                 <p class="lead text-body-secondary px-3">{{ object.text }}</p>
             </div>
         </div>
-        {% if material_photos_list %}
+        {% if question_list %}
             <div class="album py-5 bg-body-tertiary">
                 <div class="container-fluid">
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                        {% for material_photo in material_photos_list %}
-                            {% include 'education_content/includes/inc_material_photo_card.html' %}
+                        {% for question in question_list %}
+                            {% include 'tests/includes/inc_question_card.html' %}
                         {% endfor %}
                     </div>
                 </div>

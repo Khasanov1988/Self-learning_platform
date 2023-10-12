@@ -1,7 +1,7 @@
 {% load my_tags %}
 <div class="col px-3" style="{% if not object.is_published %} opacity: 0.3 {% endif %};">
     <div class="card shadow-sm{% if object.is_published_requested and user.is_staff %} bg-primary{% endif %}">
-        {% if request.path|slice:"0:6" == '/tests/' %}
+        {% if request.path|slice:"0:7" == '/tests/' %}
             <div class="card-header text-center">
                 <h3>{{ object.material }}: {{ object }}</h3>
             </div>

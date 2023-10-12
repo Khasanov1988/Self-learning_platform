@@ -7,10 +7,10 @@ from users.forms import StyleFormMixin
 class TestForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Test
-        fields = ('title', 'description', 'material', 'owner', 'is_published', 'is_published_requested',)
+        fields = ('title', 'description', 'material', 'preview', 'owner', 'is_published', 'is_published_requested',)
 
 
 class TestUpdateForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Test
-        fields = ('title', 'description', 'owner', 'is_published', 'is_published_requested',)
+        fields = ('title', 'description', 'preview', 'owner', 'is_published', 'is_published_requested',)
