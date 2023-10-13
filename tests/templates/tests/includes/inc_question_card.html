@@ -1,5 +1,5 @@
 {% load my_tags %}
-<div class="col-12">
+<div class="col-12 mt-1">
     <div class="card shadow-sm">
         <div class="card-body">
             <h3>{{ question.text }}</h3>
@@ -26,7 +26,7 @@
                     {% endfor %}
                 </ul>
             {% else %}
-                <div class="form-floating mb-1">
+                <div class="form-floating">
                         <textarea type="text" name="Question:{{ question.pk }}" autofocus autocapitalize="none"
                                   autocomplete="current-text" class="form-control"
                                   id="{{ question }}_{{ answer }}_text"

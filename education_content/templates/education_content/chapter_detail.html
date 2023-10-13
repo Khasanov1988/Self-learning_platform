@@ -42,16 +42,6 @@
                             {% endif %}
                         </p>
                     {% endif %}
-                    <div class="d-flex gap-3 justify-content-center lead fw-normal">
-                        <a class="icon-link"
-                           href="{% url 'education_content:material_create_for_special_chapter' chapter_pk=object.pk %}">
-                            Add new material for chapter "{{ object }}"
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                 class="bi">
-                                <use xlink:href="#chevron-right"/>
-                            </svg>
-                        </a>
-                    </div>
                 </div>
             </div>
         </section>
@@ -62,6 +52,23 @@
                     {% for material in material_list %}
                         {% include 'education_content/includes/inc_material_card.html' %}
                     {% endfor %}
+                    <div class="col px-3">
+                        <div class="card shadow-sm">
+                            <a href="{% url 'education_content:material_create_for_special_chapter' chapter_pk=object.pk %}"
+                               class="clickable-element">
+                                <svg class="bd-placeholder-img card-img-top" width="100%" height="354"
+                                     xmlns="http://www.w3.org/2000/svg" role="img"
+                                     aria-label="Placeholder: Thumbnail"
+                                     preserveAspectRatio="none" focusable="false">
+                                    <rect width="100%" height="100%" fill="none" stroke="#55595c"
+                                          stroke-width="5"></rect>
+                                    <text x="50%" y="50%" fill="#55595c" dy=".3em" text-anchor="middle">Press to add
+                                        new material
+                                    </text>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

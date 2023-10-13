@@ -5,16 +5,13 @@
     <main class="form-signin w-100 m-auto">
         <div class="row">
 
-            <div class="position-relative overflow-hidden p-3 p-md-5 m-md-5 text-center bg-body-tertiary">
+            <div class="position-relative overflow-hidden p-3 p-md-5 m-md-5 bg-body-tertiary">
                 <div class="d-md-flex flex-md-equal container my-md-3 ps-md-3">
 
                     <form method="post" enctype="multipart/form-data">
-                        <img class="mb-4" id="themeImage" src="/media/decor/favicon.ico" alt="" width="128"
-                             height="128">
-                        <h1 class="h3 mb-3 fw-normal">Taking a test</h1>
                         {% csrf_token %}
-                        <h1 class="fw-light">{{ test }}</h1>
-                        <p class="lead text-body-secondary">{{ test.description }}</p>
+                        <h1 class="text-center fw-light">{{ test }}</h1>
+                        <p class="text-center lead text-body-secondary">{{ test.description }}</p>
                         {% if question_list %}
                             <div class="album py-5 bg-body-tertiary">
                                 <div class="container-fluid">
@@ -26,9 +23,11 @@
                                 </div>
                             </div>
                         {% endif %}
-                        <button type="submit" class="btn btn-success">
-                            Submit
-                        </button>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success">
+                                Submit
+                            </button>
+                        </div>
                     </form>
 
 

@@ -11,6 +11,7 @@ from django.views.generic import CreateView, UpdateView, ListView, DetailView, D
 from education_content.forms import ChapterForm, MaterialForm, MaterialUpdateForm, \
     MaterialPhotosForm
 from education_content.models import Chapter, Material, MaterialPhotos
+from tests.models import Test
 
 
 class GetLastUpdateMixin:
@@ -20,7 +21,7 @@ class GetLastUpdateMixin:
 
     def form_valid(self, form):
         self.object = form.save()
-        self.object.last_update = timezone.now
+        self.object.last_update = timezone.now()
         self.object.save()
 
         return super().form_valid(form)
@@ -216,6 +217,11 @@ class MaterialDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView
         context_data = super().get_context_data()
         material_photos_list = self.object.materialphotos_set.all()
         context_data['material_photos_list'] = material_photos_list
+        try:
+            context_data['test'] = Test.objects.get(material=self.object.pk)
+        except Test.DoesNotExist:
+            print("Test does not exist")
+
         return context_data
 
 

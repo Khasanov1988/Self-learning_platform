@@ -21,14 +21,15 @@
         {% endif %}
         <div class="card-body">
             <p class="card-text d-none d-md-block"
-               style="height: 50px; overflow: hidden;">{{ object.description }}.</p>
+               style="height: 20px; overflow: hidden;">{{ object.description }}.</p>
             <p class="card-text d-md-none">{{ object.description }}.</p>
             <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                     <a href="{% url 'tests:test_view' pk=object.pk %}" class="btn btn-sm btn-outline-secondary">View</a>
                     <a href="{% url 'tests:test_edit' pk=object.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
                 </div>
-                <small class="text-body-secondary">{{ object.owner }}</small>
+                <a href="{% url 'tests:test_delete' pk=object.pk %}"
+                   class="btn btn-sm btn-outline-danger">Delete</a>
             </div>
         </div>
     </div>

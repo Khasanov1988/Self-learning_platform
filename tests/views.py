@@ -6,7 +6,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
-from django.views import View
 from django.views.generic import ListView, DeleteView, DetailView, UpdateView, CreateView, TemplateView, FormView
 
 from education_content.models import Material
@@ -65,6 +64,7 @@ class GetMaterialListMixin:
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
         material_list = Material.objects.all()
+        material_list = material_list.filter(is_test_exist=False)
         context_data['material_list'] = material_list
         return context_data
 
@@ -78,6 +78,9 @@ class TestCreateView(LoginRequiredMixin, GetMaterialListMixin, CreateView):
         self.object = form.save()
         self.object.owner = self.request.user
         self.object.save()
+        material = self.object.material
+        material.is_test_exist = True
+        material.save()
         return super().form_valid(form)
 
 
@@ -89,6 +92,9 @@ class TestCreateMaterialView(LoginRequiredMixin, GetMaterialListMixin, CreateVie
         self.object = form.save()
         self.object.owner = self.request.user
         self.object.save()
+        material = self.object.material
+        material.is_test_exist = True
+        material.save()
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -140,6 +146,13 @@ class TestDeleteView(LoginRequiredMixin, DeleteView):
     model = Test
     success_url = reverse_lazy(
         'tests:test_list')  # Redirect to the list of Chapters after deleting a Chapter
+
+    def form_valid(self, form):
+        self.object = form.save()
+        material = self.object.material
+        material.is_test_exist = False
+        material.save()
+        return super().form_valid(form)
 
 
 class TestRunView(LoginRequiredMixin, FormView):

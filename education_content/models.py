@@ -46,6 +46,7 @@ class Material(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                               verbose_name='Owner')
     chapter = models.ForeignKey('education_content.Chapter', on_delete=models.CASCADE)
+    is_test_exist = models.BooleanField(default=False, verbose_name='Test exist status')
     is_published = models.BooleanField(default=False, verbose_name='Publication status')
     is_published_requested = models.BooleanField(default=False, verbose_name='Publication request status')
     views_count = models.PositiveIntegerField(default=0, verbose_name='Number of views')

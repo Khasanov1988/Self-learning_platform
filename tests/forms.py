@@ -16,7 +16,7 @@ class TestUpdateForm(StyleFormMixin, forms.ModelForm):
         fields = ('title', 'description', 'preview', 'owner', 'is_published', 'is_published_requested',)
 
 
-class CompletedTestForm(StyleFormMixin, forms.ModelForm):
+class CompletedTestForm(forms.ModelForm):
     class Meta:
         model = CompletedTest
         fields = ('test', 'user', 'passed_time',)
