@@ -97,20 +97,20 @@ class CompletedTest(models.Model):
         verbose_name = 'Completed test'
         verbose_name_plural = 'Completed tests'
 
-    class CompletedQuestion(models.Model):
-        """
-        Class for completed questions
-        """
-        completed_test = models.ForeignKey('tests.CompletedTest', on_delete=SET_NULL, null=True, blank=True,
-                                           verbose_name='Completed Test')
-        question = models.ForeignKey('tests.Question', on_delete=SET_NULL, null=True, blank=True,
-                                     verbose_name='Question')
-        answer = models.CharField(max_length=500, null=True, blank=True, verbose_name='Users answer')
-        is_correct = models.BooleanField(default=False, verbose_name='Was answer correct')
+class CompletedQuestion(models.Model):
+    """
+    Class for completed questions
+    """
+    completed_test = models.ForeignKey('tests.CompletedTest', on_delete=SET_NULL, null=True, blank=True,
+                                       verbose_name='Completed Test')
+    question = models.ForeignKey('tests.Question', on_delete=SET_NULL, null=True, blank=True,
+                                 verbose_name='Question')
+    answer = models.CharField(max_length=500, null=True, blank=True, verbose_name='Users answer')
+    is_correct = models.BooleanField(default=False, verbose_name='Was answer correct')
 
-        def __str__(self):
-            return f'{self.text}'
+    def __str__(self):
+        return f'{self.answer}'
 
-        class Meta:
-            verbose_name = 'Question'
-            verbose_name_plural = 'Questions'
+    class Meta:
+        verbose_name = 'Completed Question'
+        verbose_name_plural = 'Completed Questions'

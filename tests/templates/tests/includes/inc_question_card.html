@@ -1,5 +1,5 @@
 {% load my_tags %}
-<div class="col">
+<div class="col-12">
     <div class="card shadow-sm">
         <div class="card-body">
             <h3>{{ question.text }}</h3>
@@ -7,7 +7,7 @@
                 <ul class="list-group">
                     {% for answer in answers|get_item:question.pk %}
                         <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" name="Question:{{ question.pk }}_Answer:{{ answer.pk }}_checkbox" value="YES"
+                            <input class="form-check-input me-1" type="checkbox" name="Question:{{ question.pk }}" value="{{ answer }}"
                                    id="{{ question }}_{{ answer }}_CheckboxStretched">
                             <label class="form-check-label stretched-link"
                                    for="{{ question }}_{{ answer }}_CheckboxStretched">{{ answer }}</label>
@@ -18,7 +18,7 @@
                 <ul class="list-group">
                     {% for answer in answers|get_item:question.pk %}
                         <li class="list-group-item">
-                            <input class="form-check-input me-1" type="radio" name="Question:{{ question.pk }}_Answer:{{ answer.pk }}_radio" value="YES"
+                            <input class="form-check-input me-1" type="radio" name="Question:{{ question.pk }}" value="{{ answer }}"
                                    id="{{ question }}_{{ answer }}_Radio"
                                    checked>
                             <label class="form-check-label" for="{{ question }}_{{ answer }}_Radio">{{ answer }}</label>
@@ -27,7 +27,7 @@
                 </ul>
             {% else %}
                 <div class="form-floating mb-1">
-                        <textarea type="text" name="Question:{{ question.pk }}_Answer:{{ answer.pk }}_normal" autofocus autocapitalize="none"
+                        <textarea type="text" name="Question:{{ question.pk }}" autofocus autocapitalize="none"
                                   autocomplete="current-text" class="form-control"
                                   id="{{ question }}_{{ answer }}_text"
                                   rows="3" placeholder=" "></textarea>

@@ -21,3 +21,13 @@ class QuestionAdmin(admin.ModelAdmin):
 @admin.register(Answers)
 class AnswersAdmin(admin.ModelAdmin):
     list_filter = ('text',)
+
+
+@admin.register(CompletedTest)
+class CompletedTestAdmin(admin.ModelAdmin):
+    list_filter = ('test',)
+
+
+@admin.register(CompletedQuestion)
+class CompletedQuestionAdmin(admin.ModelAdmin):
+    list_filter = ('completed_test',)

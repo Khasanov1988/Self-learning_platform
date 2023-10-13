@@ -13,6 +13,7 @@ from education_content.models import Material
 from education_content.views import GetFinalConditionsMixin, GetLastUpdateMixin
 from tests.forms import *
 from tests.models import *
+from tests.services import is_correct_answer
 
 
 @login_required
@@ -154,12 +155,27 @@ class TestRunView(LoginRequiredMixin, FormView):
         print(post_data)
 
         # Здесь вы можете продолжить обработку POST-запроса
-        completed_test = CompletedTest.objects.create()
-        completed_test.test = Test.objects.get(pk=self.kwargs['test_pk'])
-        completed_test.user = self.request.user
+        data_test = {
+            'test': Test.objects.get(pk=self.kwargs['test_pk']),
+            'user': self.request.user,
+        }
+
+        completed_test = CompletedTest.objects.create(**data_test)
         completed_test.save()
 
+        mutable_post_data = dict(post_data.copy())
+        mutable_post_data.pop('csrfmiddlewaretoken', None)
 
+        for question in mutable_post_data.keys():
+            data_question = {
+                'completed_test': completed_test,
+                'question': Question.objects.get(pk=int(question.split(':')[-1])),
+                'answer': str(mutable_post_data[question]),
+                'is_correct': is_correct_answer(int(question.split(':')[-1]), mutable_post_data[question]),
+            }
+            print(data_question)
+            completed_question = CompletedQuestion.objects.create(**data_question)
+            completed_question.save()
 
         # Вызовите метод post() родительского класса, если он существует
         return super().post(request, *args, **kwargs)

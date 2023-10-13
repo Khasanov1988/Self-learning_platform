@@ -55,17 +55,12 @@
                 </div>
             </div>
         </section>
-        <div class="album py-5 bg-body-tertiary">
-            <div class="container-fluid">
-                <p class="lead text-body-secondary px-3">{{ object.text }}</p>
-            </div>
-        </div>
         {% if question_list %}
             <div class="album py-5 bg-body-tertiary">
                 <div class="container-fluid">
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    <div class="row g-3">
                         {% for question in question_list %}
-                            {% include 'tests/includes/inc_question_card.html' %}
+                            {% include 'tests/includes/inc_question_card_short.html' %}
                         {% endfor %}
                     </div>
                 </div>
