@@ -17,3 +17,11 @@ def mediapath_filter(text):
     # This filter appends "/media/" to the beginning of the input text.
     # It's designed to be used in templates like: {{ "images/my_image.jpg" | mediapath_filter }}
     return f'/media/{text}'
+
+
+@register.filter
+def get_item(dictionary, key):
+    if key in dictionary:
+        return dictionary[key]
+    else:
+        return "Key not found"

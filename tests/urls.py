@@ -28,4 +28,7 @@ urlpatterns = [
 
     # URL pattern for deleting an existing test
     path('test_delete/<int:pk>/', TestDeleteView.as_view(), name='test_delete'),
+
+    # URL pattern for creating a new completed tests
+    path('test_run/<int:test_pk>/', TestRunView.as_view(), name='test_run'),
 ]

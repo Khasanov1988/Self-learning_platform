@@ -101,6 +101,8 @@ class CompletedTest(models.Model):
         """
         Class for completed questions
         """
+        completed_test = models.ForeignKey('tests.CompletedTest', on_delete=SET_NULL, null=True, blank=True,
+                                           verbose_name='Completed Test')
         question = models.ForeignKey('tests.Question', on_delete=SET_NULL, null=True, blank=True,
                                      verbose_name='Question')
         answer = models.CharField(max_length=500, null=True, blank=True, verbose_name='Users answer')

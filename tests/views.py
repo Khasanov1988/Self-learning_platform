@@ -1,10 +1,13 @@
+import json
+
 from django.apps import apps
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, DeleteView, DetailView, UpdateView, CreateView
+from django.views import View
+from django.views.generic import ListView, DeleteView, DetailView, UpdateView, CreateView, TemplateView, FormView
 
 from education_content.models import Material
 from education_content.views import GetFinalConditionsMixin, GetLastUpdateMixin
@@ -136,3 +139,43 @@ class TestDeleteView(LoginRequiredMixin, DeleteView):
     model = Test
     success_url = reverse_lazy(
         'tests:test_list')  # Redirect to the list of Chapters after deleting a Chapter
+
+
+class TestRunView(LoginRequiredMixin, FormView):
+    template_name = 'tests/test_run.html'
+    form_class = CompletedTestForm
+    success_url = reverse_lazy('education_content:chapter_list')
+
+    def post(self, request, *args, **kwargs):
+        # Получите данные JSON POST-запроса из request.body
+        post_data = request.POST
+
+        # Выведите данные POST-запроса в консоль
+        print(post_data)
+
+        # Здесь вы можете продолжить обработку POST-запроса
+        completed_test = CompletedTest.objects.create()
+        completed_test.test = Test.objects.get(pk=self.kwargs['test_pk'])
+        completed_test.user = self.request.user
+        completed_test.save()
+
+
+
+        # Вызовите метод post() родительского класса, если он существует
+        return super().post(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context_data = {}
+        test = Test.objects.get(pk=self.kwargs['test_pk'])
+        question_list = test.question_set.all()
+
+        # Create a dictionary where the keys are questions, and the values are the answers associated with them
+        answers_dict = {}
+        for question in question_list:
+            answers = question.answers_set.all()
+            answers_dict[question.pk] = answers
+
+        context_data['test'] = test
+        context_data['question_list'] = question_list
+        context_data['answers'] = answers_dict
+        return context_data
