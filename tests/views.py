@@ -159,13 +159,10 @@ class TestRunView(LoginRequiredMixin, FormView):
     success_url = reverse_lazy('education_content:chapter_list')
 
     def post(self, request, *args, **kwargs):
-        # Получите данные JSON POST-запроса из request.body
+
         post_data = request.POST
 
-        # Выведите данные POST-запроса в консоль
-        print(post_data)
 
-        # Здесь вы можете продолжить обработку POST-запроса
         data_test = {
             'test': Test.objects.get(pk=self.kwargs['test_pk']),
             'user': self.request.user,
@@ -188,7 +185,7 @@ class TestRunView(LoginRequiredMixin, FormView):
             completed_question = CompletedQuestion.objects.create(**data_question)
             completed_question.save()
 
-        # Вызовите метод post() родительского класса, если он существует
+
         return super().post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

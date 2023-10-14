@@ -43,7 +43,7 @@
                     {% endif %}
                     <div class="d-flex gap-3 justify-content-center lead fw-normal">
                         <a class="icon-link"
-                           href="{% url 'education_content:materialphotos_create_for_special_material' material_pk=object.pk %}">
+                           href="{% url 'tests:test_run' test_pk=object.pk %}">
                             Take the test "{{ object }}"
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                  class="bi">
