@@ -1,16 +1,14 @@
-import json
-
 from django.apps import apps
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, DeleteView, DetailView, UpdateView, CreateView, TemplateView, FormView
+from django.views.generic import ListView, DeleteView, DetailView, UpdateView, CreateView, FormView
 
 from education_content.models import Material
 from education_content.views import GetFinalConditionsMixin, GetLastUpdateMixin
-from tests.forms import TestUpdateForm, CompletedTestForm
+from tests.forms import TestUpdateForm, CompletedTestForm, TestForm
 from tests.models import Test, CompletedTest, Question, CompletedQuestion
 from tests.services import is_correct_answer
 
