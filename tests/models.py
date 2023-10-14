@@ -97,6 +97,7 @@ class CompletedTest(models.Model):
         verbose_name = 'Completed test'
         verbose_name_plural = 'Completed tests'
 
+
 class CompletedQuestion(models.Model):
     """
     Class for completed questions

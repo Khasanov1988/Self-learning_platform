@@ -79,4 +79,3 @@ class MaterialPhotos(models.Model):
     class Meta:
         verbose_name = 'Figure'
         verbose_name_plural = 'Figures'
-

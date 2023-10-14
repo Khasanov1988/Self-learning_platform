@@ -75,4 +75,3 @@ def generate_new_password(request):
 
     # Redirect the user to the home page
     return redirect(reverse('users:login'))
-

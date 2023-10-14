@@ -1,5 +1,6 @@
 from django.contrib import admin
-from education_content.models import *
+
+from education_content.models import Chapter, Material, MaterialPhotos
 
 
 @admin.register(Chapter)

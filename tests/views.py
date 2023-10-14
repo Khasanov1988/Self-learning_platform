@@ -10,8 +10,8 @@ from django.views.generic import ListView, DeleteView, DetailView, UpdateView, C
 
 from education_content.models import Material
 from education_content.views import GetFinalConditionsMixin, GetLastUpdateMixin
-from tests.forms import *
-from tests.models import *
+from tests.forms import TestUpdateForm, CompletedTestForm
+from tests.models import Test, CompletedTest, Question, CompletedQuestion
 from tests.services import is_correct_answer
 
 

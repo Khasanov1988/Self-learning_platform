@@ -1,7 +1,8 @@
 from tests.apps import TestsConfig
 from django.urls import path
 
-from tests.views import *
+from tests.views import TestCreateView, TestListView, TestDetailView, TestUpdateView, TestDeleteView, TestRunView, \
+    change_published_status, change_published_requested_status
 
 app_name = TestsConfig.name
 

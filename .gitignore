@@ -184,4 +184,5 @@ fabric.properties
 # idea folder, uncomment if you don't need it
 .idea
 
-git-token.txt
+git-token.txt!/education_content/migrations/0009_alter_material_topic_alter_materialphotos_signature.py
+!/education_content/migrations/0009_alter_material_topic_alter_materialphotos_signature.py

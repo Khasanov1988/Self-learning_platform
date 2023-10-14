@@ -1,6 +1,6 @@
 from django import forms
 
-from tests.models import *
+from tests.models import Test, CompletedTest
 from users.forms import StyleFormMixin
 
 

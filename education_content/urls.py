@@ -1,7 +1,11 @@
 from django.urls import path
 
 from education_content.apps import EducationContentConfig
-from education_content.views import *
+from education_content.views import ChapterCreateView, ChapterListView, ChapterDetailView, ChapterUpdateView, \
+    ChapterDeleteView, change_published_status, change_published_requested_status, MaterialCreateView, \
+    MaterialCreateChapterView, MaterialListView, MaterialDetailView, MaterialUpdateView, MaterialDeleteView, \
+    MaterialPhotosCreateMaterialView, MaterialPhotosCreateView, MaterialPhotosListView, MaterialPhotosDetailView, \
+    MaterialPhotosDeleteView
 
 app_name = EducationContentConfig.name
 
