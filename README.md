@@ -57,12 +57,10 @@ Follow these steps to set up the Education Testing Platform on your local develo
     ```bash
     cd education-testing-platform
     ```
-
 3. Create a virtual environment (recommended):
     ```bash
     python -m venv venv
     ```
-
 4. Activate the virtual environment:
 
    Windows:
@@ -74,31 +72,26 @@ Follow these steps to set up the Education Testing Platform on your local develo
     source venv/bin/activate
     ```
 5. Install project dependencies:
-
     ```bash
     pip install -r requirements.txt
     ```
-
-6. Perform initial database migrations:
-
+6. Fill .env file:
+    ```bash
+    nano .env
+    ```
+7. Perform initial database migrations:
     ```bash
     python manage.py migrate
     ```
-
-7. Create a superuser (admin) account for managing the platform:
-
+8. Create a superuser (admin) account for managing the platform:
     ```bash
     python manage.py csu
     ```
-   
-8. Fill necessary tables in database
-    
+9. Fill necessary tables in database
     ```bash
     python manage.py renew_data_bases
     ```
-
-9. Start the development server:
-
+10. Start the development server:
     ```bash
     python manage.py runserver
     ```

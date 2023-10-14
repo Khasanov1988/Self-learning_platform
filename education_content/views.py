@@ -42,7 +42,7 @@ class GetFinalConditionsMixin:
 
 class GetChapterListMixin:
     """
-
+    Add chapter list to context
     """
 
     def get_context_data(self, **kwargs):
