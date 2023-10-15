@@ -1,10 +1,11 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
+
 from django.test import TestCase
 
 from django.urls import reverse
 
 from users.models import User
-from .models import Chapter, Material, MaterialPhotos
+from education_content.models import Chapter, Material, MaterialPhotos
 
 from django.test import SimpleTestCase
 from education_content.templatetags.my_tags import mediapath_filter, get_item, mediapath
@@ -78,6 +79,12 @@ class MaterialControllerTests(TestCase):
         created_material = Material.objects.filter(topic='Test Material', text='Test Material').first()
         self.assertIsNotNone(created_material)
 
+        request = self.client.get(
+            reverse('education_content:material_create'))
+
+        # Check for the 'chapter_list' parameter in the response context
+        self.assertIn('chapter_list', request.context)
+
     def test_material_create_for_special_chapter_view(self):
         self.client.login(email='testuser', password='testpassword')
         response = self.client.post(
@@ -88,6 +95,12 @@ class MaterialControllerTests(TestCase):
         # Check that the Material object was created
         created_material = Material.objects.filter(topic='Test Material 2', text='Test Material 2').first()
         self.assertIsNotNone(created_material)
+
+        request = self.client.get(
+            reverse('education_content:material_create_for_special_chapter', kwargs={'chapter_pk': self.chapter.pk}))
+
+        # Check for the 'chapter_pk' parameter in the response context
+        self.assertIn('chapter_pk', request.context)
 
     def test_material_delete_view(self):
         self.client.login(email='testuser', password='testpassword')
@@ -186,6 +199,13 @@ class MaterialPhotosControllerTests(TestCase):
                                                                 material=self.material).first()
         self.assertIsNotNone(created_material_photos)
 
+        request = self.client.get(
+            reverse('education_content:materialphotos_create_for_special_material',
+                    kwargs={'material_pk': self.material.pk}))
+
+        # Check for the 'chapter_pk' parameter in the response context
+        self.assertIn('material_pk', request.context)
+
     def test_material_photos_create_view(self):
         self.client.login(email='testuser', password='testpassword')
 
@@ -202,6 +222,12 @@ class MaterialPhotosControllerTests(TestCase):
         created_material_photos = MaterialPhotos.objects.filter(signature='Test Image',
                                                                 material=self.material).first()
         self.assertIsNotNone(created_material_photos)
+
+        request = self.client.get(
+            reverse('education_content:materialphotos_create'))
+
+        # Check for the 'chapter_list' parameter in the response context
+        self.assertIn('material_list', request.context)
 
     def test_material_photos_list_view(self):
         self.client.login(email='testuser', password='testpassword')
