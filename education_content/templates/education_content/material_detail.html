@@ -42,7 +42,7 @@
                             {% endif %}
                         </p>
                     {% endif %}
-                    {% if test %}
+                    {% if test.is_published %}
                         <div class="d-flex gap-3 justify-content-center lead fw-normal">
                             <a class="icon-link"
                                href="{% url 'tests:test_run' test_pk=test.pk %}">

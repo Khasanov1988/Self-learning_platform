@@ -29,7 +29,7 @@ class ChapterControllerTests(TestCase):
         self.client.login(email='testuser', password='testpassword')
         created_chapter = Chapter.objects.create(title='Test Chapter', description='Test Chapter')
         created_chapter.save()
-        resource = self.client.post(
+        self.client.post(
             reverse('education_content:chapter_delete', kwargs={'pk': created_chapter.pk}))
 
         # Check that the Chapter object was deleted
@@ -40,7 +40,7 @@ class ChapterControllerTests(TestCase):
         self.client.login(email='testuser', password='testpassword')
         created_chapter = Chapter.objects.create(title='Test Chapter', description='Test Chapter')
         created_chapter.save()
-        resource = self.client.post(
+        self.client.post(
             reverse('education_content:chapter_edit', kwargs={'pk': created_chapter.pk}),
             {'title': 'Test Chapter new', 'description': 'Test Chapter new'})
 
@@ -94,7 +94,7 @@ class MaterialControllerTests(TestCase):
         created_material = Material.objects.create(topic='Test Material', text='Test Material',
                                                    chapter_id=self.chapter.pk)
         created_material.save()
-        resource = self.client.post(
+        self.client.post(
             reverse('education_content:material_delete', kwargs={'pk': created_material.pk}))
 
         # Check that the Material object was deleted
@@ -106,7 +106,7 @@ class MaterialControllerTests(TestCase):
         created_material = Material.objects.create(topic='Test Material', text='Test Material',
                                                    chapter_id=self.chapter.pk)
         created_material.save()
-        resource = self.client.post(
+        self.client.post(
             reverse('education_content:material_edit', kwargs={'pk': created_material.pk}),
             {'topic': 'Test Material new', 'text': 'Test Material new'})
 

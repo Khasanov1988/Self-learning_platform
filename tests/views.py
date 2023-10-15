@@ -8,8 +8,8 @@ from django.views.generic import ListView, DeleteView, DetailView, UpdateView, C
 
 from education_content.models import Material
 from education_content.views import GetFinalConditionsMixin, GetLastUpdateMixin
-from tests.forms import TestUpdateForm, CompletedTestForm, TestForm
-from tests.models import Test, CompletedTest, Question, CompletedQuestion
+from tests.forms import TestUpdateForm, CompletedTestForm, TestForm, QuestionForm, AnswersForm
+from tests.models import Test, CompletedTest, Question, CompletedQuestion, QuestionType, Answers
 from tests.services import is_correct_answer
 
 
@@ -201,3 +201,82 @@ class TestRunView(LoginRequiredMixin, FormView):
         context_data['question_list'] = question_list
         context_data['answers'] = answers_dict
         return context_data
+
+
+class QuestionCreateView(LoginRequiredMixin, CreateView):
+    model = Question
+    form_class = QuestionForm
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        context_data['test_pk'] = self.kwargs['test_pk']
+        context_data['question_type_list'] = QuestionType.objects.all()
+        return context_data
+
+    def get_success_url(self):
+        # We dynamically construct the URL using reverse_lazy and the value of material_pk
+        test_pk = self.kwargs['test_pk']
+        return reverse_lazy('tests:test_view', kwargs={'pk': test_pk})
+
+
+class QuestionUpdateView(LoginRequiredMixin, UpdateView):
+    model = Question
+    form_class = QuestionForm
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        context_data['test_pk'] = self.object.test.pk
+        context_data['question_type_list'] = QuestionType.objects.all()
+        return context_data
+
+    def get_success_url(self):
+        return reverse('tests:test_view', args=[self.object.test.pk])
+
+
+class QuestionDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView):
+    model = Question
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        answers_list = self.object.answers_set.all()
+        context_data['answers_list'] = answers_list
+        return context_data
+
+
+class QuestionDeleteView(LoginRequiredMixin, DeleteView):
+    model = Question
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        context_data['test_pk'] = self.kwargs['test_pk']
+        return context_data
+
+    def get_success_url(self):
+        return reverse('tests:test_view', kwargs={'pk': self.kwargs['test_pk']})
+
+
+class AnswersCreateView(LoginRequiredMixin, CreateView):
+    model = Answers
+    form_class = AnswersForm
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        context_data['question_pk'] = self.kwargs['question_pk']
+        return context_data
+
+    def get_success_url(self):
+        # We dynamically construct the URL using reverse_lazy and the value of question_pk
+        question_pk = self.kwargs['question_pk']
+        return reverse_lazy('tests:question_view', kwargs={'pk': question_pk})
+
+
+class AnswersDeleteView(LoginRequiredMixin, DeleteView):
+    model = Answers
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        context_data['question_pk'] = self.kwargs['question_pk']
+        return context_data
+
+    def get_success_url(self):
+        return reverse('tests:question_view', kwargs={'pk': self.kwargs['question_pk']})

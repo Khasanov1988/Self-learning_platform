@@ -54,37 +54,38 @@
                 </div>
             </div>
         </section>
-        {% if question_list %}
-            <div class="album py-5 bg-body-tertiary">
-                <div class="container-fluid">
-                    <div class="row g-3">
+
+        <div class="album py-5 bg-body-tertiary">
+            <div class="container-fluid">
+                <div class="row g-3">
+                    {% if question_list %}
                         {% for question in question_list %}
                             {% include 'tests/includes/inc_question_card_short.html' %}
                         {% endfor %}
-                        <div class="col-12">
-                            <div class="card shadow-sm">
-                                <div class="card-body">
-                                    <a href="{% url 'education_content:material_create_for_special_chapter' chapter_pk=object.pk %}"
-                                            class="clickable-element">
-                                        <svg class="bd-placeholder-img card-img-top" width="100%" height="50"
-                                             xmlns="http://www.w3.org/2000/svg" role="img"
-                                             aria-label="Placeholder: Thumbnail"
-                                             preserveAspectRatio="none" focusable="false">
-                                            <rect width="100%" height="100%" fill="none" stroke="#55595c"
-                                                  stroke-width="5"></rect>
-                                            <text x="50%" y="50%" fill="#55595c" dy=".3em" text-anchor="middle">Press to
-                                                add
-                                                new question
-                                            </text>
-                                        </svg>
-                                    </a>
-                                </div>
+                    {% endif %}
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <a href="{% url 'tests:question_create' test_pk=object.pk %}"
+                                   class="clickable-element">
+                                    <svg class="bd-placeholder-img card-img-top" width="100%" height="50"
+                                         xmlns="http://www.w3.org/2000/svg" role="img"
+                                         aria-label="Placeholder: Thumbnail"
+                                         preserveAspectRatio="none" focusable="false">
+                                        <rect width="100%" height="100%" fill="none" stroke="#55595c"
+                                              stroke-width="5"></rect>
+                                        <text x="50%" y="50%" fill="#55595c" dy=".3em" text-anchor="middle">Press to
+                                            add new question
+                                        </text>
+                                    </svg>
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        {% endif %}
+        </div>
+
 
     </main>
 {% endblock %}

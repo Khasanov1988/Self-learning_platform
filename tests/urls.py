@@ -2,7 +2,8 @@ from tests.apps import TestsConfig
 from django.urls import path
 
 from tests.views import TestCreateView, TestListView, TestDetailView, TestUpdateView, TestDeleteView, TestRunView, \
-    change_published_status, change_published_requested_status
+    change_published_status, change_published_requested_status, QuestionCreateView, QuestionDetailView, \
+    QuestionUpdateView, QuestionDeleteView, AnswersCreateView, AnswersDeleteView
 
 app_name = TestsConfig.name
 
@@ -32,4 +33,22 @@ urlpatterns = [
 
     # URL pattern for creating a new completed tests
     path('test_run/<int:test_pk>/', TestRunView.as_view(), name='test_run'),
+
+    # URL pattern for creating a new question
+    path('question_create/<int:test_pk>/', QuestionCreateView.as_view(), name='question_create'),
+
+    # URL pattern for viewing a single question
+    path('question_view/<int:pk>/', QuestionDetailView.as_view(), name='question_view'),
+
+    # URL pattern for editing an existing question
+    path('question_edit/<int:pk>/', QuestionUpdateView.as_view(), name='question_edit'),
+
+    # URL pattern for deleting an existing question
+    path('question_delete/<int:pk>/<int:test_pk>/', QuestionDeleteView.as_view(), name='question_delete'),
+
+    # URL pattern for creating a new answer
+    path('answers_create/<int:question_pk>/', AnswersCreateView.as_view(), name='answers_create'),
+
+    # URL pattern for deleting an existing answer
+    path('answers_delete/<int:pk>/<int:question_pk>/', AnswersDeleteView.as_view(), name='answers_delete'),
 ]

@@ -139,14 +139,15 @@ class TestRunViewTestCase(TestCase):
 
     def test_post_multiple_correct_answers(self):
         # Create a question with multiple correct answers
-        self.question2 = Question.objects.create(text="Which are even numbers?", test=self.test, type=self.question_type)
-        answer1 = Answers.objects.create(text="2", is_correct=True, question=self.question2)
-        answer2 = Answers.objects.create(text="4", is_correct=True, question=self.question2)
-        self.test.question_set.add(self.question2)
+        self.question3 = Question.objects.create(text="numbers?", test=self.test,
+                                                 type=self.question_type)
+        Answers.objects.create(text="3", is_correct=True, question=self.question3)
+        Answers.objects.create(text="8", is_correct=True, question=self.question3)
+        self.test.question_set.add(self.question3)
 
         url = reverse('tests:test_run', kwargs={'test_pk': self.test.pk})
         data = {
-            f'question:{self.question2.pk}': ['4', '2']
+            f'question:{self.question3.pk}': ['3', '8']
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 302)  # Redirect after submission
@@ -154,7 +155,7 @@ class TestRunViewTestCase(TestCase):
         # Check if CompletedTest and CompletedQuestion objects are created
         completed_test = CompletedTest.objects.get(test=self.test, user=self.user)
         self.assertIsNotNone(completed_test)
-        completed_question = CompletedQuestion.objects.get(completed_test=completed_test, question=self.question2)
+        completed_question = CompletedQuestion.objects.get(completed_test=completed_test, question=self.question3)
         self.assertIsNotNone(completed_question)
         self.assertTrue(completed_question.is_correct)
 
@@ -168,8 +169,8 @@ class TestRunViewTestCase(TestCase):
         # Create a question with multiple correct answers
         self.question2 = Question.objects.create(text="Which are even numbers?", test=self.test,
                                                  type=self.question_type)
-        answer1 = Answers.objects.create(text="2", is_correct=True, question=self.question2)
-        answer2 = Answers.objects.create(text="4", is_correct=True, question=self.question2)
+        Answers.objects.create(text="2", is_correct=True, question=self.question2)
+        Answers.objects.create(text="4", is_correct=True, question=self.question2)
         self.test.question_set.add(self.question2)
 
         url = reverse('tests:test_run', kwargs={'test_pk': self.test.pk})
@@ -224,9 +225,9 @@ class IsCorrectAnswerTestCase(TestCase):
         # Create a question with multiple correct answers
         self.question2 = Question.objects.create(text="Which are even numbers?", test=self.test,
                                                  type=self.question_type)
-        answer1 = Answers.objects.create(text="2", is_correct=True, question=self.question2)
-        answer2 = Answers.objects.create(text="4", is_correct=True, question=self.question2)
-        answer3 = Answers.objects.create(text="5", is_correct=False, question=self.question2)
+        Answers.objects.create(text="2", is_correct=True, question=self.question2)
+        Answers.objects.create(text="4", is_correct=True, question=self.question2)
+        Answers.objects.create(text="5", is_correct=False, question=self.question2)
 
         # Test with multiple correct answers
         answer_list = ["4", "2"]
