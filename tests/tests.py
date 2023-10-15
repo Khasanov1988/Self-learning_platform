@@ -243,3 +243,107 @@ class IsCorrectAnswerTestCase(TestCase):
         answer_list = ["4", "5"]
         result = is_correct_answer(self.question.pk, answer_list)
         self.assertFalse(result)
+
+
+class QuestionsViewTest(TestCase):
+
+    def setUp(self):
+        # Create a superuser for testing
+        self.user = User.objects.create_superuser(email='admin@example.com', password='adminpass')
+        self.client.login(email='admin@example.com', password='adminpass')
+
+        # Create a Chapter for testing
+        self.chapter = Chapter.objects.create(title='Test Chapter', description='Test Chapter')
+
+        # Create a Material for testing
+        self.material = Material.objects.create(topic='Test Material', text='Test Material', chapter=self.chapter)
+
+        # Create a Test for testing
+        self.test = Test.objects.create(
+            title='Test Test',
+            description='Test Description',
+            material=self.material,
+            owner=self.user
+        )
+
+        # Create a test QuestionType with Answers
+        self.question_type = QuestionType.objects.create(title='normal')
+
+    def test_question_create_view(self):
+        test_pk = self.test.pk
+        response = self.client.get(reverse('tests:question_create', kwargs={'test_pk': test_pk}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'tests/question_form.html')
+
+    def test_question_create_post(self):
+        test_pk = self.test.pk
+        data = {'text': 'Test Question Text', 'test': test_pk, 'type': self.question_type.pk}
+        response = self.client.post(reverse('tests:question_create', kwargs={'test_pk': test_pk}), data)
+        self.assertEqual(response.status_code, 302)  # Should redirect after successful form submission
+
+    def test_question_update_view(self):
+        question = Question.objects.create(text='Test Question Text', test=self.test, type=self.question_type)
+        response = self.client.get(reverse('tests:question_edit', kwargs={'pk': question.pk}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'tests/question_form.html')
+
+    def test_question_update_post(self):
+        question = Question.objects.create(text='Test Question Text', test=self.test, type=self.question_type)
+        data = {'text': 'Updated Question Text new', 'test': self.test.pk, 'type': self.question_type.pk}
+        response = self.client.post(reverse('tests:question_edit', kwargs={'pk': question.pk}), data)
+        self.assertEqual(response.status_code, 302)  # Should redirect after successful form submission
+
+    def test_question_detail_view(self):
+        question = Question.objects.create(text='Test Question Text', test=self.test, type=self.question_type)
+        response = self.client.get(reverse('tests:question_view', kwargs={'pk': question.pk}))
+        self.assertEqual(response.status_code, 200)
+
+
+class AnswersViewTest(TestCase):
+
+    def setUp(self):
+        # Create a superuser for testing
+        self.user = User.objects.create_superuser(email='admin@example.com', password='adminpass')
+        self.client.login(email='admin@example.com', password='adminpass')
+
+        # Create a Chapter for testing
+        self.chapter = Chapter.objects.create(title='Test Chapter', description='Test Chapter')
+
+        # Create a Material for testing
+        self.material = Material.objects.create(topic='Test Material', text='Test Material', chapter=self.chapter)
+
+        # Create a Test for testing
+        self.test = Test.objects.create(
+            title='Test Test',
+            description='Test Description',
+            material=self.material,
+            owner=self.user
+        )
+
+        # Create a test QuestionType
+        self.question_type = QuestionType.objects.create(title='normal')
+
+        # Create a test Question
+        self.question = Question.objects.create(text='Test Question Text', test=self.test, type=self.question_type)
+
+    def test_answers_create_view(self):
+        response = self.client.get(reverse('tests:answers_create', kwargs={'question_pk': self.question.pk}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'tests/answers_form.html')
+
+    def test_answers_create_post(self):
+        data = {'text': 'Test Answer Text', 'question': self.question.pk, 'is_correst': True}
+        response = self.client.post(reverse('tests:answers_create', kwargs={'question_pk': self.question.pk}), data)
+        self.assertEqual(response.status_code, 302)  # Should redirect after successful form submission
+
+    def test_answers_delete_view(self):
+        answer = Answers.objects.create(text='Test Answer Text', question=self.question, is_correct=True)
+        response = self.client.get(
+            reverse('tests:answers_delete', kwargs={'question_pk': self.question.pk, 'pk': answer.pk}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_answers_delete_post(self):
+        answer = Answers.objects.create(text='Test Answer Text', question=self.question, is_correct=True)
+        response = self.client.post(
+            reverse('tests:answers_delete', kwargs={'question_pk': self.question.pk, 'pk': answer.pk}))
+        self.assertEqual(response.status_code, 302)  # Should redirect after successful deletion
