@@ -1,5 +1,3 @@
-import datetime
-
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
@@ -7,6 +5,9 @@ from django.urls import reverse
 
 from users.models import User
 from .models import Chapter, Material, MaterialPhotos
+
+from django.test import SimpleTestCase
+from education_content.templatetags.my_tags import mediapath_filter, get_item, mediapath
 
 
 class ChapterControllerTests(TestCase):
@@ -231,3 +232,24 @@ class MaterialPhotosControllerTests(TestCase):
         deleted_material_photos = MaterialPhotos.objects.filter(signature='Test Image',
                                                                 material=self.material).first()
         self.assertIsNone(deleted_material_photos)
+
+
+class TemplateTagsTestCase(SimpleTestCase):
+
+    def test_mediapath(self):
+        result = mediapath("my_image.jpg")
+        self.assertEqual(result, '/media/my_image.jpg')
+
+    def test_mediapath_filter(self):
+        result = mediapath_filter("my_image.jpg")
+        self.assertEqual(result, '/media/my_image.jpg')
+
+    def test_get_item_existing_key(self):
+        dictionary = {'key1': 'value1', 'key2': 'value2'}
+        result = get_item(dictionary, 'key1')
+        self.assertEqual(result, 'value1')
+
+    def test_get_item_non_existing_key(self):
+        dictionary = {'key1': 'value1', 'key2': 'value2'}
+        result = get_item(dictionary, 'key3')
+        self.assertEqual(result, 'Key not found')

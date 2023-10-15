@@ -1,7 +1,7 @@
 from django.apps import apps
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DeleteView, DetailView, UpdateView, CreateView, FormView
@@ -162,7 +162,6 @@ class TestRunView(LoginRequiredMixin, FormView):
 
         post_data = request.POST
 
-
         data_test = {
             'test': Test.objects.get(pk=self.kwargs['test_pk']),
             'user': self.request.user,
@@ -185,8 +184,7 @@ class TestRunView(LoginRequiredMixin, FormView):
             completed_question = CompletedQuestion.objects.create(**data_question)
             completed_question.save()
 
-
-        return super().post(request, *args, **kwargs)
+        return HttpResponseRedirect(self.success_url)
 
     def get_context_data(self, **kwargs):
         context_data = {}
