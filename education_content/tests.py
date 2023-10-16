@@ -157,6 +157,13 @@ class StatusControllersTests(TestCase):
         new = self.test_object.is_published
         self.assertEqual(new, not old)
 
+    def test_change_published_status_for_wrong_request(self):
+        self.client.login(email='testuser', password='testpassword')
+        # Call the change_published_status view
+        response = self.client.get(reverse('education_content:change_published_status',
+                                           kwargs={'model': 'Chapter', 'pk': 99999}))
+        self.assertEqual(response.status_code, 404)  # Check for 404 error status
+
     def test_change_published_requested_status(self):
         self.client.login(email='testuser', password='testpassword')
         old = self.test_object.is_published_requested
@@ -169,6 +176,19 @@ class StatusControllersTests(TestCase):
         self.test_object.refresh_from_db()  # Refresh the object from the database
         new = self.test_object.is_published_requested
         self.assertEqual(new, not old)
+
+    def test_change_published_requested_status_for_wrong_request(self):
+        self.client.login(email='testuser', password='testpassword')
+        response = self.client.get(reverse('education_content:change_published_requested_status',
+                                           kwargs={'model': 'Chapter', 'pk': 999999}))
+        self.assertEqual(response.status_code, 404)  # Check for 404 error status
+
+    def test_change_published_requested_status_for_wrong_user(self):
+        self.user2 = User.objects.create_user(email='testuser2', password='testpassword2')
+        self.client.login(email='testuser2', password='testpassword2')
+        response = self.client.get(reverse('education_content:change_published_requested_status',
+                                           kwargs={'model': 'Chapter', 'pk': self.test_object.pk}))
+        self.assertEqual(response.status_code, 404)  # Check for 404 error status
 
 
 class MaterialPhotosControllerTests(TestCase):

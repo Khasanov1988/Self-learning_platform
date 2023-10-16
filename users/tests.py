@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from users.models import User
+from users.models import User, CustomUserManager
 
 
 class RegisterViewTest(TestCase):
@@ -28,6 +28,22 @@ class ProfileViewTest(TestCase):
         # Create a user and log in
         self.user = User.objects.create_user(email='test@example.com', password='testpassword')
         self.client.login(email='test@example.com', password='testpassword')
+        self.user_manager = CustomUserManager()
+
+    def test_create_user_with_empty_email(self):
+        with self.assertRaises(ValueError) as context:
+            self.user_manager.create_user(email='', password='password')
+        self.assertEqual(str(context.exception), 'Email is required')
+
+    def test_create_superuser_with_invalid_is_staff(self):
+        with self.assertRaises(ValueError) as context:
+            self.user_manager.create_superuser(email='admin@example.com', password='password', is_staff=False)
+        self.assertEqual(str(context.exception), 'Superuser must have is_staff=True.')
+
+    def test_create_superuser_with_invalid_is_superuser(self):
+        with self.assertRaises(ValueError) as context:
+            self.user_manager.create_superuser(email='admin@example.com', password='password', is_superuser=False)
+        self.assertEqual(str(context.exception), 'Superuser must have is_superuser=True.')
 
     def test_profile_view(self):
         # Use reverse to get the URL for the ProfileView

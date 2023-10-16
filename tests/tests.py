@@ -121,6 +121,7 @@ class TestRunViewTestCase(TestCase):
         completed_question = CompletedQuestion.objects.get(completed_test=completed_test, question=self.question)
         self.assertIsNotNone(completed_question)
         self.assertTrue(completed_question.is_correct)
+        self.assertEqual(str(completed_question), completed_question.answer)
 
     def test_post_invalid_answers(self):
         url = reverse('tests:test_run', kwargs={'test_pk': self.test.pk})
