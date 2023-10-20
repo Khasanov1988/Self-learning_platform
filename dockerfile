@@ -1,9 +1,11 @@
 FROM python:3
 
+LABEL authors="Ilnar Khasanov"
+
 WORKDIR /code
 
-COPY ./requirements.txt /code/
+COPY ./requirements.txt .
 
-RUN pip install -r /code/requirements.txt && python3 manage.py csu && python3 manage.py renew_data_bases
+RUN pip install -r requirements.txt
 
 COPY . .
