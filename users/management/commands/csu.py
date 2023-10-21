@@ -10,6 +10,8 @@ class Command(BaseCommand):
         try:
             got_object = User.objects.get(email=CSU_USER_NAME)
             got_object.delete()
+        except User.DoesNotExist:
+            pass
         finally:
 
             # Create a superuser with the specified email address
