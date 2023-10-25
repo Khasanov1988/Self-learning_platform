@@ -5,10 +5,12 @@ services:
     image: postgres
     user: postgres
     env_file:
-      - .env
+      - .env.prod
     environment:
       - POSTGRES_DB=self-learning
       - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - pg_data:/var/lib/postgresql/data/pgdata
     ports:
       - '5432:5432'
     healthcheck:
@@ -19,9 +21,17 @@ services:
 
   app:
     build: .
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
     ports:
       - '8000:8000'
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - static:/code/static
+      - media:/code/media
+
+volumes:
+  pg_data:
+  static:
+  media:

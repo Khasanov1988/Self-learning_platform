@@ -23,8 +23,11 @@ class RegisterView(CreateView):
         self.object = form.save()
         # Send a welcome email to the user upon successful registration
         send_mail(
-            subject='Congratulations on successful registration at Distribution App!',
-            message='Welcome to our platform',
+            subject='Congratulations on successful registration at "GEOTEST" service!',
+            message='Welcome to our platform'
+                    f'Your login is "{self.object.email}"'
+                    f'Your password is "{self.object.set_password}"'
+                    'You can login here: http://geotest.tech',
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[self.object.email],
         )
@@ -63,7 +66,7 @@ def generate_new_password(request):
     new_password = ''.join(random.choice(characters) for _ in range(12))
     # Send an email to the user with the new password
     send_mail(
-        subject='You have changed your password on Distribution App',
+        subject='You have changed your password on "GEOTEST" service',
         message=f'Your new password is: {new_password}',
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[request.user.email],
