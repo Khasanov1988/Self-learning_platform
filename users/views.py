@@ -20,8 +20,9 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('users:login')
 
     def form_valid(self, form):
-        self.object = form.save()
-        self.object.email.lower()
+        self.object = form.save(commit=False)  # Getting an object without storing it in data sources
+        self.object.email = self.object.email.lower()  # Convert email to lowercase
+        self.object.save()
         # Send a welcome email to the user upon successful registration
         try:
             send_mail(
