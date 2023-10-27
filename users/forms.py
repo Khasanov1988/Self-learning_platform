@@ -37,3 +37,6 @@ class UserProfileForm(StyleFormMixin, UserChangeForm):
 class UserLoginForm(StyleFormMixin, AuthenticationForm):
     class Meta:
         model = User
+
+    def clean_username(self):
+        return self.cleaned_data['username'].lower()

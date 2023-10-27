@@ -21,16 +21,19 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
+        self.object.email.lower()
         # Send a welcome email to the user upon successful registration
-        send_mail(
-            subject='Congratulations on successful registration at "GEOTEST" service!',
-            message='Welcome to our platform'
-                    f'Your login is "{self.object.email}"'
-                    f'Your password is "{self.object.set_password}"'
-                    'You can login here: http://geotest.tech',
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[self.object.email],
-        )
+        try:
+            send_mail(
+                subject='Congratulations on successful registration at "GEOTEST" service!',
+                message='Welcome to our platform\n'
+                        f'Your login is "{self.object.email}"\n'
+                        'You can login here: http://geotest.tech',
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[self.object.email],
+            )
+        except Exception as e:
+            print(f"An exception occurred while sending email: {e}")
         return super().form_valid(form)
 
 
