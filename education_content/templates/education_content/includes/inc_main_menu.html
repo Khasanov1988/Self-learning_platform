@@ -1,17 +1,17 @@
-<nav class="navbar navbar-expand-md bg-dark sticky-top border-bottom" data-bs-theme="dark">
+<nav class="navbar navbar-expand-md bg-dark sticky-top border-bottom">
     <div class="container">
         <a class="navbar-brand d-md-none" href="#">
             <img id="aperture" src="/media/decor/ideogram_32_transp.png" alt="Aperture Icon">
 
             GEOTEST
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas"
-                aria-controls="#offcanvas" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="#offcanvas" aria-labelledby="#offcanvasLabel">
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="#offcanvasLabel">GEOTEST</h5>
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">GEOTEST</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
@@ -19,9 +19,11 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'education_content:chapter_list' %}">
                         <img src="/media/decor/ideogram_32_transp.png" alt="Aperture Icon">
                     </a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'education_content:chapter_list' %}">Education</a>
+                    <li class="nav-item"><a class="nav-link"
+                                            href="{% url 'education_content:chapter_list' %}">Education</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'education_content:material_list' %}">Materials</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'education_content:material_list' %}">Materials</a>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'tests:test_list' %}">Tests</a></li>
                     {% if user.is_authenticated %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}">Profile</a></li>
