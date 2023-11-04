@@ -39,7 +39,7 @@ class Material(models.Model):
     """
     topic = models.CharField(max_length=100, verbose_name='Topic')
     description = models.CharField(max_length=300, null=True, blank=True, verbose_name='Description')
-    text = models.TextField(verbose_name='Text')
+    text = models.TextField(null=True, blank=True, verbose_name='Text')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     made_date = models.DateField(default=timezone.now, verbose_name='Creation date')
     last_update = models.DateField(default=timezone.now, verbose_name='Last update date')

@@ -25,6 +25,7 @@ urlpatterns = [
     path('', include('education_content.urls', namespace='education_content')),  # Include education_content app URLs
     path('users/', include('users.urls', namespace='users')),  # Include users app URLs
     path('tests/', include('tests.urls', namespace='tests')),  # Include tests app URLs
+    path('summernote/', include('django_summernote.urls')),
 ]
 
 # Serve media files during development if DEBUG is True

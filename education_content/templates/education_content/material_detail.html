@@ -59,9 +59,15 @@
         </section>
         <div class="album py-5 bg-body-tertiary">
             <div class="container-fluid">
-                <p class="lead text-body-secondary px-3">{{ object.text }}</p>
+                {{ object.text|safe }}
             </div>
         </div>
+        <div class="album py-5 bg-body-tertiary">
+            <div class="container">
+                {{ object.creditor_text|safe }}
+            </div>
+        </div>
+
 
         <div class="album py-5 bg-body-tertiary">
             <div class="container-fluid">

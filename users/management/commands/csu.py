@@ -1,5 +1,4 @@
 from django.core.management import BaseCommand
-from django.http import Http404
 
 from config.settings import CSU_USER_NAME, CSU_USER_PASSWORD
 from users.models import User
