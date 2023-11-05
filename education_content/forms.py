@@ -25,7 +25,7 @@ class MaterialUpdateForm(StyleFormMixin, forms.ModelForm):
         model = Material
         fields = ('topic', 'description', 'text', 'preview',)
         widgets = {
-            'text': SummernoteWidget(),
+            'text': SummernoteWidget(attrs={'class': 'mb-3'}),
         }
 
 
