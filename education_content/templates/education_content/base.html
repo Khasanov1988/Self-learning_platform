@@ -1,8 +1,22 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
 <head>
     <script src="https://getbootstrap.com/docs/5.3/assets/js/color-modes.js"></script>
+
+
+    <!-- include libraries(jQuery, bootstrap) -->
+    <link rel="stylesheet" href="/static/css/bootstrap.css"/>
+    <script type="text/javascript" src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- include summernote css/js-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.css"
+          integrity="sha512-Z8BUgcVqRNnweDNw75uulH4DpHkW6Kfk1e3ZkbrmcJjC+rQLn4pxea0qnbCPQYnDMyHt62hyY09ogPjlytwcqQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.js"
+            integrity="sha512-VqW3FWLsKVphZNAVsUKfA5UJ9oxVamFqNtHs46UxI7UA/gQ6GGaZ37GYdotPJ27Y/C8dvOQEKjWbfiNOkkhVAA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -270,7 +284,9 @@
         window.addEventListener('load', updateImageSrc);
         document.addEventListener('themeChanged', updateImageSrc);
     }
+
 </script>
+
 <script>
     const themeButtons = document.querySelectorAll('[data-bs-theme-value]');
 
@@ -393,6 +409,24 @@
         }
     })()
 
+</script>
+<script>
+    // Инициализация Summernote для элемента с ID "yourid"
+    $(document).ready(function () {
+        $("#id_material_text").summernote({
+            'width': '100%',
+            'height': '240',
+        });
+        let buttons = $('.note-editor button[data-toggle="dropdown"]');
+
+        buttons.each((key, value) => {
+            $(value).on('click', function (e) {
+                $(this).attr('data-bs-toggle', 'dropdown')
+                console.log()
+                $(this).attr('id', 'dropdownMenu'); // Пример добавления атрибута id
+            })
+        })
+    });
 </script>
 </body>
 </html>

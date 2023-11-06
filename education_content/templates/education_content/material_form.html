@@ -46,15 +46,21 @@
                         <input type="file" name="preview" accept="image/*"
                                class="form-control" id="id_preview">
                     </div>
+
                     {{ form.media }}
-                    {{ form.text }}
-                    <button type="submit" class="btn btn-success">
+                    <div class=mb-1">
+                        <textarea type="text" name="text"
+                                  id="id_material_text"
+                        >{{ object.text }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success mt-3">
                         {% if object %}
                             Save
                         {% else %}
                             Create
                         {% endif %}
                     </button>
+
                 </form>
 
 

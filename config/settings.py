@@ -165,5 +165,5 @@ CSU_USER_PASSWORD = os.getenv('CSU_USER_PASSWORD')
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 # Summernote settings
-SUMMERNOTE_THEME = 'bs4'  # Show summernote with Bootstrap4
+SUMMERNOTE_THEME = 'bs5'  # Show summernote with Bootstrap4
 #SUMMERNOTE_CONFIG = SUMMERNOTE_CONFIG
