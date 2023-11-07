@@ -83,15 +83,19 @@ Follow these steps to set up the Education Testing Platform on your local develo
     ```bash
     python manage.py migrate
     ```
-8. Create a superuser (admin) account for managing the platform:
+8. Collect static:
+    ```bash
+    python manage.py collectstatic
+    ```
+9. Create a superuser (admin) account for managing the platform:
     ```bash
     python manage.py csu
     ```
-9. Fill necessary tables in database
+10. Fill necessary tables in database
     ```bash
     python manage.py renew_data_bases
     ```
-10. Start the development server:
+11. Start the development server:
     ```bash
     python manage.py runserver
     ```
