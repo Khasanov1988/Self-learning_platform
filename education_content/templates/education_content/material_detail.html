@@ -1,7 +1,7 @@
 {% extends 'education_content/base.html' %}
 
 {% block content %}
-    <main>
+    <main class="form-signin w-100 m-auto">
 
         <section class="py-3 text-center container">
             <div class="row py-lg-5">
@@ -46,7 +46,29 @@
                         <div class="d-flex gap-3 justify-content-center lead fw-normal">
                             <a class="icon-link"
                                href="{% url 'tests:test_run' test_pk=test.pk %}">
-                                Take test "{{ test }}"
+                                Take the test "{{ test }}"
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     class="bi">
+                                    <use xlink:href="#chevron-right"/>
+                                </svg>
+                            </a>
+                        </div>
+                    {% elif not object.is_test_exist and object.owner == user %}
+                        <div class="d-flex gap-3 justify-content-center lead fw-normal">
+                            <a class="icon-link"
+                               href="{% url 'tests:test_create_for_special_material' material_pk=object.pk %}">
+                                Create a test
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     class="bi">
+                                    <use xlink:href="#chevron-right"/>
+                                </svg>
+                            </a>
+                        </div>
+                        {% elif object.owner == user or user.is_staff %}
+                        <div class="d-flex gap-3 justify-content-center lead fw-normal">
+                            <a class="icon-link"
+                               href="{% url 'tests:test_view' pk=test.pk %}">
+                                Edit the test "{{ test }}"
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                      class="bi">
                                     <use xlink:href="#chevron-right"/>
@@ -57,41 +79,43 @@
                 </div>
             </div>
         </section>
-        <div class="album py-5 bg-body-tertiary">
-            <div class="container-fluid">
-                <p class="lead text-body-secondary px-3">{{ object.text }}</p>
+        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-5 text-center bg-body-tertiary">
+            <div class="album py-5 bg-body-tertiary">
+                <div class="container-fluid">
+                    {{ object.text|safe }}
+                </div>
             </div>
-        </div>
 
-        <div class="album py-5 bg-body-tertiary">
-            <div class="container-fluid">
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                    {% if material_photos_list %}
-                        {% for material_photo in material_photos_list %}
-                            {% include 'education_content/includes/inc_material_photo_card.html' %}
-                        {% endfor %}
-                    {% endif %}
-                    <div class="col px-3">
-                        <div class="card shadow-sm">
-                            <a href="{% url 'education_content:materialphotos_create_for_special_material' material_pk=object.pk %}"
-                               class="clickable-element">
-                                <svg class="bd-placeholder-img card-img-top" width="100%" height="390"
-                                     xmlns="http://www.w3.org/2000/svg" role="img"
-                                     aria-label="Placeholder: Thumbnail"
-                                     preserveAspectRatio="none" focusable="false">
-                                    <rect width="100%" height="100%" fill="none" stroke="#55595c"
-                                          stroke-width="5"></rect>
-                                    <text x="50%" y="50%" fill="#55595c" dy=".3em" text-anchor="middle">Press to add
-                                        new figure
-                                    </text>
-                                </svg>
-                            </a>
+
+            <div class="album py-5 bg-body-tertiary">
+                <div class="container-fluid">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                        {% if material_photos_list %}
+                            {% for material_photo in material_photos_list %}
+                                {% include 'education_content/includes/inc_material_photo_card.html' %}
+                            {% endfor %}
+                        {% endif %}
+                        <div class="col px-3">
+                            <div class="card shadow-sm">
+                                <a href="{% url 'education_content:materialphotos_create_for_special_material' material_pk=object.pk %}"
+                                   class="clickable-element">
+                                    <svg class="bd-placeholder-img card-img-top" width="100%" height="390"
+                                         xmlns="http://www.w3.org/2000/svg" role="img"
+                                         aria-label="Placeholder: Thumbnail"
+                                         preserveAspectRatio="none" focusable="false">
+                                        <rect width="100%" height="100%" fill="none" stroke="#55595c"
+                                              stroke-width="5"></rect>
+                                        <text x="50%" y="50%" fill="#55595c" dy=".3em" text-anchor="middle">Press to add
+                                            new figure
+                                        </text>
+                                    </svg>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
 
     </main>
 {% endblock %}

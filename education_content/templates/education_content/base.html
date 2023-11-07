@@ -1,8 +1,18 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
 <head>
     <script src="https://getbootstrap.com/docs/5.3/assets/js/color-modes.js"></script>
+
+
+    <!-- include libraries(jQuery, bootstrap) -->
+    <link rel="stylesheet" href="/static/css/bootstrap.css"/>
+    <script type="text/javascript" src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- include summernote css/js-->
+    <link rel="stylesheet" href="/static/summernote/summernote-bs5.min.css"/>
+    <script src="/static/summernote/summernote-bs5.min.js"></script>
+
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -270,7 +280,9 @@
         window.addEventListener('load', updateImageSrc);
         document.addEventListener('themeChanged', updateImageSrc);
     }
+
 </script>
+
 <script>
     const themeButtons = document.querySelectorAll('[data-bs-theme-value]');
 
@@ -393,6 +405,25 @@
         }
     })()
 
+</script>
+<script>
+
+    $(document).ready(function () {
+        // Initializing Summernote for element with ID "material_text"
+        $("#id_material_text").summernote({
+            'width': '100%',
+            'height': '240',
+        });
+        // Fixes for parameter differences in Bootstrap5
+        let buttons = $('.note-editor button[data-toggle="dropdown"]');
+
+        buttons.each((key, value) => {
+            $(value).on('click', function (e) {
+                $(this).attr('data-bs-toggle', 'dropdown')
+                $(this).data('id', 'dropdownMenu');
+            })
+        })
+    });
 </script>
 </body>
 </html>

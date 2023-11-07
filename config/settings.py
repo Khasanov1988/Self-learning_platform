@@ -15,6 +15,8 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
+from config.summernote_settings import SUMMERNOTE_CONFIG
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_summernote',
 
     'users',
     'education_content',
@@ -157,3 +160,10 @@ EMAIL_ADMIN = os.getenv('EMAIL_ADMIN')
 
 CSU_USER_NAME = os.getenv('CSU_USER_NAME')
 CSU_USER_PASSWORD = os.getenv('CSU_USER_PASSWORD')
+
+# CREditor settings
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+# Summernote settings
+SUMMERNOTE_THEME = 'bs5'  # Show summernote with Bootstrap5
+#SUMMERNOTE_CONFIG = SUMMERNOTE_CONFIG  # Turn it on if you need summernote widget configuration

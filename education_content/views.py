@@ -227,8 +227,10 @@ class MaterialDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView
 
 class MaterialDeleteView(LoginRequiredMixin, DeleteView):
     model = Material
-    success_url = reverse_lazy(
-        'education_content:material_list')  # Redirect to the list of Chapters after deleting a Chapter
+
+    def get_success_url(self):
+        chapter_pk = self.object.chapter.pk
+        return reverse_lazy('education_content:chapter_view', kwargs={'pk': chapter_pk})
 
 
 class MaterialPhotosCreateMaterialView(LoginRequiredMixin, CreateView):
@@ -273,5 +275,7 @@ class MaterialPhotosDetailView(LoginRequiredMixin, DetailView):
 
 class MaterialPhotosDeleteView(LoginRequiredMixin, DeleteView):
     model = MaterialPhotos
-    success_url = reverse_lazy(
-        'education_content:materialphotos_list')  # Redirect to the MaterialPhotos list after deleting a Figure
+
+    def get_success_url(self):
+        material_pk = self.object.material.pk
+        return reverse_lazy('education_content:material_view', kwargs={'pk': material_pk})

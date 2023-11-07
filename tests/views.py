@@ -142,15 +142,13 @@ class TestDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView):
 
 class TestDeleteView(LoginRequiredMixin, DeleteView):
     model = Test
-    success_url = reverse_lazy(
-        'tests:test_list')  # Redirect to the list of Chapters after deleting a Chapter
 
-    def form_valid(self, form):
-        self.object = form.save()
+    def get_success_url(self):
         material = self.object.material
         material.is_test_exist = False
         material.save()
-        return super().form_valid(form)
+        material_pk = self.object.material.pk
+        return reverse_lazy('education_content:material_view', kwargs={'pk': material_pk})
 
 
 class TestRunView(LoginRequiredMixin, FormView):

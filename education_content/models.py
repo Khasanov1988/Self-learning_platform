@@ -39,7 +39,7 @@ class Material(models.Model):
     """
     topic = models.CharField(max_length=100, verbose_name='Topic')
     description = models.CharField(max_length=300, null=True, blank=True, verbose_name='Description')
-    text = models.TextField(verbose_name='Text')
+    text = models.TextField(null=True, blank=True, verbose_name='Text')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     made_date = models.DateField(default=timezone.now, verbose_name='Creation date')
     last_update = models.DateField(default=timezone.now, verbose_name='Last update date')
@@ -70,7 +70,8 @@ class MaterialPhotos(models.Model):
     Material figures
     """
     signature = models.CharField(max_length=300, default=None, null=True, blank=True, verbose_name='Signature')
-    figure = models.ImageField(verbose_name='Figure')
+    figure = models.ImageField(default=None, null=True, blank=True, verbose_name='Figure', )
+    figure_3d = models.CharField(max_length=300, default=None, null=True, blank=True, verbose_name='Signature')
     material = models.ForeignKey('education_content.Material', on_delete=models.CASCADE)
 
     def __str__(self):
