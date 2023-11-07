@@ -3,7 +3,7 @@ from django.urls import path
 
 from tests.views import TestCreateView, TestListView, TestDetailView, TestUpdateView, TestDeleteView, TestRunView, \
     change_published_status, change_published_requested_status, QuestionCreateView, QuestionDetailView, \
-    QuestionUpdateView, QuestionDeleteView, AnswersCreateView, AnswersDeleteView
+    QuestionUpdateView, QuestionDeleteView, AnswersCreateView, AnswersDeleteView, TestCreateMaterialView
 
 app_name = TestsConfig.name
 
@@ -18,6 +18,9 @@ urlpatterns = [
 
     # URL pattern for creating a new tests
     path('test_create/', TestCreateView.as_view(), name='test_create'),
+
+    # URL pattern for creating a new tests for special material
+    path('test_create/<int:material_pk>/', TestCreateMaterialView.as_view(), name='test_create_for_special_material'),
 
     # URL pattern for listing tests
     path('', TestListView.as_view(), name='test_list'),

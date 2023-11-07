@@ -1,7 +1,22 @@
 {% extends 'education_content/base.html' %}
 
 {% block content %}
+    <script>
+        function validateP3dLink() {
+            const p3dLinkPattern = /^https:\/\/p3d\.in\/[a-zA-Z0-9+_-]+$/; // Регулярное выражение для проверки ссылки на p3d.in
 
+            const inputValue = document.getElementById('id_figure2').value; // Получаем значение из поля ввода
+
+            if (p3dLinkPattern.test(inputValue)) {
+                alert('Ссылка на p3d.in верна!');
+                // Здесь можно добавить логику, которая выполнится, если ссылка соответствует паттерну p3d.in
+            } else {
+                alert('Пожалуйста, введите корректную ссылку на p3d.in (например, https://p3d.in/e/5pdW7+spin)');
+                // Здесь можно добавить логику для случая, если ссылка не соответствует паттерну p3d.in
+            }
+        }
+
+    </script>
     <main class="form-signin w-100 m-auto">
         <div class="row">
 
@@ -32,11 +47,20 @@
                             </select>
                         {% else %}
                         {% endif %}
+                        <div class="form-floating mb-1">
+                            <input type="text" name="figure_3d" value="{{ object.figure }}" autofocus
+                                   autocapitalize="none"
+                                   autocomplete="current-signature"
+                                   maxlength="300" class="form-control" id="id_figure_3d"
+                                   placeholder="name@example.com"
+                                   pattern="^https://p3d\.in/.*">
+                            <label for="id_figure_3d">Put your p3d.in link here or download your image below (not
+                                both):</label>
+                        </div>
                         <div class="mb-3">
                             <input type="file" name="figure" accept="image/*"
-                                   class="form-control" id="id_figure" required>
+                                   class="form-control" id="id_figure">
                         </div>
-
                         <button type="submit" class="btn btn-success">
                             {% if object %}
                                 Save

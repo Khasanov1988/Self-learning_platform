@@ -70,7 +70,8 @@ class MaterialPhotos(models.Model):
     Material figures
     """
     signature = models.CharField(max_length=300, default=None, null=True, blank=True, verbose_name='Signature')
-    figure = models.ImageField(verbose_name='Figure')
+    figure = models.ImageField(default=None, null=True, blank=True, verbose_name='Figure', )
+    figure_3d = models.CharField(max_length=300, default=None, null=True, blank=True, verbose_name='Signature')
     material = models.ForeignKey('education_content.Material', on_delete=models.CASCADE)
 
     def __str__(self):

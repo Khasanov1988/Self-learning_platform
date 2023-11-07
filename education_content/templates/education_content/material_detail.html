@@ -46,7 +46,29 @@
                         <div class="d-flex gap-3 justify-content-center lead fw-normal">
                             <a class="icon-link"
                                href="{% url 'tests:test_run' test_pk=test.pk %}">
-                                Take test "{{ test }}"
+                                Take the test "{{ test }}"
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     class="bi">
+                                    <use xlink:href="#chevron-right"/>
+                                </svg>
+                            </a>
+                        </div>
+                    {% elif not object.is_test_exist and object.owner == user %}
+                        <div class="d-flex gap-3 justify-content-center lead fw-normal">
+                            <a class="icon-link"
+                               href="{% url 'tests:test_create_for_special_material' material_pk=object.pk %}">
+                                Create a test
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     class="bi">
+                                    <use xlink:href="#chevron-right"/>
+                                </svg>
+                            </a>
+                        </div>
+                        {% elif object.owner == user or user.is_staff %}
+                        <div class="d-flex gap-3 justify-content-center lead fw-normal">
+                            <a class="icon-link"
+                               href="{% url 'tests:test_view' pk=test.pk %}">
+                                Edit the test "{{ test }}"
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                      class="bi">
                                     <use xlink:href="#chevron-right"/>
