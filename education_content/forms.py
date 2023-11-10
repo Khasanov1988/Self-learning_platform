@@ -14,7 +14,6 @@ class ChapterForm(StyleFormMixin, forms.ModelForm):
 
 
 class MaterialForm(StyleFormMixin, forms.ModelForm):
-    text = SummernoteTextField()
 
     class Meta:
         model = Material
@@ -25,7 +24,6 @@ class MaterialForm(StyleFormMixin, forms.ModelForm):
 
 
 class MaterialUpdateForm(StyleFormMixin, forms.ModelForm):
-    text = SummernoteTextField()
 
     class Meta:
         model = Material
