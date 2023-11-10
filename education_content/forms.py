@@ -20,7 +20,7 @@ class MaterialForm(StyleFormMixin, forms.ModelForm):
         model = Material
         fields = ('topic', 'description', 'text', 'preview', 'chapter',)
         widgets = {
-            'text': SummernoteInplaceWidget(),
+            'text': SummernoteWidget(),
         }
 
 
@@ -31,7 +31,7 @@ class MaterialUpdateForm(StyleFormMixin, forms.ModelForm):
         model = Material
         fields = ('topic', 'description', 'text', 'preview',)
         widgets = {
-            'text': SummernoteInplaceWidget(),
+            'text': SummernoteWidget(),
         }
 
 

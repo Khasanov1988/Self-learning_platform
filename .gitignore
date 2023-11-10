@@ -190,3 +190,5 @@ git-token.txt!/education_content/migrations/0009_alter_material_topic_alter_mate
 
 
 .env.prod
+
+Frequently_needed_commands.md

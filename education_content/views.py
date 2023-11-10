@@ -220,7 +220,7 @@ class MaterialDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView
         try:
             context_data['test'] = Test.objects.get(material=self.object.pk)
         except Test.DoesNotExist:
-            print("Test does not exist")
+            context_data['test'] = None
 
         return context_data
 
