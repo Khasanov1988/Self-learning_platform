@@ -13,8 +13,8 @@ class Test(models.Model):
     description = models.CharField(max_length=500, null=True, blank=True, verbose_name='Description')
     material = models.OneToOneField('education_content.Material', on_delete=models.CASCADE)
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
-    made_date = models.DateField(default=timezone.now, verbose_name='Creation date')
-    last_update = models.DateField(default=timezone.now, verbose_name='Last update date')
+    made_date = models.DateTimeField(default=timezone.now, verbose_name='Creation time')
+    last_update = models.DateTimeField(default=timezone.now, verbose_name='Last update teme')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                               verbose_name='Owner')
     is_published = models.BooleanField(default=False, verbose_name='Publication Status')

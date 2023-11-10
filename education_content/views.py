@@ -97,6 +97,7 @@ class ChapterDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView)
         material_list = self.object.material_set.all()
         if not (self.request.user.is_staff or self.request.user.is_superuser):
             material_list = material_list.filter(self.get_final_conditions())
+        material_list = material_list.order_by('pk')
         context_data['material_list'] = material_list
         return context_data
 
@@ -194,6 +195,7 @@ class MaterialListView(LoginRequiredMixin, GetFinalConditionsMixin, ListView):
 
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset(*args, **kwargs)
+        queryset = queryset.order_by('pk')
         if not (self.request.user.is_staff or self.request.user.is_superuser):
             queryset = queryset.filter(self.get_final_conditions())
         return queryset
@@ -216,6 +218,7 @@ class MaterialDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
         material_photos_list = self.object.materialphotos_set.all()
+        material_photos_list = material_photos_list.order_by('pk')
         context_data['material_photos_list'] = material_photos_list
         try:
             context_data['test'] = Test.objects.get(material=self.object.pk)
