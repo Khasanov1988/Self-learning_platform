@@ -35,3 +35,9 @@ if settings.DEBUG:
 # Serve static files during development if DEBUG is True
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)
+
+# Serve django-debug-toolbar files during development if DEBUG is True
+if settings.DEBUG:
+    urlpatterns += [
+        path("__debug__/", include("debug_toolbar.urls")),
+    ]

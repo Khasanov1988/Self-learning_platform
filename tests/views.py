@@ -118,7 +118,7 @@ class TestListView(LoginRequiredMixin, GetFinalConditionsMixin, ListView):
     model = Test
 
     def get_queryset(self, *args, **kwargs):
-        queryset = super().get_queryset(*args, **kwargs)
+        queryset = super().get_queryset(*args, **kwargs).select_related('material')
         queryset = queryset.order_by('pk')
         if not (self.request.user.is_staff or self.request.user.is_superuser):
             queryset = queryset.filter(self.get_final_conditions())
