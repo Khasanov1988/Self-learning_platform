@@ -11,8 +11,8 @@ class Chapter(models.Model):
     title = models.CharField(max_length=100, verbose_name='Title')
     description = models.CharField(max_length=500, verbose_name='Description')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
-    made_date = models.DateField(default=timezone.now, verbose_name='Creation date')
-    last_update = models.DateField(default=timezone.now, verbose_name='Last update date')
+    made_date = models.DateTimeField(default=timezone.now, verbose_name='Creation time')
+    last_update = models.DateTimeField(default=timezone.now, verbose_name='Last update time')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                               verbose_name='Owner')
     is_published = models.BooleanField(default=False, verbose_name='Publication Status')
@@ -41,8 +41,8 @@ class Material(models.Model):
     description = models.CharField(max_length=300, null=True, blank=True, verbose_name='Description')
     text = models.TextField(null=True, blank=True, verbose_name='Text')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
-    made_date = models.DateField(default=timezone.now, verbose_name='Creation date')
-    last_update = models.DateField(default=timezone.now, verbose_name='Last update date')
+    made_date = models.DateTimeField(default=timezone.now, verbose_name='Creation time')
+    last_update = models.DateTimeField(default=timezone.now, verbose_name='Last update time')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                               verbose_name='Owner')
     chapter = models.ForeignKey('education_content.Chapter', on_delete=models.CASCADE)

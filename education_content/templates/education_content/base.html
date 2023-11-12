@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="dark">
 <head>
     <script src="https://getbootstrap.com/docs/5.3/assets/js/color-modes.js"></script>
 
@@ -9,9 +9,6 @@
     <link rel="stylesheet" href="/static/css/bootstrap.css"/>
     <script type="text/javascript" src="//code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- include summernote css/js-->
-    <link rel="stylesheet" href="/static/summernote/summernote-bs5.min.css"/>
-    <script src="/static/summernote/summernote-bs5.min.js"></script>
 
 
     <meta charset="utf-8">
@@ -255,175 +252,8 @@
     </div>
 </footer>
 <script src="/static/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Функция для получения текущей темы
-    function getCurrentTheme() {
-        return document.documentElement.getAttribute('data-bs-theme');
-    }
+<script type="text/javascript" src="/static/js/own/themeImageUpdater.js"></script>
+<script type="text/javascript" src="/static/js/own/themeSwitcher.js"></script>
 
-    // Функция для обновления src изображения в зависимости от текущей темы
-    function updateImageSrc() {
-        const theme = getCurrentTheme();
-        const image = document.getElementById('themeImage');
-
-        // Установите разные src в зависимости от текущей темы
-        if (theme === 'light') {
-            image.src = '/media/decor/favicon_bl.ico';
-        } else if (theme === 'dark') {
-            image.src = '/media/decor/favicon.ico';
-        }
-    }
-
-    var themeImage = document.getElementById('themeImage');
-    // Вызовите функцию при загрузке страницы и изменении темы
-    if (themeImage) {
-        window.addEventListener('load', updateImageSrc);
-        document.addEventListener('themeChanged', updateImageSrc);
-    }
-
-</script>
-
-<script>
-    const themeButtons = document.querySelectorAll('[data-bs-theme-value]');
-
-    themeButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const themeValue = this.getAttribute('data-bs-theme-value');
-            document.documentElement.setAttribute('data-bs-theme', themeValue);
-
-            // Генерируйте событие themeChanged после смены темы
-            const event = new Event('themeChanged');
-            document.dispatchEvent(event);
-        });
-    });
-</script>
-<script>
-    (() => {
-        'use strict'
-        if (window.location.pathname === '/users/register/') {
-            const forms = document.querySelectorAll('.needs-validation')
-
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-                    const password1 = form.querySelector('input[name="password1"]').value;
-                    const password2 = form.querySelector('input[name="password2"]').value;
-                    displayEmptyPasswordError(form);
-                    if (password1 !== password2) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        displayDivergentPasswordError(form, 'Passwords do not match');
-                    } else if (password1.length < 8) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        displayEmptyPasswordError(form);
-                        displayInvalidPasswordError(form, 'Password must be at least 8 characters');
-                    } else if (passwordSimilarToPersonalInfo(password1)) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        displayEmptyPasswordError(form);
-                        displayInvalidPasswordError(form, 'Password is too similar to personal information');
-                    } else if (isCommonPassword(password1)) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        displayEmptyPasswordError(form);
-                        displayInvalidPasswordError(form, 'Password is commonly used');
-                    } else if (isEntirelyNumeric(password1)) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        displayEmptyPasswordError(form);
-                        displayInvalidPasswordError(form, 'Password can’t be entirely numeric');
-                    }
-
-
-                    form.classList.add('was-validated');
-                }, false)
-            })
-
-
-        } else {
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            const forms = document.querySelectorAll('.needs-validation')
-
-            // Loop over them and prevent submission
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-
-                    form.classList.add('was-validated')
-                }, false)
-            })
-        }
-
-        function displayEmptyPasswordError(form) {
-            const passwordInput1 = form.querySelector('input[name="password1"]');
-            const feedback1 = passwordInput1.nextElementSibling.nextElementSibling;
-            feedback1.innerText = '';
-            passwordInput1.classList.remove('is-invalid');
-            const passwordInput2 = form.querySelector('input[name="password2"]');
-            const feedback2 = passwordInput2.nextElementSibling.nextElementSibling;
-            feedback2.innerText = '';
-            passwordInput2.classList.remove('is-invalid');
-            form.classList.remove('was-validated');
-        }
-
-        function displayInvalidPasswordError(form, message) {
-            const passwordInput = form.querySelector('input[name="password1"]');
-            const feedback = passwordInput.nextElementSibling.nextElementSibling;
-            feedback.innerText = message;
-            passwordInput.classList.add('is-invalid');
-        }
-
-        function displayDivergentPasswordError(form, message) {
-            const passwordInput = form.querySelector('input[name="password2"]');
-            const feedback = passwordInput.nextElementSibling.nextElementSibling;
-            feedback.innerText = message;
-            passwordInput.classList.add('is-invalid');
-        }
-
-        function passwordSimilarToPersonalInfo(password) {
-            // Implement your logic to check similarity with personal info
-            // For example, check if the password contains parts of personal information
-            // Return true if it's too similar, false otherwise
-            // Example logic: You can check for similarities with email, username, etc.
-            return false; // Placeholder - replace with your validation logic
-        }
-
-        function isCommonPassword(password) {
-            // Implement your logic to check if the password is commonly used
-            // Check against a list of commonly used passwords
-            // Return true if it's a common password, false otherwise
-            return false; // Placeholder - replace with your validation logic
-        }
-
-        function isEntirelyNumeric(password) {
-            // Implement your logic to check if the password is entirely numeric
-            // Return true if it's entirely numeric, false otherwise
-            return /^\d+$/.test(password);
-        }
-    })()
-
-</script>
-<script>
-
-    $(document).ready(function () {
-        // Initializing Summernote for element with ID "material_text"
-        $("#id_material_text").summernote({
-            'width': '100%',
-            'height': '240',
-        });
-        // Fixes for parameter differences in Bootstrap5
-        let buttons = $('.note-editor button[data-toggle="dropdown"]');
-
-        buttons.each((key, value) => {
-            $(value).on('click', function (e) {
-                $(this).attr('data-bs-toggle', 'dropdown')
-                $(this).data('id', 'dropdownMenu');
-            })
-        })
-    });
-</script>
 </body>
 </html>

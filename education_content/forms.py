@@ -14,24 +14,22 @@ class ChapterForm(StyleFormMixin, forms.ModelForm):
 
 
 class MaterialForm(StyleFormMixin, forms.ModelForm):
-    text = SummernoteTextField()
 
     class Meta:
         model = Material
         fields = ('topic', 'description', 'text', 'preview', 'chapter',)
         widgets = {
-            'text': SummernoteInplaceWidget(),
+            'text': SummernoteWidget(),
         }
 
 
 class MaterialUpdateForm(StyleFormMixin, forms.ModelForm):
-    text = SummernoteTextField()
 
     class Meta:
         model = Material
         fields = ('topic', 'description', 'text', 'preview',)
         widgets = {
-            'text': SummernoteInplaceWidget(),
+            'text': SummernoteWidget(),
         }
 
 
