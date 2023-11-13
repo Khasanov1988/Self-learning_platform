@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_summernote',
+    "debug_toolbar",
 
     'users',
     'education_content',
@@ -58,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -169,3 +172,8 @@ SUMMERNOTE_THEME = 'bs4'  # Show summernote with Bootstrap5
 SUMMERNOTE_CONFIG = SUMMERNOTE_CONFIG  # Turn it on if you need summernote widget configuration
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 30485760
+
+# django-debug-toolbar’s settings
+INTERNAL_IPS = [
+    "127.0.0.1",
+]

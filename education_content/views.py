@@ -86,6 +86,9 @@ class ChapterListView(LoginRequiredMixin, GetFinalConditionsMixin, ListView):
 class ChapterDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView):
     model = Chapter
 
+    def get_queryset(self, *args, **kwargs):
+        return super().get_queryset(*args, **kwargs).select_related('owner')
+
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
         self.object.views_count += 1  # Increment the views count when viewing a Chapter
@@ -94,7 +97,7 @@ class ChapterDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        material_list = self.object.material_set.all()
+        material_list = self.object.material_set.all().select_related('owner')
         if not (self.request.user.is_staff or self.request.user.is_superuser):
             material_list = material_list.filter(self.get_final_conditions())
         material_list = material_list.order_by('pk')
@@ -194,7 +197,7 @@ class MaterialListView(LoginRequiredMixin, GetFinalConditionsMixin, ListView):
     model = Material
 
     def get_queryset(self, *args, **kwargs):
-        queryset = super().get_queryset(*args, **kwargs)
+        queryset = super().get_queryset(*args, **kwargs).select_related('owner', 'chapter')
         queryset = queryset.order_by('pk')
         if not (self.request.user.is_staff or self.request.user.is_superuser):
             queryset = queryset.filter(self.get_final_conditions())
@@ -208,6 +211,9 @@ class MaterialListView(LoginRequiredMixin, GetFinalConditionsMixin, ListView):
 
 class MaterialDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView):
     model = Material
+
+    def get_queryset(self, *args, **kwargs):
+        return super().get_queryset(*args, **kwargs).select_related('owner')
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
