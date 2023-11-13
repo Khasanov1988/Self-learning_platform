@@ -15,6 +15,9 @@
                                maxlength="100" class="form-control" id="id_title" placeholder="name@example.com"
                                required>
                         <label for="id_title">Title</label>
+                        <div class="invalid-feedback">
+                            Please provide a valid Chapter name
+                        </div>
                     </div>
                     <div class="form-floating mb-1">
                         <input type="text" name="description" value="{{ object.description }}" autofocus
@@ -23,6 +26,9 @@
                                maxlength="500" class="form-control" id="id_description" placeholder="name@example.com"
                                required>
                         <label for="id_description">Description</label>
+                        <div class="invalid-feedback">
+                            Please provide a valid Chapter description
+                        </div>
                     </div>
                     <div class="mb-1">
                         <input type="file" name="preview" accept="image/*"

@@ -1,22 +1,6 @@
 {% extends 'education_content/base.html' %}
 
 {% block content %}
-    <script>
-        function validateP3dLink() {
-            const p3dLinkPattern = /^https:\/\/p3d\.in\/[a-zA-Z0-9+_-]+$/; // Регулярное выражение для проверки ссылки на p3d.in
-
-            const inputValue = document.getElementById('id_figure2').value; // Получаем значение из поля ввода
-
-            if (p3dLinkPattern.test(inputValue)) {
-                alert('Ссылка на p3d.in верна!');
-                // Здесь можно добавить логику, которая выполнится, если ссылка соответствует паттерну p3d.in
-            } else {
-                alert('Пожалуйста, введите корректную ссылку на p3d.in (например, https://p3d.in/e/5pdW7+spin)');
-                // Здесь можно добавить логику для случая, если ссылка не соответствует паттерну p3d.in
-            }
-        }
-
-    </script>
     <main class="form-signin w-100 m-auto">
         <div class="row">
 
@@ -76,4 +60,20 @@
             </div>
         </div>
     </main>
+    <script>
+        function validateP3dLink() {
+            const p3dLinkPattern = /^https:\/\/p3d\.in\/[a-zA-Z0-9+_-]+$/; // Регулярное выражение для проверки ссылки на p3d.in
+
+            const inputValue = document.getElementById('id_figure_3d').value; // Получаем значение из поля ввода
+
+            if (p3dLinkPattern.test(inputValue)) {
+                alert('Ссылка на p3d.in верна!');
+                // Здесь можно добавить логику, которая выполнится, если ссылка соответствует паттерну p3d.in
+            } else {
+                alert('Пожалуйста, введите корректную ссылку на p3d.in (например, https://p3d.in/5pdW7)');
+                // Здесь можно добавить логику для случая, если ссылка не соответствует паттерну p3d.in
+            }
+        }
+
+    </script>
 {% endblock %}

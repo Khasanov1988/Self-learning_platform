@@ -17,10 +17,10 @@ class ChapterForm(StyleFormMixin, forms.ModelForm):
 
         if preview:
             # Ограничение размера изображения до 2 МБ
-            max_size = 2 * 1024 * 1024  # 2 МБ в байтах
+            max_size = 8 * 1024 * 1024  # 2 МБ в байтах
 
             if preview.size > max_size:
-                raise forms.ValidationError('The image size should be no more than 2 MB.')
+                raise forms.ValidationError('The image size should be no more than 8 MB.')
 
             # Опционально, вы также можете проверить тип файла (изображение)
             content_type = preview.content_type.split('/')[0]
