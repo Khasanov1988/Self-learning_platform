@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'users',
     'education_content',
     'tests',
+    'unique_content',
 ]
 
 MIDDLEWARE = [

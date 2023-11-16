@@ -1,0 +1,174 @@
+{% extends 'education_content/base.html' %}
+
+{% block content %}
+    {% load my_tags %}
+    <main class="form-signin w-100 m-auto">
+
+        <section class="py-3 text-center container">
+            <div class="row py-lg-5">
+                <div class="col-lg-12 col-md-8 mx-auto">
+                    <h1 class="fw-light">{{ object }}</h1>
+                    <p class="lead text-body-secondary">{{ object.description }}</p>
+                </div>
+            </div>
+        </section>
+        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-5 text-center bg-body-tertiary">
+            <div class="album py-5 bg-body-tertiary">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-6 align-items-center">
+                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <div>
+                                    <label for="frameNumber">Stage rotation angle:</label>
+                                    <input type="number" id="frameNumber" min="0" max="359" value="0">
+                                </div>
+                                <h5>Stage rotation angle</h5>
+                                <div class="progress w-50 m-1" role="progressbar" aria-label="Basic progressbar"
+                                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="359" style="height: 20px">
+                                    <div class="progress-bar" id="frameNumber2">0</div>
+                                </div>
+
+                                <button type="button" class="btn btn-success w-50 m-1" id="rotateButton"
+                                        onclick="toggleRotation()">Enable rotation
+                                </button>
+                                <button type="button" class="btn btn-info w-50 m-1" id="modeButton"
+                                        onclick="toggleMode()">СPL mode
+                                </button>
+                            </div>
+
+                        </div>
+                        <div class="col-6">
+                            <video class="w-100" id="videoPlayer" preload="auto">
+                                Ваш браузер не поддерживает видео.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    <script defer>
+
+        const filePPL = "{{ object.file_ppl | mediapath_filter }}";
+        const fileCPL = "{{ object.file_cpl | mediapath_filter }}";
+
+    </script>
+    <script>
+        let videoPlayer = document.getElementById('videoPlayer');
+        let frameNumberInput = document.getElementById('frameNumber');
+        let frameNumberProgress = document.getElementById('frameNumber2');
+        let rotateButton = document.getElementById('rotateButton');
+        let modeButton = document.getElementById('modeButton');
+        let isRotating = false;
+        let isDragging = false;
+        let isParallelMode = true; // Default mode is "Параллельные николи"
+        let totalFrames = 0;
+        let duration = 0;
+
+        // Blob objects to store video data
+        let videoBlobA, videoBlobB;
+
+        // Fetch video files and create Blobs
+        fetch(fileCPL)
+            .then(response => response.blob())
+            .then(blob => {
+                videoBlobA = blob;
+
+            });
+
+        fetch(filePPL)
+            .then(response => response.blob())
+            .then(blob => {
+                videoBlobB = blob;
+                // Set initial video source
+                videoPlayer.src = URL.createObjectURL(blob);
+            });
+
+        function toggleMode() {
+            isParallelMode = !isParallelMode;
+
+            if (isParallelMode) {
+                modeButton.textContent = 'СPL mode';
+                videoPlayer.src = URL.createObjectURL(videoBlobB);
+            } else {
+                modeButton.textContent = 'PPL mode';
+                videoPlayer.src = URL.createObjectURL(videoBlobA);
+            }
+
+            frameNumberInput.value = currentFrame;
+
+            updateFrame();
+        }
+
+        videoPlayer.addEventListener('loadedmetadata', function () {
+            // Рассчитываем и присваиваем значение переменной
+            totalFrames = Math.floor(videoPlayer.duration * 30);
+            duration = videoPlayer.duration;
+        });
+
+        function toggleRotation() {
+            isRotating = !isRotating;
+            if (isRotating) {
+                rotateButton.textContent = 'Disable rotation';
+            } else {
+                rotateButton.textContent = 'Enable rotation';
+            }
+        }
+
+        function updateFrame() {
+            let frameNumber = parseInt(frameNumberInput.value);
+
+            if (isNaN(frameNumber) || frameNumber < 0 || frameNumber > 359) {
+                alert('Введите корректное значение от 0 до 359.');
+                return;
+            }
+
+            let seekTime = (frameNumber / totalFrames) * duration;
+            videoPlayer.currentTime = seekTime;
+            frameNumberProgress.style.width = `${Math.round(currentFrame / 359 * 100)}%`;
+            frameNumberProgress.textContent = String(currentFrame);
+        }
+
+        videoPlayer.addEventListener('timeupdate', function () {
+            let currentFrame = Math.floor(videoPlayer.currentTime * 30); // 30 - частота кадров (пример для NTSC)
+            //frameNumberInput.value = currentFrame;
+        });
+
+
+        let nullPoint = 0;
+        let nullFrame = 0;
+        let currentFrame = 0;
+        let rotatingSpeed = 1;
+
+        videoPlayer.addEventListener('mousedown', function (event) {
+            if (event.button === 0) { // Проверка, что это левая кнопка мыши
+                isDragging = true;
+                nullPoint = {x: event.clientX, y: event.clientY};
+            }
+        });
+
+        document.addEventListener('mouseup', function (event) {
+            if (event.button === 0) {
+                isDragging = false;
+                nullFrame = currentFrame;
+            }
+        });
+
+        document.addEventListener('mousemove', function (event) {
+            if (isDragging) {
+                let percentage = ((event.clientX - nullPoint.x) / videoPlayer.offsetWidth) * rotatingSpeed;
+                let frameValue = Math.round(percentage * 359);
+                currentFrame = (nullFrame + frameValue + 1800) % 360;
+                frameNumberInput.value = currentFrame;
+                if (isRotating) {
+                    // Реализация вращения видео
+                    let rotationValue = frameNumberInput.value;
+                    videoPlayer.style.transform = `rotate(${rotationValue}deg)`;
+                }
+                updateFrame();
+            }
+        });
+
+    </script>
+{% endblock %}

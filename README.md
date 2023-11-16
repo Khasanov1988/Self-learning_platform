@@ -75,7 +75,7 @@ Follow these steps to set up the Education Testing Platform on your local develo
     ```bash
     pip install -r requirements.txt
     ```
-6. Fill .env file:
+6. Fill .env file (use .env.example):
     ```bash
     nano .env
     ```
