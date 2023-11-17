@@ -178,7 +178,6 @@
         }
 
         videoPlayer.addEventListener('timeupdate', function () {
-            currentFrame = Math.floor(videoPlayer.currentTime * 30); // 30 - частота кадров (пример для NTSC)
             frameNumberInput.value = currentFrame;
             if (isRotating) {
                 frameNumberProgress.style.width = `${Math.round(currentAngle / 359 * 100)}%`;
