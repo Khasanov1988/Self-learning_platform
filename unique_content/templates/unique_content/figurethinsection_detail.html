@@ -34,14 +34,15 @@
                                 <button type="button" class="btn btn-info w-50 m-1" id="modeButton"
                                         onclick="toggleMode()">СPL mode
                                 </button>
-                                <button type="button" class="btn btn-warning w-50 m-1 mb-3" id="autoRotateButton" style="z-index: 2;"
+                                <button type="button" class="btn btn-warning w-50 m-1 mb-3" id="autoRotateButton"
+                                        style="z-index: 2;"
                                         onclick="toggleAutoRotate()">Auto-rotate mode on
                                 </button>
                             </div>
 
                         </div>
                         <div class="col-12 col-md-6">
-                            <video class="w-100" id="videoPlayer" preload="auto">
+                            <video class="w-100" id="videoPlayer" preload="auto" type="video/mp4">
                                 Ваш браузер не поддерживает видео.
                             </video>
                         </div>
@@ -68,11 +69,13 @@
         let isDragging = false;
         let isAutoRotating = false; // Variable to track auto-rotation state
         let isParallelMode = true; // Default mode is "PPL"
-        let totalFrames = 0;
-        let duration = 0;
+        let totalFrames = 360;
+        let duration = 12;
         // Set the rotation speed and play the video
         let rotatingSpeed = 1;
+        let autoRotationFrameRate = 50; // frames per second
         let autoRotateIntervalId;
+        let isEvenFrame = false;
 
         let nullPoint = 0;
         let nullFrame = 0;
@@ -113,12 +116,6 @@
             updateFrame();
         }
 
-        videoPlayer.addEventListener('loadedmetadata', function () {
-            // Рассчитываем и присваиваем значение переменной
-            totalFrames = Math.floor(videoPlayer.duration * 30);
-            duration = videoPlayer.duration;
-        });
-
         function toggleRotation() {
             isRotating = !isRotating;
             if (isRotating) {
@@ -132,7 +129,7 @@
             isAutoRotating = !isAutoRotating;
 
             if (isAutoRotating) {
-                autoRotateIntervalId = setInterval(autoRotateFrames, 1000 / 30); // Вызываем autoRotateFrames каждый кадр (30 кадров в секунду)
+                autoRotateIntervalId = setInterval(autoRotateFrames, 1000 / 30); // Вызываем autoRotateFrames каждый кадр (N кадров в секунду)
                 autoRotateButton.textContent = 'Auto-rotate mode off'; // Change button text when auto-rotate is on
             } else {
                 clearInterval(autoRotateIntervalId);
@@ -140,52 +137,32 @@
             }
         }
 
-        function rotateThinSection() {
-            if (isRotating) {
-                // Implementation of video rotation
-                videoPlayer.style.transform = `rotate(${currentAngle}deg)`;
-            }
-
-        }
-
         function autoRotateFrames() {
-            if (isAutoRotating) {
-                // Считаем новый кадр в зависимости от времени
-                currentFrame = Math.round(currentFrame + (rotatingSpeed * 30 / 12)) % 360; // rotatingSpeed * 30 / 12 - скорость приращения
-                if (isRotating) {
-                    currentAngle = Math.round(currentAngle + (rotatingSpeed * 30 / 12)) % 360; // rotatingSpeed * 30 / 12 - скорость приращения
-                }
-                updateFrame();
+            // Считаем новый кадр в зависимости от времени
+            currentFrame = (currentFrame + rotatingSpeed) % 360; // rotatingSpeed * 30 / 12 - скорость приращения
+            if (isRotating) {
+                currentAngle = (currentAngle + rotatingSpeed) % 360; // rotatingSpeed * 30 / 12 - скорость приращения
             }
+            updateFrame();
         }
 
         function updateFrame() {
             frameNumberInput.value = currentFrame;
             frameNumberProgress.style.width = `${Math.round(currentAngle / 359 * 100)}%`;
             frameNumberProgress.textContent = String(currentAngle);
-            let frameNumber = parseInt(frameNumberInput.value);
-
-            if (isNaN(frameNumber) || frameNumber < 0 || frameNumber > 359) {
-                alert('Введите корректное значение от 0 до 359.');
-                return;
-            }
-
-            let seekTime = (frameNumber / totalFrames) * duration;
-            videoPlayer.currentTime = seekTime;
+            // Implementation of nicols rotation
+            videoPlayer.currentTime = (currentFrame / totalFrames) * duration;
             if (isRotating) {
-                rotateThinSection()
+                // Implementation of video rotation
+                videoPlayer.style.transform = `rotate(${currentAngle}deg)`;
             }
         }
 
-        videoPlayer.addEventListener('timeupdate', function () {
-            frameNumberInput.value = currentFrame;
-            if (isRotating) {
-                frameNumberProgress.style.width = `${Math.round(currentAngle / 359 * 100)}%`;
-                frameNumberProgress.textContent = String(currentAngle);
-            }
-
-
-        });
+        {#videoPlayer.addEventListener('loadedmetadata', function () {#}
+        {#    // Рассчитываем и присваиваем значение переменной#}
+        {#    duration = videoPlayer.duration;#}
+        {#    totalFrames = Math.floor(duration * 30);#}
+        {# });#}
 
         videoPlayer.addEventListener('mousedown', function (event) {
             if (event.button === 0) { // Checking that it is the left mouse button
