@@ -23,28 +23,41 @@
                                     <input type="number" id="frameNumber" min="0" max="359" value="0">
                                 </div>
                                 <h5>Stage rotation angle</h5>
-                                <div class="progress w-50 m-1" role="progressbar" aria-label="Basic progressbar"
+                                <div class="progress w-75 m-1" role="progressbar" aria-label="Basic progressbar"
                                      aria-valuenow="0" aria-valuemin="0" aria-valuemax="359" style="height: 20px">
                                     <div class="progress-bar" id="frameNumber2">0</div>
                                 </div>
 
-                                <button type="button" class="btn btn-success w-50 m-1" id="rotateButton"
+                                <button type="button" class="btn btn-success w-75 m-1" id="rotateButton"
+                                        style="z-index: 3;"
                                         onclick="toggleRotation()">Enable stage rotation
                                 </button>
-                                <button type="button" class="btn btn-info w-50 m-1" id="modeButton"
+                                <button type="button" class="btn btn-info w-75 m-1" id="modeButton"
+                                        style="z-index: 3;"
                                         onclick="toggleMode()">СPL mode
                                 </button>
-                                <button type="button" class="btn btn-warning w-50 m-1 mb-3" id="autoRotateButton"
-                                        style="z-index: 2;"
+                                <button type="button" class="btn btn-warning w-75 m-1 mb-3" id="autoRotateButton"
+                                        style="z-index: 3;"
                                         onclick="toggleAutoRotate()">Auto-rotate mode on
                                 </button>
+                                <button type="button" class="btn btn-warning w-75 m-1 mb-3" id="mineralsButton"
+                                        style="z-index: 3;"
+                                        onclick="toggleMinerals()">Mineral labels on
+                                </button>
                             </div>
-
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-6" style="position: relative">
                             <video class="w-100" id="videoPlayer" preload="auto" type="video/mp4">
                                 Ваш браузер не поддерживает видео.
                             </video>
+                            {% if labels_list %}
+                                {% for label in labels_list %}
+                                    <div class="label-container"
+                                         style="position: absolute;left: {{ label.coord_X }}%; top: {{ label.coord_Y }}%; z-index: 2;  display: none;">
+                                        <h5 class="text-danger font-weight-bold m-0">{{ label.mineral.abbreviation }}</h5>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -65,8 +78,10 @@
         let rotateButton = document.getElementById('rotateButton');
         let autoRotateButton = document.getElementById('autoRotateButton');
         let modeButton = document.getElementById('modeButton');
+        let mineralsButton = document.getElementById('mineralsButton');
         let isRotating = false;
         let isDragging = false;
+        let isMineralsOn = false;
         let isAutoRotating = false; // Variable to track auto-rotation state
         let isParallelMode = true; // Default mode is "PPL"
         let totalFrames = 360;
@@ -76,6 +91,7 @@
         let autoRotationFrameRate = 50; // frames per second
         let autoRotateIntervalId;
         let isEvenFrame = false;
+        let isOnPosition = false;
 
         let nullPoint = 0;
         let nullFrame = 0;
@@ -115,6 +131,48 @@
 
             updateFrame();
         }
+
+        function toggleMinerals() {
+            isMineralsOn = !isMineralsOn;
+            let labels = document.querySelectorAll('.label-container');
+
+            labels.forEach(label => {
+                label.style.display = isMineralsOn ? 'block' : 'none';
+            });
+
+            if (!isOnPosition) {
+                positionLabels();
+             }
+        }
+
+        function positionLabels() {
+            let labels = document.querySelectorAll('.label-container');
+
+            labels.forEach(label => {
+                let coordX = label.style.left;
+                let coordY = label.style.top;
+
+                console.log(label.style.left);
+                console.log(label.style.left);
+
+                // Получаем родительский контейнер
+                let parentContainer = document.getElementById('videoPlayer');
+
+                // Преобразовываем проценты в пиксели для X и Y
+                let pixelX = ((parentContainer.offsetWidth * parseFloat(coordX) / 100) - label.offsetWidth / 2) / parentContainer.offsetWidth * 100;
+                let pixelY = ((parentContainer.offsetHeight * parseFloat(coordY) / 100) - label.offsetHeight / 2) / parentContainer.offsetHeight * 100;
+
+                // Устанавливаем координаты в пикселях
+                label.style.left = pixelX + '%';
+                label.style.top = pixelY + '%';
+
+                console.log(label.style.left);
+                console.log(label.style.left);
+            });
+
+            isOnPosition = true;
+        }
+
 
         function toggleRotation() {
             isRotating = !isRotating;

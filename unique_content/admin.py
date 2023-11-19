@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from unique_content.models import FigureFromP3din, FigureThinSection, Mineral
+from unique_content.models import FigureFromP3din, FigureThinSection, Mineral, Label
 
 
 @admin.register(FigureFromP3din)
@@ -18,9 +18,9 @@ class FigureThinSectionAdmin(admin.ModelAdmin):
 @admin.register(Mineral)
 class MineralAdmin(admin.ModelAdmin):
     # Define how the Material model is displayed in the Django admin panel.
-    list_filter = ('title',)
+    list_filter = ('name_eng',)
 
 @admin.register(Label)
-class MineralAdmin(admin.ModelAdmin):
+class LabelAdmin(admin.ModelAdmin):
     # Define how the Material model is displayed in the Django admin panel.
-    list_filter = ('title',)
+    list_filter = ('figure_thin_section',)
