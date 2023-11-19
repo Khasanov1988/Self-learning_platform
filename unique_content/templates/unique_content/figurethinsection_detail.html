@@ -18,15 +18,30 @@
                     <div class="row">
                         <div class="col-12 col-md-6 align-items-center">
                             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                <div>
-                                    <label for="frameNumber">Nicols rotation angle:</label>
-                                    <input type="number" id="frameNumber" min="0" max="359" value="0">
-                                </div>
-                                <h5>Stage rotation angle</h5>
-                                <div class="progress w-75 m-1" role="progressbar" aria-label="Basic progressbar"
+                                <h5 class="m-0">Nicols rotation angle</h5>
+                                <div class="progress w-75 m-1" id="frameNumber1_set" role="progressbar"
+                                     aria-label="Basic progressbar"
                                      aria-valuenow="0" aria-valuemin="0" aria-valuemax="359" style="height: 20px">
-                                    <div class="progress-bar" id="frameNumber2">0</div>
+                                    <div class="progress-bar bg-success" id="frameNumber1" style="user-select: none;">
+                                        0
+                                    </div>
                                 </div>
+                                <h5 class="m-0">Stage rotation angle</h5>
+                                <div class="progress w-75 m-1" id="frameNumber2_set" role="progressbar"
+                                     aria-label="Basic progressbar"
+                                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="359" style="height: 20px">
+                                    <div class="progress-bar bg-primary" id="frameNumber2" style="user-select: none;">
+                                        0
+                                    </div>
+                                </div>
+{#                                <h5 class="m-0">Auto-rotation speed</h5>#}
+{#                                <div class="progress w-75 m-1" id="frameNumber3_set" role="progressbar"#}
+{#                                     aria-label="Basic progressbar"#}
+{#                                     aria-valuenow="1" aria-valuemin="0.5" aria-valuemax="2" style="height: 20px">#}
+{#                                    <div class="progress-bar bg-primary" id="frameNumber3" style="user-select: none; width: 33%">#}
+{#                                        1#}
+{#                                    </div>#}
+{#                                </div>#}
 
                                 <button type="button" class="btn btn-success w-75 m-1" id="rotateButton"
                                         style="z-index: 3;"
@@ -36,28 +51,32 @@
                                         style="z-index: 3;"
                                         onclick="toggleMode()">СPL mode
                                 </button>
-                                <button type="button" class="btn btn-warning w-75 m-1 mb-3" id="autoRotateButton"
-                                        style="z-index: 3;"
-                                        onclick="toggleAutoRotate()">Auto-rotate mode on
-                                </button>
-                                <button type="button" class="btn btn-warning w-75 m-1 mb-3" id="mineralsButton"
+                                <button type="button" class="btn btn-warning w-75 m-1" id="mineralsButton"
                                         style="z-index: 3;"
                                         onclick="toggleMinerals()">Mineral labels on
                                 </button>
+                                <button type="button" class="btn btn-danger w-75 m-1 mb-3" id="autoRotateButton"
+                                        style="z-index: 3;"
+                                        onclick="toggleAutoRotate()">Auto-rotate mode on
+                                </button>
+
                             </div>
                         </div>
-                        <div class="col-12 col-md-6" style="position: relative">
-                            <video class="w-100" id="videoPlayer" preload="auto" type="video/mp4">
-                                Ваш браузер не поддерживает видео.
-                            </video>
-                            {% if labels_list %}
-                                {% for label in labels_list %}
-                                    <div class="label-container"
-                                         style="position: absolute;left: {{ label.coord_X }}%; top: {{ label.coord_Y }}%; z-index: 2;  display: none;">
-                                        <h5 class="text-danger font-weight-bold m-0">{{ label.mineral.abbreviation }}</h5>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
+                        <div class="col-12 col-md-6">
+                            <div id="videoPlayerBlock" style="position: relative">
+                                <video class="w-100" id="videoPlayer" preload="auto" type="video/mp4">
+                                    Ваш браузер не поддерживает видео.
+                                </video>
+                                {% if labels_list %}
+                                    {% for label in labels_list %}
+                                        <div class="label-container"
+                                             style="position: absolute;left: {{ label.coord_X }}%; top: {{ label.coord_Y }}%; z-index: 2;  display: none;">
+                                            <h5 class="text-danger font-weight-bold m-0"
+                                                style="user-select: none;">{{ label.mineral.abbreviation }}</h5>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -73,14 +92,22 @@
     </script>
     <script>
         let videoPlayer = document.getElementById('videoPlayer');
-        let frameNumberInput = document.getElementById('frameNumber');
-        let frameNumberProgress = document.getElementById('frameNumber2');
+        let videoPlayerBlock = document.getElementById('videoPlayerBlock');
+        let frameNumberProgress = document.getElementById('frameNumber1');
+        let frameNumberProgress_set = document.getElementById('frameNumber1_set');
+        let stageNumberProgress = document.getElementById('frameNumber2');
+        let stageNumberProgress_set = document.getElementById('frameNumber2_set');
+        {#let speedProgress = document.getElementById('frameNumber3');#}
+        {#let speedProgress_set = document.getElementById('frameNumber3_set');#}
         let rotateButton = document.getElementById('rotateButton');
         let autoRotateButton = document.getElementById('autoRotateButton');
         let modeButton = document.getElementById('modeButton');
         let mineralsButton = document.getElementById('mineralsButton');
         let isRotating = false;
         let isDragging = false;
+        let isSettingFrame = false;
+        let isSettingAngle = false;
+        let isSettingSpeed = false;
         let isMineralsOn = false;
         let isAutoRotating = false; // Variable to track auto-rotation state
         let isParallelMode = true; // Default mode is "PPL"
@@ -98,6 +125,7 @@
         let nullAngle = 0;
         let currentFrame = 0;
         let currentAngle = 0;
+        {#let tempFrame = 0;#}
 
         // Blob objects to store video data
         let videoBlobA, videoBlobB;
@@ -142,7 +170,7 @@
 
             if (!isOnPosition) {
                 positionLabels();
-             }
+            }
         }
 
         function positionLabels() {
@@ -152,22 +180,16 @@
                 let coordX = label.style.left;
                 let coordY = label.style.top;
 
-                console.log(label.style.left);
-                console.log(label.style.left);
-
-                // Получаем родительский контейнер
+                // Getting the parent container
                 let parentContainer = document.getElementById('videoPlayer');
 
-                // Преобразовываем проценты в пиксели для X и Y
+                // Converting percentages to pixels for X and Y
                 let pixelX = ((parentContainer.offsetWidth * parseFloat(coordX) / 100) - label.offsetWidth / 2) / parentContainer.offsetWidth * 100;
                 let pixelY = ((parentContainer.offsetHeight * parseFloat(coordY) / 100) - label.offsetHeight / 2) / parentContainer.offsetHeight * 100;
 
-                // Устанавливаем координаты в пикселях
+                // Set coordinates in %
                 label.style.left = pixelX + '%';
                 label.style.top = pixelY + '%';
-
-                console.log(label.style.left);
-                console.log(label.style.left);
             });
 
             isOnPosition = true;
@@ -195,24 +217,34 @@
             }
         }
 
+        function rotateThinSection() {
+            // Implementation of video rotation
+            videoPlayerBlock.style.transform = `rotate(${currentAngle}deg)`;
+            // Compensation rotation for labels
+            let labels = document.querySelectorAll('.label-container');
+            labels.forEach(label => {
+                label.style.transform = `rotate(-${currentAngle}deg)`;
+            });
+        }
+
         function autoRotateFrames() {
             // Считаем новый кадр в зависимости от времени
             currentFrame = (currentFrame + rotatingSpeed) % 360; // rotatingSpeed * 30 / 12 - скорость приращения
             if (isRotating) {
-                currentAngle = (currentAngle + rotatingSpeed) % 360; // rotatingSpeed * 30 / 12 - скорость приращения
+                currentAngle = Math.round((currentAngle + rotatingSpeed) % 360); // rotatingSpeed * 30 / 12 - скорость приращения
             }
             updateFrame();
         }
 
         function updateFrame() {
-            frameNumberInput.value = currentFrame;
-            frameNumberProgress.style.width = `${Math.round(currentAngle / 359 * 100)}%`;
-            frameNumberProgress.textContent = String(currentAngle);
+            frameNumberProgress.style.width = `${Math.round(currentFrame / 359 * 100)}%`;
+            frameNumberProgress.textContent = String(currentFrame);
+            stageNumberProgress.style.width = `${Math.round(currentAngle / 359 * 100)}%`;
+            stageNumberProgress.textContent = String(currentAngle);
             // Implementation of nicols rotation
             videoPlayer.currentTime = (currentFrame / totalFrames) * duration;
             if (isRotating) {
-                // Implementation of video rotation
-                videoPlayer.style.transform = `rotate(${currentAngle}deg)`;
+                rotateThinSection()
             }
         }
 
@@ -229,9 +261,33 @@
             }
         });
 
+        frameNumberProgress_set.addEventListener('mousedown', function (event) {
+            if (event.button === 0) { // Checking that it is the left mouse button
+                isSettingFrame = true;
+                nullPoint = {x: event.clientX, y: event.clientY};
+            }
+        });
+
+        stageNumberProgress_set.addEventListener('mousedown', function (event) {
+            if (event.button === 0) { // Checking that it is the left mouse button
+                isSettingAngle = true;
+                nullPoint = {x: event.clientX, y: event.clientY};
+            }
+        });
+
+        {#speedProgress_set.addEventListener('mousedown', function (event) {#}
+        {#    if (event.button === 0) { // Checking that it is the left mouse button#}
+        {#        isSettingSpeed = true;#}
+        {#        nullPoint = {x: event.clientX, y: event.clientY};#}
+        {#    }#}
+        {# });#}
+
         document.addEventListener('mouseup', function (event) {
             if (event.button === 0) {
                 isDragging = false;
+                isSettingFrame = false;
+                isSettingAngle = false;
+                {#isSettingSpeed = false;#}
                 nullFrame = currentFrame;
                 nullAngle = currentAngle;
             }
@@ -246,6 +302,17 @@
                     currentAngle = (nullAngle + frameValue + 1800) % 360;
                 }
                 updateFrame();
+            } else if (isSettingFrame) {
+                currentFrame = Math.round(((event.clientX - frameNumberProgress_set.offsetLeft) / frameNumberProgress_set.offsetWidth) * 359)
+                updateFrame();
+            } else if (isSettingAngle) {
+                currentAngle = Math.round(((event.clientX - stageNumberProgress_set.offsetLeft) / stageNumberProgress_set.offsetWidth) * 359)
+                updateFrame();
+                rotateThinSection()
+            {# } else if (isSettingSpeed) { #}
+            {#    rotatingSpeed = (0.5 + ((event.clientX - speedProgress_set.offsetLeft) / speedProgress_set.offsetWidth) * 1.5).toFixed(1)#}
+            {#    speedProgress.style.width = `${Math.round((rotatingSpeed - 0.5) / 1.5 * 100)}%`;#}
+            {#    speedProgress.textContent = String(rotatingSpeed);#}
             }
 
         });
