@@ -1,4 +1,5 @@
 from django import forms
+from django_summernote.fields import SummernoteTextField
 from django_summernote.widgets import SummernoteWidget
 
 from education_content.models import Chapter, Material, MaterialPhotos
@@ -34,6 +35,7 @@ class ChapterForm(StyleFormMixin, forms.ModelForm):
 
 
 class MaterialForm(StyleFormMixin, forms.ModelForm):
+    text = SummernoteTextField()
 
     class Meta:
         model = Material
@@ -44,6 +46,7 @@ class MaterialForm(StyleFormMixin, forms.ModelForm):
 
 
 class MaterialUpdateForm(StyleFormMixin, forms.ModelForm):
+    text = SummernoteTextField()
 
     class Meta:
         model = Material

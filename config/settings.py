@@ -178,3 +178,5 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 30485760
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+CSRF_TRUSTED_ORIGINS = ['https://geotest.tech', 'https://www.geotest.tech']

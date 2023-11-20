@@ -34,14 +34,6 @@
                                         0
                                     </div>
                                 </div>
-{#                                <h5 class="m-0">Auto-rotation speed</h5>#}
-{#                                <div class="progress w-75 m-1" id="frameNumber3_set" role="progressbar"#}
-{#                                     aria-label="Basic progressbar"#}
-{#                                     aria-valuenow="1" aria-valuemin="0.5" aria-valuemax="2" style="height: 20px">#}
-{#                                    <div class="progress-bar bg-primary" id="frameNumber3" style="user-select: none; width: 33%">#}
-{#                                        1#}
-{#                                    </div>#}
-{#                                </div>#}
 
                                 <button type="button" class="btn btn-success w-75 m-1" id="rotateButton"
                                         style="z-index: 3;"
@@ -97,8 +89,6 @@
         let frameNumberProgress_set = document.getElementById('frameNumber1_set');
         let stageNumberProgress = document.getElementById('frameNumber2');
         let stageNumberProgress_set = document.getElementById('frameNumber2_set');
-        {#let speedProgress = document.getElementById('frameNumber3');#}
-        {#let speedProgress_set = document.getElementById('frameNumber3_set');#}
         let rotateButton = document.getElementById('rotateButton');
         let autoRotateButton = document.getElementById('autoRotateButton');
         let modeButton = document.getElementById('modeButton');
@@ -113,8 +103,7 @@
         let isParallelMode = true; // Default mode is "PPL"
         let totalFrames = 360;
         let duration = 12;
-        // Set the rotation speed and play the video
-        let rotatingSpeed = 1;
+        let rotatingSpeed = 1; // Set the rotation speed and play the video
         let autoRotationFrameRate = 50; // frames per second
         let autoRotateIntervalId;
         let isEvenFrame = false;
@@ -125,7 +114,6 @@
         let nullAngle = 0;
         let currentFrame = 0;
         let currentAngle = 0;
-        {#let tempFrame = 0;#}
 
         // Blob objects to store video data
         let videoBlobA, videoBlobB;
@@ -209,7 +197,7 @@
             isAutoRotating = !isAutoRotating;
 
             if (isAutoRotating) {
-                autoRotateIntervalId = setInterval(autoRotateFrames, 1000 / 30); // Вызываем autoRotateFrames каждый кадр (N кадров в секунду)
+                autoRotateIntervalId = setInterval(autoRotateFrames, 1000 / 30); // Call autoRotateFrames every frame (N frames per second)
                 autoRotateButton.textContent = 'Auto-rotate mode off'; // Change button text when auto-rotate is on
             } else {
                 clearInterval(autoRotateIntervalId);
@@ -228,7 +216,7 @@
         }
 
         function autoRotateFrames() {
-            // Считаем новый кадр в зависимости от времени
+            // We count a new frame depending on time
             currentFrame = (currentFrame + rotatingSpeed) % 360; // rotatingSpeed * 30 / 12 - скорость приращения
             if (isRotating) {
                 currentAngle = Math.round((currentAngle + rotatingSpeed) % 360); // rotatingSpeed * 30 / 12 - скорость приращения
@@ -247,12 +235,6 @@
                 rotateThinSection()
             }
         }
-
-        {#videoPlayer.addEventListener('loadedmetadata', function () {#}
-        {#    // Рассчитываем и присваиваем значение переменной#}
-        {#    duration = videoPlayer.duration;#}
-        {#    totalFrames = Math.floor(duration * 30);#}
-        {# });#}
 
         videoPlayer.addEventListener('mousedown', function (event) {
             if (event.button === 0) { // Checking that it is the left mouse button
@@ -274,13 +256,6 @@
                 nullPoint = {x: event.clientX, y: event.clientY};
             }
         });
-
-        {#speedProgress_set.addEventListener('mousedown', function (event) {#}
-        {#    if (event.button === 0) { // Checking that it is the left mouse button#}
-        {#        isSettingSpeed = true;#}
-        {#        nullPoint = {x: event.clientX, y: event.clientY};#}
-        {#    }#}
-        {# });#}
 
         document.addEventListener('mouseup', function (event) {
             if (event.button === 0) {
@@ -309,10 +284,6 @@
                 currentAngle = Math.round(((event.clientX - stageNumberProgress_set.offsetLeft) / stageNumberProgress_set.offsetWidth) * 359)
                 updateFrame();
                 rotateThinSection()
-            {# } else if (isSettingSpeed) { #}
-            {#    rotatingSpeed = (0.5 + ((event.clientX - speedProgress_set.offsetLeft) / speedProgress_set.offsetWidth) * 1.5).toFixed(1)#}
-            {#    speedProgress.style.width = `${Math.round((rotatingSpeed - 0.5) / 1.5 * 100)}%`;#}
-            {#    speedProgress.textContent = String(rotatingSpeed);#}
             }
 
         });
