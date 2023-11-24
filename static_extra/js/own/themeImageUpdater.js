@@ -1,3 +1,8 @@
+function updateSrc() {
+    updateImageSrc();
+    updateFigure3dSrc();
+}
+
 // Function to get the current chapter
 function getCurrentTheme() {
     return document.documentElement.getAttribute('data-bs-theme');
@@ -16,9 +21,36 @@ function updateImageSrc() {
     }
 }
 
+// Function to update the src of 3d figures depending on the current theme
+
+function updateFigure3dSrc() {
+
+    const theme = getCurrentTheme();
+    const figureElements = document.querySelectorAll('[id^="figure_"]');
+
+    figureElements.forEach((figure) => {
+        const currentSrc = figure.src;
+
+        // Check the current theme and update the src accordingly
+        if (theme === 'light' && currentSrc.includes('2b3035ff')) {
+            figure.src = currentSrc.replace('2b3035ff', 'f8f9faff');
+        } else if (theme === 'dark' && currentSrc.includes('f8f9faff')) {
+            figure.src = currentSrc.replace('f8f9faff', '2b3035ff');
+        }
+    });
+}
+
 var themeImage = document.getElementById('themeImage');
+// Select all elements with id starting with 'figure_'
+const figureElements = document.querySelectorAll('[id^="figure_"]');
+
+
 // Call a function when the page loads and the theme changes
 if (themeImage) {
     window.addEventListener('load', updateImageSrc);
     document.addEventListener('themeChanged', updateImageSrc);
+}
+if (figureElements) {
+    window.addEventListener('load', updateFigure3dSrc);
+    document.addEventListener('themeChanged', updateFigure3dSrc);
 }

@@ -43,6 +43,9 @@
                         Your password can’t be too similar to your other personal information, must contain at least 8
                         characters, can’t be a commonly used password, can’t be entirely numeric.
                     </div>
+                    {% if form.errors %}
+                        {{ form.errors }}
+                    {% endif %}
                     <button type="submit" class="btn btn-primary w-100 py-2">Register</button>
                 </form>
             </div>

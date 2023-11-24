@@ -12,6 +12,7 @@ from education_content.forms import ChapterForm, MaterialForm, MaterialUpdateFor
     MaterialPhotosForm
 from education_content.models import Chapter, Material, MaterialPhotos
 from tests.models import Test
+from unique_content.models import FigureFromP3din, FigureThinSection
 
 
 class GetLastUpdateMixin:
@@ -192,6 +193,13 @@ class MaterialUpdateView(LoginRequiredMixin, GetLastUpdateMixin, UpdateView):
     def get_success_url(self):
         return reverse('education_content:material_view', args=[self.kwargs.get('pk')])
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        material_photos_list = self.object.materialphotos_set.all()
+        material_photos_list = material_photos_list.order_by('pk')
+        context_data['material_photos_list'] = material_photos_list
+        return context_data
+
 
 class MaterialListView(LoginRequiredMixin, GetFinalConditionsMixin, ListView):
     model = Material
@@ -249,6 +257,10 @@ class MaterialPhotosCreateMaterialView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
         context_data['material_pk'] = self.kwargs['material_pk']
+        p3din_model_list = FigureFromP3din.objects.all()
+        context_data['p3din_model_list'] = p3din_model_list
+        thin_section_list = FigureThinSection.objects.all()
+        context_data['thin_section_list'] = thin_section_list
         return context_data
 
     def get_success_url(self):
@@ -266,6 +278,10 @@ class MaterialPhotosCreateView(LoginRequiredMixin, CreateView):
         context_data = super().get_context_data()
         material_list = Material.objects.all()
         context_data['material_list'] = material_list
+        p3din_model_list = FigureFromP3din.objects.all()
+        context_data['p3din_model_list'] = p3din_model_list
+        thin_section_list = FigureThinSection.objects.all()
+        context_data['thin_section_list'] = thin_section_list
         return context_data
 
 

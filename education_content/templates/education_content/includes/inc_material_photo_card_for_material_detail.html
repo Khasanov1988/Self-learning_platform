@@ -1,0 +1,32 @@
+{% load my_tags %}
+
+
+
+
+
+{% if material_photos_by_pk.<CURRENT_PK>.p3din_model %}
+    <div class="wrapper" style="position: relative;
+            width: 100%;
+            height: 50vh; /* 1:1 соотношение сторон */
+            overflow: hidden;">
+        <iframe id="figure_{{ material_photos_by_pk.<CURRENT_PK>.pk }}" allowfullscreen width="100%"
+                height="100%" loading="lazy" frameborder="0"
+                src="
+                        {{ material_photos_by_pk.<CURRENT_PK>.p3din_model.link_for_iframe }}+spin+bg-2b3035ff+dl,share,link,border-hidden"
+                style="position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px 5px 0 0;
+            max-height: 80vh;">
+        </iframe>
+    </div>
+{% elif material_photos_by_pk.<CURRENT_PK>.thin_section %}
+    <a href="{% url 'unique_content:thin_section_view' pk=material_photos_by_pk.<CURRENT_PK>.thin_section.pk %}">
+        <img src="{{ material_photos_by_pk.<CURRENT_PK>.thin_section.preview|mediapath_filter }}" style="width: 100%;">
+    </a>
+{% else %}
+    <p style="text-align: center;">{figure-<CURRENT_PK>}</p>
+{% endif %}

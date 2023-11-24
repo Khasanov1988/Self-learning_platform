@@ -17,7 +17,7 @@
             <div class="container-fluid">
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                     <div style="width: 100%; height: 100vh; overflow: hidden;">
-                        <img src="{{ object.figure|mediapath_filter }}" alt=""
+                        <img src="{{ object.preview|mediapath_filter }}" alt=""
                              style="width: 100%; object-fit: contain; height: 100%; border-radius: 5px 5px 5px 5px;">
                     </div>
                 </div>
@@ -26,3 +26,5 @@
 
     </main>
 {% endblock %}
+
+{#TODO: Need to be remade#}

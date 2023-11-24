@@ -18,36 +18,36 @@
                     <div class="row">
                         <div class="col-12 col-md-6 align-items-center">
                             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                <h5 class="m-0">Nicols rotation angle</h5>
-                                <div class="progress w-75 m-1" id="frameNumber1_set" role="progressbar"
+                                <h5 class="m-0">Polarizer system rotation angle</h5>
+                                <div class="progress w-75 mb-1" id="frameNumber_1_set" role="progressbar"
                                      aria-label="Basic progressbar"
                                      aria-valuenow="0" aria-valuemin="0" aria-valuemax="359" style="height: 20px">
-                                    <div class="progress-bar bg-success" id="frameNumber1" style="user-select: none;">
+                                    <div class="progress-bar bg-success" id="frameNumber_1" style="user-select: none;">
                                         0
                                     </div>
                                 </div>
                                 <h5 class="m-0">Stage rotation angle</h5>
-                                <div class="progress w-75 m-1" id="frameNumber2_set" role="progressbar"
+                                <div class="progress w-75 mb-1" id="angleNumber_1_set" role="progressbar"
                                      aria-label="Basic progressbar"
                                      aria-valuenow="0" aria-valuemin="0" aria-valuemax="359" style="height: 20px">
-                                    <div class="progress-bar bg-primary" id="frameNumber2" style="user-select: none;">
+                                    <div class="progress-bar bg-primary" id="angleNumber_1" style="user-select: none;">
                                         0
                                     </div>
                                 </div>
 
-                                <button type="button" class="btn btn-success w-75 m-1" id="rotateButton"
+                                <button type="button" class="btn btn-success w-75 m-1" id="rotateButton_1"
                                         style="z-index: 3;"
                                         onclick="toggleRotation()">Enable stage rotation
                                 </button>
-                                <button type="button" class="btn btn-info w-75 m-1" id="modeButton"
+                                <button type="button" class="btn btn-info w-75 m-1" id="modeButton_1"
                                         style="z-index: 3;"
                                         onclick="toggleMode()">СPL mode
                                 </button>
-                                <button type="button" class="btn btn-warning w-75 m-1" id="mineralsButton"
+                                <button type="button" class="btn btn-warning w-75 m-1" id="mineralsButton_1"
                                         style="z-index: 3;"
                                         onclick="toggleMinerals()">Mineral labels on
                                 </button>
-                                <button type="button" class="btn btn-danger w-75 m-1 mb-3" id="autoRotateButton"
+                                <button type="button" class="btn btn-danger w-75 m-1 mb-3" id="autoRotateButton_1"
                                         style="z-index: 3;"
                                         onclick="toggleAutoRotate()">Auto-rotate mode on
                                 </button>
@@ -55,7 +55,7 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
-                            <div id="videoPlayerBlock" style="position: relative">
+                            <div id="videoPlayerBlock_1" style="position: relative">
                                 <video class="w-100" id="videoPlayer" preload="auto" type="video/mp4">
                                     Ваш браузер не поддерживает видео.
                                 </video>
@@ -84,15 +84,15 @@
     </script>
     <script>
         let videoPlayer = document.getElementById('videoPlayer');
-        let videoPlayerBlock = document.getElementById('videoPlayerBlock');
-        let frameNumberProgress = document.getElementById('frameNumber1');
-        let frameNumberProgress_set = document.getElementById('frameNumber1_set');
-        let stageNumberProgress = document.getElementById('frameNumber2');
-        let stageNumberProgress_set = document.getElementById('frameNumber2_set');
-        let rotateButton = document.getElementById('rotateButton');
-        let autoRotateButton = document.getElementById('autoRotateButton');
-        let modeButton = document.getElementById('modeButton');
-        let mineralsButton = document.getElementById('mineralsButton');
+        let videoPlayerBlock = document.getElementById('videoPlayerBlock_1');
+        let frameNumberProgress = document.getElementById('frameNumber_1');
+        let frameNumberProgress_set = document.getElementById('frameNumber_1_set');
+        let stageNumberProgress = document.getElementById('angleNumber_1');
+        let stageNumberProgress_set = document.getElementById('angleNumber_1_set');
+        let rotateButton = document.getElementById('rotateButton_1');
+        let autoRotateButton = document.getElementById('autoRotateButton_1');
+        let modeButton = document.getElementById('modeButton_1');
+        let mineralsButton = document.getElementById('mineralsButton_1');
         let isRotating = false;
         let isDragging = false;
         let isSettingFrame = false;
@@ -278,10 +278,10 @@
                 }
                 updateFrame();
             } else if (isSettingFrame) {
-                currentFrame = Math.round(((event.clientX - frameNumberProgress_set.offsetLeft) / frameNumberProgress_set.offsetWidth) * 359)
+                currentFrame = Math.round(((event.clientX - frameNumberProgress_set.getBoundingClientRect().left) / frameNumberProgress_set.offsetWidth) * 359)
                 updateFrame();
             } else if (isSettingAngle) {
-                currentAngle = Math.round(((event.clientX - stageNumberProgress_set.offsetLeft) / stageNumberProgress_set.offsetWidth) * 359)
+                currentAngle = Math.round(((event.clientX - stageNumberProgress_set.getBoundingClientRect().left) / stageNumberProgress_set.offsetWidth) * 359)
                 updateFrame();
                 rotateThinSection()
             }

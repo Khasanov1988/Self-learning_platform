@@ -34,6 +34,9 @@
                         <input type="file" name="preview" accept="image/*"
                                class="form-control" id="id_preview">
                     </div>
+                    {% if form.errors %}
+                        {{ form.errors }}
+                    {% endif %}
                     <button type="submit" class="btn btn-success">
                         {% if object %}
                             Save

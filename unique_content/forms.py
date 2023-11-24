@@ -1,5 +1,6 @@
 import requests
 from django import forms
+from django.core.exceptions import ValidationError
 
 from unique_content.models import FigureFromP3din, FigureThinSection
 from users.forms import StyleFormMixin
@@ -20,7 +21,7 @@ class FigureFromP3dinForm(StyleFormMixin, forms.ModelForm):
             status_code = response.status_code
             if not (figure_3d[0:15] == 'https://p3d.in/' and status_code == 200):
                 self.add_error('figure_3d', 'Invalid p3d.in link')
-            cleaned_data['figure_3d'] = f'{figure_3d[0:15]}e/{figure_3d[15:]}+spin'
+                raise ValidationError("Invalid p3d.in link")
 
         return cleaned_data
 

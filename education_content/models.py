@@ -69,9 +69,10 @@ class MaterialPhotos(models.Model):
     """
     Material figures
     """
-    signature = models.CharField(max_length=300, default=None, null=True, blank=True, verbose_name='Signature')
-    figure = models.ImageField(verbose_name='Figure')
-    material = models.ForeignKey('education_content.Material', on_delete=models.CASCADE)
+    signature = models.CharField(max_length=300, default='Signature not entered', verbose_name='Signature')
+    thin_section = models.ForeignKey('unique_content.FigureThinSection', on_delete=models.CASCADE, default=None, null=True, blank=True, verbose_name='Thin Section')
+    p3din_model = models.ForeignKey('unique_content.FigureFromP3din', on_delete=models.CASCADE, default=None, null=True, blank=True, verbose_name='Model from p3d.in')
+    material = models.ForeignKey('education_content.Material', on_delete=models.CASCADE, verbose_name='Material')
 
     def __str__(self):
         return f'{self.signature}'

@@ -11,7 +11,8 @@ class FigureFromP3din(models.Model):
     title = models.CharField(max_length=100, verbose_name='Title')
     description = models.CharField(max_length=500, verbose_name='Description')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
-    link = models.CharField(max_length=300, verbose_name='Link to p3d.in')
+    link = models.URLField(max_length=300, verbose_name='Link to p3d.in')
+    link_for_iframe = models.URLField(max_length=302, null=True, blank=True, verbose_name='Link to p3d.in iframe')
     made_date = models.DateTimeField(default=timezone.now, verbose_name='Creation time')
     last_update = models.DateTimeField(default=timezone.now, verbose_name='Last update time')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
@@ -32,6 +33,8 @@ class FigureThinSection(models.Model):
     title = models.CharField(max_length=100, verbose_name='Rock title')
     description = models.CharField(max_length=500, verbose_name='Description')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
+    preview_ppl = models.ImageField(null=True, blank=True, verbose_name='Preview PPL')
+    preview_cpl = models.ImageField(null=True, blank=True, verbose_name='Preview CPL')
     file_ppl = models.FileField(null=True, blank=True, default=None, verbose_name='File PPL')
     file_cpl = models.FileField(null=True, blank=True, default=None, verbose_name='File CPL')
     made_date = models.DateTimeField(default=timezone.now, verbose_name='Creation time')
