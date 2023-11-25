@@ -195,7 +195,7 @@ class MaterialUpdateView(LoginRequiredMixin, GetLastUpdateMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        material_photos_list = self.object.materialphotos_set.all()
+        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model',)
         material_photos_list = material_photos_list.order_by('pk')
         context_data['material_photos_list'] = material_photos_list
         return context_data
@@ -231,7 +231,7 @@ class MaterialDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        material_photos_list = self.object.materialphotos_set.all()
+        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model',)
         material_photos_list = material_photos_list.order_by('pk')
         context_data['material_photos_list'] = material_photos_list
         try:

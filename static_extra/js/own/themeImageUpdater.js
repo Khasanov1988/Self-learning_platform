@@ -1,8 +1,3 @@
-function updateSrc() {
-    updateImageSrc();
-    updateFigure3dSrc();
-}
-
 // Function to get the current chapter
 function getCurrentTheme() {
     return document.documentElement.getAttribute('data-bs-theme');
@@ -10,6 +5,7 @@ function getCurrentTheme() {
 
 // Function to update the src of an image depending on the current theme
 function updateImageSrc() {
+
     const theme = getCurrentTheme();
     const image = document.getElementById('themeImage');
 
@@ -21,8 +17,27 @@ function updateImageSrc() {
     }
 }
 
-// Function to update the src of 3d figures depending on the current theme
+// Function to update the color of SVG-logo depending on the current theme
+function updateSVGColor() {
 
+    const theme = getCurrentTheme();
+    const fil0Elements = document.querySelectorAll('.fil0');
+
+    // Set different src depending on current theme
+    if (theme === 'light') {
+        // Set fill for the entire class 'fil0'
+        fil0Elements.forEach(element => {
+            element.style.fill = 'black';
+        });
+    } else if (theme === 'dark') {
+        // Set fill for the entire class 'fil0'
+        fil0Elements.forEach(element => {
+            element.style.fill = 'white';
+        });
+    }
+}
+
+// Function to update the src of 3d figures depending on the current theme
 function updateFigure3dSrc() {
 
     const theme = getCurrentTheme();
@@ -41,8 +56,8 @@ function updateFigure3dSrc() {
 }
 
 var themeImage = document.getElementById('themeImage');
-// Select all elements with id starting with 'figure_'
 const figureElements = document.querySelectorAll('[id^="figure_"]');
+const fil0Elements = document.querySelectorAll('.fil0');
 
 
 // Call a function when the page loads and the theme changes
@@ -53,4 +68,9 @@ if (themeImage) {
 if (figureElements) {
     window.addEventListener('load', updateFigure3dSrc);
     document.addEventListener('themeChanged', updateFigure3dSrc);
+}
+
+if (fil0Elements) {
+    window.addEventListener('load', updateSVGColor);
+    document.addEventListener('themeChanged', updateSVGColor);
 }

@@ -37,7 +37,9 @@ def replace_figure_tags(input_html, material_photos_list):
     # Regular expression to search for <p> tags with text like '{figure-<any number>}'
     import re
 
-    pattern = r'<p style="text-align: center;">\{figure-(\d+)\}</p>'
+    pattern = r'<p\b[^>]*>\s*{figure-(\d+)}\s*</p>'
+
+
     matches = re.finditer(pattern, input_html)
 
     # Read file contents
