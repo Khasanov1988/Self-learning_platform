@@ -27,12 +27,12 @@ function updateSVGColor() {
     if (theme === 'light') {
         // Set fill for the entire class 'fil0'
         fil0Elements.forEach(element => {
-            element.style.fill = 'black';
+            element.style.fill = 'rgba(33,37,41,0.75)';
         });
     } else if (theme === 'dark') {
         // Set fill for the entire class 'fil0'
         fil0Elements.forEach(element => {
-            element.style.fill = 'white';
+            element.style.fill = 'rgba(222,226,230,0.75)';
         });
     }
 }
@@ -55,9 +55,39 @@ function updateFigure3dSrc() {
     });
 }
 
-var themeImage = document.getElementById('themeImage');
+function updatePolarizerImg() {
+
+    const theme = getCurrentTheme();
+    let image = document.getElementById('polarizerImg');
+
+    // Set different src depending on current theme
+    if (theme === 'light') {
+        let temp = image.src
+        image.src = temp.slice(0, -5) + 'b' + temp.slice(-4);
+    } else if (theme === 'dark') {
+        let temp = image.src
+        image.src = temp.slice(0, -5) + 'w' + temp.slice(-4);
+    }
+}
+
+function updateStageImg() {
+
+    const theme = getCurrentTheme();
+    let image = document.getElementById('stageImg');
+
+    // Set different src depending on current theme
+    if (theme === 'light') {
+        image.src = '/media/decor/Stage_b.png';
+    } else if (theme === 'dark') {
+        image.src = '/media/decor/Stage_w.png';
+    }
+}
+
+let themeImage = document.getElementById('themeImage');
 const figureElements = document.querySelectorAll('[id^="figure_"]');
 const fil0Elements = document.querySelectorAll('.fil0');
+let polarizerImg = document.getElementById('polarizerImg');
+let stageImg = document.getElementById('stageImg');
 
 
 // Call a function when the page loads and the theme changes
@@ -73,4 +103,12 @@ if (figureElements) {
 if (fil0Elements) {
     window.addEventListener('load', updateSVGColor);
     document.addEventListener('themeChanged', updateSVGColor);
+}
+if (polarizerImg) {
+    window.addEventListener('load', updatePolarizerImg);
+    document.addEventListener('themeChanged', updatePolarizerImg);
+}
+if (stageImg) {
+    window.addEventListener('load', updateStageImg);
+    document.addEventListener('themeChanged', updateStageImg);
 }

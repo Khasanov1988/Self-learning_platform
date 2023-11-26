@@ -32,8 +32,12 @@
                 <div class="btn-group">
                     <a href="{% url 'education_content:material_view' pk=material.pk %}"
                        class="btn btn-sm btn-outline-secondary">View</a>
-                    <a href="{% url 'education_content:material_edit' pk=material.pk %}"
-                       class="btn btn-sm btn-outline-secondary">Edit</a>
+                    {% if not object.is_published %}
+                        {% if object.owner == user or user.is_staff %}
+                            <a href="{% url 'education_content:material_edit' pk=material.pk %}"
+                               class="btn btn-sm btn-outline-secondary">Edit</a>
+                        {% endif %}
+                    {% endif %}
                 </div>
                 <small class="text-body-secondary">{{ material.owner }}</small>
             </div>
