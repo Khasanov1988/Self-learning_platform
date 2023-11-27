@@ -1,6 +1,7 @@
 from django.apps import apps
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect
@@ -13,6 +14,19 @@ from education_content.forms import ChapterForm, MaterialForm, MaterialUpdateFor
 from education_content.models import Chapter, Material, MaterialPhotos
 from tests.models import Test
 from unique_content.models import FigureFromP3din, FigureThinSection
+
+
+class GetPublicationStatusOrOwnerOrStaffMixin:
+    """
+        Mixin to control if user owner or Staff
+    """
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.is_published:
+            raise PermissionDenied("Your material has been published. You must request unposting in order to edit it.")
+        elif self.object.owner != self.request.user and self.request.user.is_staff is not True:
+            raise PermissionDenied("You are not the author of this material. Editing is not possible for you.")
+        return self.object
 
 
 class GetLastUpdateMixin:
@@ -66,7 +80,7 @@ class ChapterCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ChapterUpdateView(LoginRequiredMixin, GetLastUpdateMixin, UpdateView):
+class ChapterUpdateView(LoginRequiredMixin, GetLastUpdateMixin, GetPublicationStatusOrOwnerOrStaffMixin, UpdateView):
     model = Chapter
     form_class = ChapterForm
 
@@ -186,7 +200,7 @@ class MaterialCreateChapterView(LoginRequiredMixin, GetChapterListMixin, CreateV
         return reverse_lazy('education_content:chapter_view', kwargs={'pk': chapter_pk})
 
 
-class MaterialUpdateView(LoginRequiredMixin, GetLastUpdateMixin, UpdateView):
+class MaterialUpdateView(LoginRequiredMixin, GetLastUpdateMixin, GetPublicationStatusOrOwnerOrStaffMixin, UpdateView):
     model = Material
     form_class = MaterialUpdateForm
 
@@ -195,7 +209,7 @@ class MaterialUpdateView(LoginRequiredMixin, GetLastUpdateMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model',)
+        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model', )
         material_photos_list = material_photos_list.order_by('pk')
         context_data['material_photos_list'] = material_photos_list
         return context_data
@@ -231,7 +245,7 @@ class MaterialDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model',)
+        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model', )
         material_photos_list = material_photos_list.order_by('pk')
         context_data['material_photos_list'] = material_photos_list
         try:
