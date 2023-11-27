@@ -68,13 +68,12 @@ class MaterialForChapterForm(StyleFormMixin, forms.ModelForm):
 class MaterialPhotosForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = MaterialPhotos
-        fields = ('signature', 'material', 'thin_section', 'p3din_model',)
+        fields = ('signature', 'thin_section', 'p3din_model', 'material')
 
     def clean(self):
         cleaned_data = super().clean()
         field1 = cleaned_data.get('thin_section')
         field2 = cleaned_data.get('p3din_model')
-
         # Checking if only one of the fields is filled in
         if field1 and field2:
             self.add_error('p3din_model', 'Only one of thin_section and p3din_model can be filled at a time')

@@ -280,7 +280,7 @@ class MaterialPhotosCreateMaterialView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         # We dynamically construct the URL using reverse_lazy and the value of chapter_pk
         material_pk = self.kwargs['material_pk']
-        return reverse_lazy('education_content:material_view', kwargs={'pk': material_pk})
+        return reverse_lazy('education_content:material_edit', kwargs={'pk': material_pk})
 
 
 class MaterialPhotosCreateView(LoginRequiredMixin, CreateView):

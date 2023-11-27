@@ -34,7 +34,7 @@
 
                         <select class="form-select form-select-lg mb-1" name="thin_section"
                                 aria-label="Large select example">
-                            <option selected>Thin section: {{ object.thin_section }}</option>
+                            <option value="" selected>Thin section: {{ object.thin_section }}</option>
                             {% for thin_section in thin_section_list %}
                                 <option value="{{ thin_section.pk }}">{{ thin_section }}</option>
                             {% endfor %}
@@ -43,7 +43,7 @@
 
                         <select class="form-select form-select-lg mb-1" name="p3din_model"
                                 aria-label="Large select example">
-                            <option selected>3d model: {{ object.p3din_model }}</option>
+                            <option value="" selected>3d model: {{ object.p3din_model }}</option>
                             {% for p3din_model in p3din_model_list %}
                                 <option value="{{ p3din_model.pk }}">{{ p3din_model }}</option>
                             {% endfor %}
