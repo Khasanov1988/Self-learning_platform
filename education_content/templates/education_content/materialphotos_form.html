@@ -10,7 +10,7 @@
                     <form class="needs-validation" method="post" enctype="multipart/form-data" novalidate>
                         <img class="mb-4" id="themeImage" src="/media/decor/favicon.ico" alt="" width="128"
                              height="128">
-                        <h1 class="h3 mb-3 fw-normal">Adding a new figures to material</h1>
+                        <h1 class="h3 mb-3 fw-normal">Adding a new application to material {{ object.material }}</h1>
                         {% csrf_token %}
                         <div class="form-floating mb-1">
                             <input type="text" name="signature" value="{{ object }}" autofocus autocapitalize="none"
@@ -31,20 +31,47 @@
                             </select>
                         {% else %}
                         {% endif %}
-                        <div class="form-floating mb-1">
-                            <input type="text" name="figure_3d" value="{{ object.figure }}" autofocus
-                                   autocapitalize="none"
-                                   autocomplete="current-signature"
-                                   maxlength="300" class="form-control" id="id_figure_3d"
-                                   placeholder="name@example.com"
-                                   pattern="^https://p3d\.in/.*">
-                            <label for="id_figure_3d">Put your p3d.in link here or download your image below (not
-                                both):</label>
+
+                        <select class="form-select form-select-lg mb-1" name="thin_section"
+                                aria-label="Large select example">
+                            <option value="" selected>Thin section: {{ object.thin_section }}</option>
+                            {% for thin_section in thin_section_list %}
+                                <option value="{{ thin_section.pk }}">{{ thin_section }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="d-flex gap-3 justify-content-start lead fw-normal mb-1 mx-1">
+                            <a class="icon-link small"
+                               href="{% url 'unique_content:thin_section_list' %}">
+                                View all available virtual thin sections
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     class="bi">
+                                    <use xlink:href="#chevron-right"/>
+                                </svg>
+                            </a>
                         </div>
-                        <div class="mb-3">
-                            <input type="file" name="figure" accept="image/*"
-                                   class="form-control" id="id_figure">
+
+
+                        <select class="form-select form-select-lg mb-1" name="p3din_model"
+                                aria-label="Large select example">
+                            <option value="" selected>3d model: {{ object.p3din_model }}</option>
+                            {% for p3din_model in p3din_model_list %}
+                                <option value="{{ p3din_model.pk }}">{{ p3din_model }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="d-flex gap-3 justify-content-start lead fw-normal mb-1 mx-1">
+                            <a class="icon-link small"
+                               href="{% url 'unique_content:model_3d_list' %}">
+                                View all available 3d models
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     class="bi">
+                                    <use xlink:href="#chevron-right"/>
+                                </svg>
+                            </a>
                         </div>
+
+                        {% if form.errors %}
+                            {{ form.errors | safe }}
+                        {% endif %}
                         <button type="submit" class="btn btn-success">
                             {% if object %}
                                 Save
@@ -60,20 +87,6 @@
             </div>
         </div>
     </main>
-    <script>
-        function validateP3dLink() {
-            const p3dLinkPattern = /^https:\/\/p3d\.in\/[a-zA-Z0-9+_-]+$/; // Регулярное выражение для проверки ссылки на p3d.in
-
-            const inputValue = document.getElementById('id_figure_3d').value; // Получаем значение из поля ввода
-
-            if (p3dLinkPattern.test(inputValue)) {
-                alert('Ссылка на p3d.in верна!');
-                // Здесь можно добавить логику, которая выполнится, если ссылка соответствует паттерну p3d.in
-            } else {
-                alert('Пожалуйста, введите корректную ссылку на p3d.in (например, https://p3d.in/5pdW7)');
-                // Здесь можно добавить логику для случая, если ссылка не соответствует паттерну p3d.in
-            }
-        }
 
     </script>
 {% endblock %}

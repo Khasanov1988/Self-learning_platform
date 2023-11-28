@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm, PasswordChangeForm
 from django.forms import BooleanField
 
 from users.models import User
@@ -24,9 +24,22 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
 
 
 class UserProfileForm(StyleFormMixin, UserChangeForm):
+    password1 = forms.CharField(
+        label="New password",
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        strip=False,
+        required=False,
+    )
+    password2 = forms.CharField(
+        label="New password confirmation",
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        strip=False,
+        required=False,
+    )
+
     class Meta:
         model = User
-        fields = ('email', 'FIO', 'phone', 'comment',)
+        fields = ('email', 'name', 'surname', 'phone', 'password')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

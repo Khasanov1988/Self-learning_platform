@@ -1,6 +1,7 @@
 from django.apps import apps
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect
@@ -12,6 +13,20 @@ from education_content.forms import ChapterForm, MaterialForm, MaterialUpdateFor
     MaterialPhotosForm
 from education_content.models import Chapter, Material, MaterialPhotos
 from tests.models import Test
+from unique_content.models import FigureFromP3din, FigureThinSection
+
+
+class GetPublicationStatusOrOwnerOrStaffMixin:
+    """
+        Mixin to control if user owner or Staff
+    """
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.is_published:
+            raise PermissionDenied("Your material has been published. You must request unposting in order to edit it.")
+        elif self.object.owner != self.request.user and self.request.user.is_staff is not True:
+            raise PermissionDenied("You are not the author of this material. Editing is not possible for you.")
+        return self.object
 
 
 class GetLastUpdateMixin:
@@ -65,7 +80,7 @@ class ChapterCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ChapterUpdateView(LoginRequiredMixin, GetLastUpdateMixin, UpdateView):
+class ChapterUpdateView(LoginRequiredMixin, GetLastUpdateMixin, GetPublicationStatusOrOwnerOrStaffMixin, UpdateView):
     model = Chapter
     form_class = ChapterForm
 
@@ -185,12 +200,19 @@ class MaterialCreateChapterView(LoginRequiredMixin, GetChapterListMixin, CreateV
         return reverse_lazy('education_content:chapter_view', kwargs={'pk': chapter_pk})
 
 
-class MaterialUpdateView(LoginRequiredMixin, GetLastUpdateMixin, UpdateView):
+class MaterialUpdateView(LoginRequiredMixin, GetLastUpdateMixin, GetPublicationStatusOrOwnerOrStaffMixin, UpdateView):
     model = Material
     form_class = MaterialUpdateForm
 
     def get_success_url(self):
         return reverse('education_content:material_view', args=[self.kwargs.get('pk')])
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model', )
+        material_photos_list = material_photos_list.order_by('pk')
+        context_data['material_photos_list'] = material_photos_list
+        return context_data
 
 
 class MaterialListView(LoginRequiredMixin, GetFinalConditionsMixin, ListView):
@@ -223,7 +245,7 @@ class MaterialDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        material_photos_list = self.object.materialphotos_set.all()
+        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model', )
         material_photos_list = material_photos_list.order_by('pk')
         context_data['material_photos_list'] = material_photos_list
         try:
@@ -249,12 +271,16 @@ class MaterialPhotosCreateMaterialView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
         context_data['material_pk'] = self.kwargs['material_pk']
+        p3din_model_list = FigureFromP3din.objects.all()
+        context_data['p3din_model_list'] = p3din_model_list
+        thin_section_list = FigureThinSection.objects.all()
+        context_data['thin_section_list'] = thin_section_list
         return context_data
 
     def get_success_url(self):
         # We dynamically construct the URL using reverse_lazy and the value of chapter_pk
         material_pk = self.kwargs['material_pk']
-        return reverse_lazy('education_content:material_view', kwargs={'pk': material_pk})
+        return reverse_lazy('education_content:material_edit', kwargs={'pk': material_pk})
 
 
 class MaterialPhotosCreateView(LoginRequiredMixin, CreateView):
@@ -266,6 +292,10 @@ class MaterialPhotosCreateView(LoginRequiredMixin, CreateView):
         context_data = super().get_context_data()
         material_list = Material.objects.all()
         context_data['material_list'] = material_list
+        p3din_model_list = FigureFromP3din.objects.all()
+        context_data['p3din_model_list'] = p3din_model_list
+        thin_section_list = FigureThinSection.objects.all()
+        context_data['thin_section_list'] = thin_section_list
         return context_data
 
 

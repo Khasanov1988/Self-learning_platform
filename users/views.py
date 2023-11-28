@@ -2,7 +2,9 @@ import random
 import string
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.views import LoginView
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
@@ -29,7 +31,7 @@ class RegisterView(CreateView):
                 subject='Congratulations on successful registration at "GEOTEST" service!',
                 message='Welcome to our platform\n'
                         f'Your login is "{self.object.email}"\n'
-                        'You can login here: http://geotest.tech',
+                        'You can login here: https://geotest.tech',
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[self.object.email],
             )
@@ -41,22 +43,50 @@ class RegisterView(CreateView):
 class ProfileView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
-    success_url = reverse_lazy('users:profile')
+    success_url = reverse_lazy('education_content:chapter_list')
 
     def get_object(self, queryset=None):
         return self.request.user
 
     def form_valid(self, form):
         # Method works with success validation
-        print(form.data.get('password1'))
-        print(form.data.get('password2'))
-        print(form.is_valid())
         if form.is_valid():
-            self.object = form.save()
-            if form.data.get('password1') == form.data.get('password2') and form.data.get('password1') != "":
-                self.object.set_password(form.data.get('password1'))
-            self.object.save()
-        return super().form_valid(form)
+            self.object = form.save(commit=False)
+            # Проверка соответствия паролей
+            password1 = form.cleaned_data.get('password1')
+            password2 = form.cleaned_data.get('password2')
+
+            if password1 or password2:
+                # Проверка пароля на соответствие стандартам
+                try:
+                    validate_password(password1, self.object)
+                except ValidationError as e:
+                    form.add_error('password1', e)
+                    print(form.errors)
+                    return self.form_invalid(form)
+
+                if password1 != password2:
+                    form.add_error('password2', 'Passwords do not match.')
+                    return self.form_invalid(form)
+
+                self.object.set_password(password1)
+
+                try:
+                    send_mail(
+                        subject='Setting new password at "GEOTEST" service',
+                        message='You have successfully updated your password!\n'
+                                f'Your login is "{self.object.email}"\n'
+                                f'Your current password is "{password1}"\n'
+                                'You can login here: https://geotest.tech',
+                        from_email=settings.EMAIL_HOST_USER,
+                        recipient_list=[self.object.email],
+                    )
+                except Exception as e:
+                    print(f"An exception occurred while sending email: {e}")
+
+                self.object.save()
+
+            return super().form_valid(form)
 
 
 class LoginModifiedView(LoginView):
@@ -70,8 +100,11 @@ def generate_new_password(request):
     new_password = ''.join(random.choice(characters) for _ in range(12))
     # Send an email to the user with the new password
     send_mail(
-        subject='You have changed your password on "GEOTEST" service',
-        message=f'Your new password is: {new_password}',
+        subject='Setting new password at "GEOTEST" service',
+        message='You have successfully updated your password!\n'
+                f'Your login is "{request.user.email}"\n'
+                f'Your current password is "{new_password}"\n'
+                'You can login here: https://geotest.tech',
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[request.user.email],
     )
