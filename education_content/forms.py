@@ -23,17 +23,6 @@ class ChapterForm(StyleFormMixin, forms.ModelForm):
                 self.add_error('preview', 'The image size should be no more than 5 MB')
                 raise forms.ValidationError('The image size should be no more than 5 MB')
 
-            # Опционально, вы также можете проверить тип файла (изображение)
-            content_type = preview.content_type.split('/')[0]
-            if content_type not in ['image']:
-                self.add_error('preview', 'File type is not supported. Please upload an image')
-                raise forms.ValidationError('File type is not supported. Please upload an image')
-
-            # Опционально, вы также можете проверить размеры изображения, например, ширина и высота
-            # image = Image.open(preview)
-            # if image.width > some_width or image.height > some_height:
-            #     raise forms.ValidationError('The image dimensions should be within certain limits.')
-
         return preview
 
 
@@ -76,8 +65,8 @@ class MaterialPhotosForm(StyleFormMixin, forms.ModelForm):
         field2 = cleaned_data.get('p3din_model')
         # Checking if only one of the fields is filled in
         if field1 and field2:
-            self.add_error('p3din_model', 'Only one of thin_section and p3din_model can be filled at a time')
-            raise ValidationError("Only one of thin_section and p3din_model can be filled at a time")
+            self.add_error('p3din_model', 'Only one of thin_section and 3d_model can be filled at a time')
+            raise ValidationError("Only one of thin_section and 3d_model can be filled at a time")
 
 
         return cleaned_data
