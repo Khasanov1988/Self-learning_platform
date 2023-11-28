@@ -15,4 +15,6 @@ SUMMERNOTE_CONFIG = {
         'height': '480',
     },
 
+    'attachment_filesize_limit': 2048 * 2048,
+
 }
