@@ -31,7 +31,7 @@ class RegisterView(CreateView):
                 subject='Congratulations on successful registration at "GEOTEST" service!',
                 message='Welcome to our platform\n'
                         f'Your login is "{self.object.email}"\n'
-                        'You can login here: http://geotest.tech',
+                        'You can login here: https://geotest.tech',
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[self.object.email],
             )
@@ -73,11 +73,11 @@ class ProfileView(LoginRequiredMixin, UpdateView):
 
                 try:
                     send_mail(
-                        subject='Setting new password at "GEOTEST" service!',
+                        subject='Setting new password at "GEOTEST" service',
                         message='You have successfully updated your password!\n'
                                 f'Your login is "{self.object.email}"\n'
                                 f'Your current password is "{password1}"\n'
-                                'You can login here: http://geotest.tech',
+                                'You can login here: https://geotest.tech',
                         from_email=settings.EMAIL_HOST_USER,
                         recipient_list=[self.object.email],
                     )
@@ -100,8 +100,11 @@ def generate_new_password(request):
     new_password = ''.join(random.choice(characters) for _ in range(12))
     # Send an email to the user with the new password
     send_mail(
-        subject='You have changed your password on "GEOTEST" service',
-        message=f'Your new password is: {new_password}',
+        subject='Setting new password at "GEOTEST" service',
+        message='You have successfully updated your password!\n'
+                f'Your login is "{request.user.email}"\n'
+                f'Your current password is "{new_password}"\n'
+                'You can login here: https://geotest.tech',
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[request.user.email],
     )

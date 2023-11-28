@@ -37,7 +37,7 @@ function updateSVGColor() {
     }
 }
 
-// Function to update the src of 3d figures depending on the current theme
+// Function to update the src of 3d figures in material_view depending on the current theme
 function updateFigure3dSrc() {
 
     const theme = getCurrentTheme();
@@ -51,6 +51,24 @@ function updateFigure3dSrc() {
             figure.src = currentSrc.replace('2b3035ff', 'f8f9faff');
         } else if (theme === 'dark' && currentSrc.includes('f8f9faff')) {
             figure.src = currentSrc.replace('f8f9faff', '2b3035ff');
+        }
+    });
+}
+
+// Function to update the src of 3d figures inside cards depending on the current theme
+function updateFigure3dSrc_card() {
+
+    const theme = getCurrentTheme();
+    const figureElements_card = document.querySelectorAll('[id^="card_figure_"]');
+
+    figureElements_card.forEach((figure) => {
+        const currentSrc = figure.src;
+
+        // Check the current theme and update the src accordingly
+        if (theme === 'light' && currentSrc.includes('212529ff')) {
+            figure.src = currentSrc.replace('212529ff', 'f8f9faff');
+        } else if (theme === 'dark' && currentSrc.includes('f8f9faff')) {
+            figure.src = currentSrc.replace('f8f9faff', '212529ff');
         }
     });
 }
@@ -85,6 +103,7 @@ function updateStageImg() {
 
 let themeImage = document.getElementById('themeImage');
 const figureElements = document.querySelectorAll('[id^="figure_"]');
+const figureElements_card = document.querySelectorAll('[id^="figure_card_"]');
 const fil0Elements = document.querySelectorAll('.fil0');
 let polarizerImg = document.getElementById('polarizerImg');
 let stageImg = document.getElementById('stageImg');
@@ -98,6 +117,11 @@ if (themeImage) {
 if (figureElements) {
     window.addEventListener('load', updateFigure3dSrc);
     document.addEventListener('themeChanged', updateFigure3dSrc);
+}
+
+if (figureElements_card) {
+    window.addEventListener('load', updateFigure3dSrc_card);
+    document.addEventListener('themeChanged', updateFigure3dSrc_card);
 }
 
 if (fil0Elements) {

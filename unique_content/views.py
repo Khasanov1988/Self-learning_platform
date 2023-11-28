@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 
 from unique_content.models import FigureThinSection, FigureFromP3din
 
@@ -14,5 +14,13 @@ class FigureThinSectionDetailView(LoginRequiredMixin, DetailView):
         return context_data
 
 
+class FigureThinSectionListView(LoginRequiredMixin, ListView):
+    model = FigureThinSection
+
+
 class FigureFromP3dinDetailView(LoginRequiredMixin, DetailView):
+    model = FigureFromP3din
+
+
+class FigureFromP3dinListView(LoginRequiredMixin, ListView):
     model = FigureFromP3din
