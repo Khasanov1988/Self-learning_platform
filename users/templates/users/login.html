@@ -21,15 +21,26 @@
                     </div>
 
                     <div class="form-check text-start my-3">
-                        <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
+                        <input class="form-check-input" type="checkbox" name="remember_me" value="remember-me" id="flexCheckDefault" checked>
                         <label class="form-check-label" for="flexCheckDefault">
                             Remember me
                         </label>
                     </div>
+
                     {% if form.errors %}
                         {{ form.errors }}
                     {% endif %}
-                    <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+                    <button class="btn btn-primary w-100 py-2" type="submit">Log in</button>
+
+                    <div class="d-flex gap-3 justify-content-center lead fw-normal my-1">
+                        <a class="icon-link" href="{% url 'users:register' %}">
+                            or register
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                 class="bi">
+                                <use xlink:href="#chevron-right"/>
+                            </svg>
+                        </a>
+                    </div>
                 </form>
             </div>
         </div>

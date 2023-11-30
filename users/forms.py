@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm, PasswordChangeForm
 from django.forms import BooleanField
-
 from users.models import User
 
 
@@ -48,8 +47,20 @@ class UserProfileForm(StyleFormMixin, UserChangeForm):
 
 
 class UserLoginForm(StyleFormMixin, AuthenticationForm):
+    remember_me = forms.BooleanField(
+        required=False,
+        initial=True,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        label='Remember me'
+    )
     class Meta:
         model = User
 
     def clean_username(self):
         return self.cleaned_data['username'].lower()
+
+    def clean_remember_me(self):
+        remember_me = self.cleaned_data.get('remember_me')
+        if not remember_me:
+            self.request.session.set_expiry(0)  # Session expires before closing browser
+        return remember_me
