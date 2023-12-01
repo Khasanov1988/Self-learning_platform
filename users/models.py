@@ -32,6 +32,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=100, verbose_name='First name', null=True, blank=True)
     last_name = models.CharField(max_length=150, verbose_name='Last name', null=True, blank=True)
     phone = models.CharField(max_length=35, verbose_name='Phone Number', null=True, blank=True)
+    profile_picture = models.URLField(blank=True, null=True, verbose_name='Profile picture')
 
     # Specify 'email' as the field used for authentication
     USERNAME_FIELD = 'email'
