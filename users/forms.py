@@ -1,6 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm, PasswordChangeForm
 from django.forms import BooleanField
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV2Checkbox
+
 from users.models import User
 
 
@@ -17,6 +20,8 @@ class StyleFormMixin:
 
 
 class UserRegisterForm(StyleFormMixin, UserCreationForm):
+    captcha = ReCaptchaField()
+
     class Meta:
         model = User
         fields = ('email', 'password1', 'password2',)
@@ -38,7 +43,7 @@ class UserProfileForm(StyleFormMixin, UserChangeForm):
 
     class Meta:
         model = User
-        fields = ('email', 'name', 'surname', 'phone', 'password')
+        fields = ('email', 'first_name', 'last_name', 'phone', 'password')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -53,6 +58,7 @@ class UserLoginForm(StyleFormMixin, AuthenticationForm):
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         label='Remember me'
     )
+
     class Meta:
         model = User
 

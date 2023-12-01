@@ -29,8 +29,8 @@ class User(AbstractUser):
     # Remove the username field and replace it with email as the unique identifier
     username = None
     email = models.EmailField(unique=True, verbose_name='Email')  # Email field for authentication
-    name = models.CharField(max_length=100, verbose_name='Name', null=True, blank=True)
-    surname = models.CharField(max_length=150, verbose_name='Surname', null=True, blank=True)
+    first_name = models.CharField(max_length=100, verbose_name='First name', null=True, blank=True)
+    last_name = models.CharField(max_length=150, verbose_name='Last name', null=True, blank=True)
     phone = models.CharField(max_length=35, verbose_name='Phone Number', null=True, blank=True)
 
     # Specify 'email' as the field used for authentication
