@@ -56,7 +56,7 @@ class Mineral(models.Model):
     """
     name_eng = models.CharField(max_length=100, verbose_name='Mineral name(Eng)')
     name_rus = models.CharField(max_length=100, verbose_name='Mineral name(Rus)')
-    abbreviation = models.CharField(max_length=4, verbose_name='Mineral abbreviation')
+    abbreviation = models.CharField(max_length=7, verbose_name='Mineral abbreviation')
 
     def __str__(self):
         return f'{self.abbreviation}'

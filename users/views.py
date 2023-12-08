@@ -11,6 +11,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView
 
 from config import settings
+from config.settings import RECAPTCHA_PUBLIC_KEY
 from users.forms import UserRegisterForm, UserProfileForm, UserLoginForm
 from users.models import User
 
@@ -38,6 +39,11 @@ class RegisterView(CreateView):
         except Exception as e:
             print(f"An exception occurred while sending email: {e}")
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['recaptcha_public_key'] = RECAPTCHA_PUBLIC_KEY
+        return context_data
 
 
 class ProfileView(LoginRequiredMixin, UpdateView):
