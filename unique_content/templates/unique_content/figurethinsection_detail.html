@@ -330,7 +330,7 @@
 
         document.addEventListener('mousemove', function (event) {
             if (isDragging) {
-                let percentage = ((event.clientX - nullPoint.x) / videoPlayer.offsetWidth);
+                let percentage = (((event.clientX - nullPoint.x) + (nullPoint.y - event.clientY)) / videoPlayer.offsetWidth);
                 let frameValue = Math.round(percentage * 359);
                 currentFrame = (nullFrame + frameValue + 1800) % 360;
                 if (isRotating) {
@@ -350,13 +350,13 @@
                 updateFrame();
                 rotateThinSection()
             } else if (isSettingFrameImg) {
-                let percentage = ((event.clientX - nullPoint.x) / modeImage.offsetWidth);
+                let percentage = (((nullPoint.x - event.clientX) + (event.clientY - nullPoint.y)) / modeImage.offsetWidth);
                 let frameValue = Math.round(percentage * 359);
                 deltaAngle = (nullDelta + frameValue + 1800) % 360;
                 currentFrame = (currentAngle - deltaAngle + 1800) % 360;
                 updateFrame();
             } else if (isSettingAngleImg) {
-                let percentage = ((event.clientX - nullPoint.x) / rotateImage.offsetWidth);
+                let percentage = (((nullPoint.x - event.clientX) + (event.clientY - nullPoint.y)) / rotateImage.offsetWidth);
                 let angleValue = Math.round(percentage * 359);
                 currentAngle = (nullAngle + angleValue + 1800) % 360;
                 currentFrame = (currentAngle - deltaAngle + 1800) % 360;
