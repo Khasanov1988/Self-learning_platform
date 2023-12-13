@@ -83,7 +83,8 @@
                                         style="z-index: 3;"
                                         onclick="toggleAutoRotate()">Turn auto-rotate mode on
                                 </button>
-                                <button type="button" class="btn btn-secondary w-75 m-1 mb-3 mb-md-5" id="rotateButton_1"
+                                <button type="button" class="btn btn-secondary w-75 m-1 mb-3 mb-md-5"
+                                        id="rotateButton_1"
                                         style="z-index: 3;"
                                         onclick="toggleRotation()">Switch to stage rotation
                                 </button>
@@ -91,7 +92,8 @@
                                 <p class="w-75">To interact with the control elements, you need to press and hold the
                                     left mouse button on the corresponding element and move the mouse horizontally
                                 </p>
-                                <p class="w-75"><a href="https://geotest.tech/material_view/33/">Here</a> you can see the transcript of the mineral signature labels
+                                <p class="w-75"><a href="https://geotest.tech/material_view/33/">Here</a> you can see
+                                    the transcript of the mineral signature labels
                                 </p>
 
                             </div>
@@ -140,12 +142,15 @@
         let isOnPosition = false;
 
         let nullPoint = 0;
+        let nullPointAngle = 0;
         let nullFrame = 0;
         let nullAngle = 0;
         let nullDelta = 0;
         let currentFrame = 0;
         let currentAngle = 0;
         let deltaAngle = 0;
+        let coordX = 0;
+        let coordY = 0;
 
         // Blob objects to store video data
         let videoBlobA, videoBlobB;
@@ -283,6 +288,14 @@
             if (event.button === 0) { // Checking that it is the left mouse button
                 isDragging = true;
                 nullPoint = {x: event.clientX, y: event.clientY};
+
+                let rect = videoPlayer.getBoundingClientRect();
+                coordX = rect.left + rect.width / 2;
+                coordY = rect.top + rect.height / 2;
+
+                let deltaX = nullPoint.x - coordX;
+                let deltaY = nullPoint.y - coordY;
+                nullPointAngle = Math.round((Math.atan2(deltaY, deltaX) * 180 / Math.PI));
             }
         });
 
@@ -297,6 +310,14 @@
             if (event.button === 0) { // Checking that it is the left mouse button
                 isSettingFrameImg = true;
                 nullPoint = {x: event.clientX, y: event.clientY};
+
+                let rect = modeImage.getBoundingClientRect();
+                coordX = rect.left + rect.width / 2;
+                coordY = rect.top + rect.height / 2;
+
+                let deltaX = nullPoint.x - coordX;
+                let deltaY = nullPoint.y - coordY;
+                nullPointAngle = Math.round((Math.atan2(deltaY, deltaX) * 180 / Math.PI));
             }
         });
 
@@ -311,6 +332,14 @@
             if (event.button === 0) { // Checking that it is the left mouse button
                 isSettingAngleImg = true;
                 nullPoint = {x: event.clientX, y: event.clientY};
+
+                let rect = rotateImage.getBoundingClientRect();
+                coordX = rect.left + rect.width / 2;
+                coordY = rect.top + rect.height / 2;
+
+                let deltaX = nullPoint.x - coordX;
+                let deltaY = nullPoint.y - coordY;
+                nullPointAngle = Math.round((Math.atan2(deltaY, deltaX) * 180 / Math.PI));
             }
         });
 
@@ -321,7 +350,6 @@
                 isSettingAngle = false;
                 isSettingFrameImg = false;
                 isSettingAngleImg = false;
-                {#isSettingSpeed = false;#}
                 nullFrame = currentFrame;
                 nullAngle = currentAngle;
                 nullDelta = deltaAngle;
@@ -330,13 +358,15 @@
 
         document.addEventListener('mousemove', function (event) {
             if (isDragging) {
-                let percentage = (((event.clientX - nullPoint.x) + (nullPoint.y - event.clientY)) / videoPlayer.offsetWidth);
-                let frameValue = Math.round(percentage * 359);
-                currentFrame = (nullFrame + frameValue + 1800) % 360;
+                let deltaX = event.clientX - coordX;
+                let deltaY = event.clientY - coordY;
+                let currentRotationAngle = Math.round((Math.atan2(deltaY, deltaX) * 180 / Math.PI));
+                let frameValue = Math.round(currentRotationAngle - nullPointAngle);
+                currentFrame = (nullFrame + frameValue + 360) % 360;
                 if (isRotating) {
-                    currentAngle = (nullAngle + frameValue + 1800) % 360;
+                    currentAngle = (nullAngle + frameValue + 360) % 360;
                 }
-                deltaAngle = (currentAngle - currentFrame + 1800) % 360;
+                deltaAngle = (currentAngle - currentFrame + 360) % 360;
                 updateFrame();
             } else if (isSettingFrame) {
                 deltaAngle = Math.round(((event.clientX - frameNumberProgress_set.getBoundingClientRect().left) / frameNumberProgress_set.offsetWidth) * 359);
@@ -350,16 +380,21 @@
                 updateFrame();
                 rotateThinSection()
             } else if (isSettingFrameImg) {
-                let percentage = (((nullPoint.x - event.clientX) + (event.clientY - nullPoint.y)) / modeImage.offsetWidth);
-                let frameValue = Math.round(percentage * 359);
-                deltaAngle = (nullDelta + frameValue + 1800) % 360;
-                currentFrame = (currentAngle - deltaAngle + 1800) % 360;
+                let deltaX = event.clientX - coordX;
+                let deltaY = event.clientY - coordY;
+                let currentRotationAngle = Math.round((Math.atan2(deltaY, deltaX) * 180 / Math.PI));
+                let frameValue = Math.round((currentRotationAngle - nullPointAngle));
+                frameValue = (frameValue + 360) % 360;
+                deltaAngle = (nullDelta + frameValue + 360) % 360;
+                currentFrame = (currentAngle - deltaAngle + 360) % 360;
                 updateFrame();
             } else if (isSettingAngleImg) {
-                let percentage = (((nullPoint.x - event.clientX) + (event.clientY - nullPoint.y)) / rotateImage.offsetWidth);
-                let angleValue = Math.round(percentage * 359);
-                currentAngle = (nullAngle + angleValue + 1800) % 360;
-                currentFrame = (currentAngle - deltaAngle + 1800) % 360;
+                let deltaX = event.clientX - coordX;
+                let deltaY = event.clientY - coordY;
+                let currentRotationAngle = Math.round((Math.atan2(deltaY, deltaX) * 180 / Math.PI));
+                let angleValue = Math.round((currentRotationAngle - nullPointAngle));
+                currentAngle = (nullAngle + angleValue + 360) % 360;
+                currentFrame = (currentAngle - deltaAngle + 360) % 360;
                 updateFrame();
                 rotateThinSection()
             }
