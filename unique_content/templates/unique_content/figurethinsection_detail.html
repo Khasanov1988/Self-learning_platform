@@ -73,7 +73,7 @@
 
                                 <button type="button" class="btn btn-info w-75 m-1" id="modeButton_1"
                                         style="z-index: 3;"
-                                        onclick="toggleMode()">Switch to СPL mode
+                                        onclick="toggleMode()">Switch to XPL mode
                                 </button>
                                 <button type="button" class="btn btn-warning w-75 m-1" id="mineralsButton_1"
                                         style="z-index: 3;"
@@ -89,9 +89,15 @@
                                         onclick="toggleRotation()">Switch to stage rotation
                                 </button>
                                 <h3 class="w-75">Virtual microscope control:</h3>
-                                <p class="w-75">To interact with the control elements, you need to press and hold the
-                                    left mouse button on the corresponding element and move the mouse horizontally
+                                <p class="w-75 d-none d-lg-block">
+                                    To interact with the control elements, you need to press and hold the left mouse
+                                    button on the corresponding element and move the mouse around centre of element
                                 </p>
+                                <p class="w-75 d-lg-none">
+                                    To interact with the control elements, you need to press and hold the left mouse
+                                    button on the corresponding element and move the mouse horizontally
+                                </p>
+
                                 <p class="w-75"><a href="https://geotest.tech/material_view/33/">Here</a> you can see
                                     the transcript of the mineral signature labels
                                 </p>
@@ -175,7 +181,7 @@
             isParallelMode = !isParallelMode;
 
             if (isParallelMode) {
-                modeButton.textContent = 'Switch to СPL mode';
+                modeButton.textContent = 'Switch to XPL mode';
                 videoPlayer.src = URL.createObjectURL(videoBlobB);
                 let temp = modeImage.src
                 modeImage.src = '/media/decor/Polarizer' + temp.slice(-6);
