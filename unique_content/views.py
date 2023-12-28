@@ -18,6 +18,7 @@ class FigureThinSectionDetailView(LoginRequiredMixin, DetailView):
 
 class FigureThinSectionListView(LoginRequiredMixin, ListView):
     model = FigureThinSection
+    ordering = ['-pk']
 
 
 class FigureFromP3dinDetailView(LoginRequiredMixin, DetailView):
@@ -31,3 +32,4 @@ class FigureFromP3dinDetailView(LoginRequiredMixin, DetailView):
 
 class FigureFromP3dinListView(LoginRequiredMixin, ListView):
     model = FigureFromP3din
+    ordering = ['-pk']
