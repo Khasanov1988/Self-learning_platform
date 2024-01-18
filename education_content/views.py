@@ -14,6 +14,7 @@ from education_content.forms import ChapterForm, MaterialForm, MaterialUpdateFor
 from education_content.models import Chapter, Material, MaterialPhotos
 from tests.models import Test
 from unique_content.models import FigureFromP3din, FigureThinSection
+from users.services import update_last_activity
 
 
 class GetPublicationStatusOrOwnerOrStaffMixin:
@@ -92,6 +93,7 @@ class ChapterListView(LoginRequiredMixin, GetFinalConditionsMixin, ListView):
     model = Chapter
 
     def get_queryset(self, *args, **kwargs):
+        update_last_activity(self.request.user)
         queryset = super().get_queryset(*args, **kwargs)
         if not (self.request.user.is_staff or self.request.user.is_superuser):
             queryset = queryset.filter(self.get_final_conditions())
@@ -102,6 +104,7 @@ class ChapterDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView)
     model = Chapter
 
     def get_queryset(self, *args, **kwargs):
+        update_last_activity(self.request.user)
         return super().get_queryset(*args, **kwargs).select_related('owner')
 
     def get_object(self, queryset=None):
@@ -219,6 +222,7 @@ class MaterialListView(LoginRequiredMixin, GetFinalConditionsMixin, ListView):
     model = Material
 
     def get_queryset(self, *args, **kwargs):
+        update_last_activity(self.request.user)
         queryset = super().get_queryset(*args, **kwargs).select_related('owner', 'chapter')
         queryset = queryset.order_by('pk')
         if not (self.request.user.is_staff or self.request.user.is_superuser):
@@ -235,6 +239,7 @@ class MaterialDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView
     model = Material
 
     def get_queryset(self, *args, **kwargs):
+        update_last_activity(self.request.user)
         return super().get_queryset(*args, **kwargs).select_related('owner')
 
     def get_object(self, queryset=None):

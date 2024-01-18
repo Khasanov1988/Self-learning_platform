@@ -78,7 +78,7 @@
                                     {% include 'education_content/includes/inc_material_photo_card.html' %}
                                 {% endfor %}
                             {% endif %}
-                            {% if object.owner == user %}
+                            {% if object.owner == user or user.is_staff %}
                                 <div class="col px-3">
                                     <div class="card shadow-sm">
                                         <a href="{% url 'education_content:materialphotos_create_for_special_material' material_pk=object.pk %}"

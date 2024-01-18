@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 
 
 class CustomUserManager(BaseUserManager):
@@ -33,6 +34,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=150, verbose_name='Last name', null=True, blank=True)
     phone = models.CharField(max_length=35, verbose_name='Phone Number', null=True, blank=True)
     profile_picture = models.URLField(blank=True, null=True, verbose_name='Profile picture')
+    last_activity = models.DateTimeField(null=True, blank=True, default=timezone.now, verbose_name='Last activity')
 
     # Specify 'email' as the field used for authentication
     USERNAME_FIELD = 'email'

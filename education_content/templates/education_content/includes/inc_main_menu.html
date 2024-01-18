@@ -91,6 +91,16 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'education_content:material_list' %}">Materials</a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'tests:test_list' %}">Tests</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Special content
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'unique_content:model_3d_list' %}">3d models</a></li>
+                            <li><a class="dropdown-item" href="{% url 'unique_content:thin_section_list' %}">Virtual thin sections</a></li>
+                        </ul>
+                    </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}">Profile</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}">Log Out</a></li>
