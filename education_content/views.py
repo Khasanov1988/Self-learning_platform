@@ -63,7 +63,7 @@ class GetChapterListMixin:
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        chapter_list = Chapter.objects.all()
+        chapter_list = Chapter.objects.all().filter(is_published=True)
         context_data['chapter_list'] = chapter_list
         return context_data
 

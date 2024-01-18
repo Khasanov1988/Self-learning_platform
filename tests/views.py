@@ -62,7 +62,7 @@ class GetMaterialListMixin:
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
         material_list = Material.objects.all()
-        material_list = material_list.filter(is_test_exist=False)
+        material_list = material_list.filter(is_test_exist=False, is_published=True)
         context_data['material_list'] = material_list
         return context_data
 
