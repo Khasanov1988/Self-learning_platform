@@ -21,6 +21,7 @@ class GetPublicationStatusOrOwnerOrStaffMixin:
     """
         Mixin to control if user owner or Staff
     """
+
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
         if self.object.is_published:
@@ -238,8 +239,16 @@ class MaterialListView(LoginRequiredMixin, GetFinalConditionsMixin, ListView):
 class MaterialDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView):
     model = Material
 
+    def dispatch(self, request, *args, **kwargs):
+        # Check if login_required. If yes, apply LoginRequiredMixin functionality
+        if self.get_object().is_login_required:
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            return super(DetailView, self).dispatch(request, *args, **kwargs)
+
     def get_queryset(self, *args, **kwargs):
-        update_last_activity(self.request.user)
+        if self.request.user.is_authenticated:
+            update_last_activity(self.request.user)
         return super().get_queryset(*args, **kwargs).select_related('owner')
 
     def get_object(self, queryset=None):
