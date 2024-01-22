@@ -49,6 +49,7 @@ class Material(models.Model):
     is_test_exist = models.BooleanField(default=False, verbose_name='Test exist status')
     is_published = models.BooleanField(default=False, verbose_name='Publication status')
     is_published_requested = models.BooleanField(default=False, verbose_name='Publication request status')
+    is_login_required = models.BooleanField(default=True, verbose_name='Login required status')
     views_count = models.PositiveIntegerField(default=0, verbose_name='Number of views')
 
     def __str__(self):
