@@ -1,6 +1,6 @@
 from django.apps import apps
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import Http404
@@ -15,6 +15,22 @@ from education_content.models import Chapter, Material, MaterialPhotos
 from tests.models import Test
 from unique_content.models import FigureFromP3din, FigureThinSection
 from users.services import update_last_activity
+
+
+class LoginRequiredWithChoiceMixin(AccessMixin):
+    """
+    Mixin change LoginRequiredMixin functionality according to 'is_login_required'
+    field in the model
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if login_required. If yes, apply LoginRequiredMixin functionality
+        if self.get_object().is_login_required:
+            if not request.user.is_authenticated:
+                return self.handle_no_permission()
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            return super().dispatch(request, *args, **kwargs)
 
 
 class GetPublicationStatusOrOwnerOrStaffMixin:
@@ -236,15 +252,8 @@ class MaterialListView(LoginRequiredMixin, GetFinalConditionsMixin, ListView):
         return context_data
 
 
-class MaterialDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView):
+class MaterialDetailView(LoginRequiredWithChoiceMixin, GetFinalConditionsMixin, DetailView):
     model = Material
-
-    def dispatch(self, request, *args, **kwargs):
-        # Check if login_required. If yes, apply LoginRequiredMixin functionality
-        if self.get_object().is_login_required:
-            return super().dispatch(request, *args, **kwargs)
-        else:
-            return super(DetailView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self, *args, **kwargs):
         if self.request.user.is_authenticated:
