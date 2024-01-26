@@ -17,6 +17,7 @@ class FigureFromP3din(models.Model):
     last_update = models.DateTimeField(default=timezone.now, verbose_name='Last update time')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                               verbose_name='Owner')
+    is_login_required = models.BooleanField(default=True, verbose_name='Login required status')
 
     def __str__(self):
         return f'{self.title}'
@@ -41,6 +42,7 @@ class FigureThinSection(models.Model):
     last_update = models.DateTimeField(default=timezone.now, verbose_name='Last update time')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                               verbose_name='Owner')
+    is_login_required = models.BooleanField(default=True, verbose_name='Login required status')
 
     def __str__(self):
         return f'{self.title}'

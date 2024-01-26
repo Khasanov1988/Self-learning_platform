@@ -1,6 +1,6 @@
 from django.apps import apps
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import Http404
@@ -17,10 +17,27 @@ from unique_content.models import FigureFromP3din, FigureThinSection
 from users.services import update_last_activity
 
 
+class LoginRequiredWithChoiceMixin(AccessMixin):
+    """
+    Mixin change LoginRequiredMixin functionality according to 'is_login_required'
+    field in the model
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if login_required. If yes, apply LoginRequiredMixin functionality
+        if self.get_object().is_login_required:
+            if not request.user.is_authenticated:
+                return self.handle_no_permission()
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            return super().dispatch(request, *args, **kwargs)
+
+
 class GetPublicationStatusOrOwnerOrStaffMixin:
     """
         Mixin to control if user owner or Staff
     """
+
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
         if self.object.is_published:
@@ -63,7 +80,7 @@ class GetChapterListMixin:
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        chapter_list = Chapter.objects.all()
+        chapter_list = Chapter.objects.all().filter(is_published=True)
         context_data['chapter_list'] = chapter_list
         return context_data
 
@@ -235,7 +252,7 @@ class MaterialListView(LoginRequiredMixin, GetFinalConditionsMixin, ListView):
         return context_data
 
 
-class MaterialDetailView(LoginRequiredMixin, GetFinalConditionsMixin, DetailView):
+class MaterialDetailView(LoginRequiredWithChoiceMixin, GetFinalConditionsMixin, DetailView):
     model = Material
 
     def get_queryset(self, *args, **kwargs):
