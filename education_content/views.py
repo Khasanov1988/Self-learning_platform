@@ -256,8 +256,7 @@ class MaterialDetailView(LoginRequiredWithChoiceMixin, GetFinalConditionsMixin, 
     model = Material
 
     def get_queryset(self, *args, **kwargs):
-        if self.request.user.is_authenticated:
-            update_last_activity(self.request.user)
+        update_last_activity(self.request.user)
         return super().get_queryset(*args, **kwargs).select_related('owner')
 
     def get_object(self, queryset=None):

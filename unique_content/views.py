@@ -1,11 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView, ListView
 
+from education_content.views import LoginRequiredWithChoiceMixin
 from unique_content.models import FigureThinSection, FigureFromP3din
 from users.services import update_last_activity
 
 
-class FigureThinSectionDetailView(LoginRequiredMixin, DetailView):
+class FigureThinSectionDetailView(LoginRequiredWithChoiceMixin, DetailView):
     model = FigureThinSection
 
     def get_context_data(self, **kwargs):
@@ -21,7 +22,7 @@ class FigureThinSectionListView(LoginRequiredMixin, ListView):
     ordering = ['-pk']
 
 
-class FigureFromP3dinDetailView(LoginRequiredMixin, DetailView):
+class FigureFromP3dinDetailView(LoginRequiredWithChoiceMixin, DetailView):
     model = FigureFromP3din
 
     def get_context_data(self, **kwargs):
