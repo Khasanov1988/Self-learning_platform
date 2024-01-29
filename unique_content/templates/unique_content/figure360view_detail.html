@@ -1,0 +1,42 @@
+{% extends 'education_content/base.html' %}
+
+{% block content %}
+    {% load my_tags %}
+    <style>
+        .pano-image {
+            width: 100%;
+            height: 80vh;
+        }
+    </style>
+    <main class="form-signin w-100 m-auto">
+        <section class="py-3 text-center container">
+            <div class="row py-lg-5">
+                <div class="col-lg-12 col-md-8 mx-auto">
+                    <h1 class="fw-light">{{ object }}</h1>
+                    <p class="lead text-body-secondary">{{ object.description }}</p>
+                </div>
+            </div>
+        </section>
+        <div class="position-relative overflow-hidden p-1 p-md-5 m-md-5 text-center bg-body-tertiary">
+            <div class="album py-5 bg-body-tertiary">
+                <div class="container-fluid">
+                    <div class="pano-image">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/static/js/360view/three.min.js"></script>
+        <script src="/static/js/360view/panolens.min.js"></script>
+        <script>
+            const panoImage = document.querySelector('.pano-image');
+            const imgPath = '{{ object.view | mediapath_filter }}';
+            console.log(imgPath)
+            const panorama = new PANOLENS.ImagePanorama(imgPath);
+            const viewer = new PANOLENS.Viewer({
+                container: panoImage
+            });
+            viewer.add(panorama);
+        </script>
+    </main>
+{% endblock %}

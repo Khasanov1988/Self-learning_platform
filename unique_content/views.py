@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView, ListView
 
 from education_content.views import LoginRequiredWithChoiceMixin
-from unique_content.models import FigureThinSection, FigureFromP3din
+from unique_content.models import FigureThinSection, FigureFromP3din, Figure360View
 from users.services import update_last_activity
 
 
@@ -33,4 +33,18 @@ class FigureFromP3dinDetailView(LoginRequiredWithChoiceMixin, DetailView):
 
 class FigureFromP3dinListView(LoginRequiredMixin, ListView):
     model = FigureFromP3din
+    ordering = ['-pk']
+
+
+class Figure360ViewDetailView(LoginRequiredWithChoiceMixin, DetailView):
+    model = Figure360View
+
+    def get_context_data(self, **kwargs):
+        update_last_activity(self.request.user)
+        context_data = super().get_context_data()
+        return context_data
+
+
+class Figure360ViewListView(LoginRequiredMixin, ListView):
+    model = Figure360View
     ordering = ['-pk']
