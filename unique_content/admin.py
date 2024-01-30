@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from unique_content.models import FigureFromP3din, FigureThinSection, Mineral, Label, Figure360View
+from unique_content.models import FigureFromP3din, FigureThinSection, Mineral, Label, Figure360View, \
+    InfoSpotForPanorama, InfoSpotCoordinates
 
 
 @admin.register(FigureFromP3din)
@@ -33,3 +34,15 @@ class Figure360ViewAdmin(admin.ModelAdmin):
     # Define how the Figure360View model is displayed in the Django admin panel.
 
     list_filter = ('title',)
+
+@admin.register(InfoSpotForPanorama)
+class InfoSpotForPanoramaAdmin(admin.ModelAdmin):
+    # Define how the InfoSpotForPanorama model is displayed in the Django admin panel.
+
+    list_filter = ('title',)
+
+@admin.register(InfoSpotCoordinates)
+class InfoSpotCoordinatesAdmin(admin.ModelAdmin):
+    # Define how the InfoSpotCoordinates model is displayed in the Django admin panel.
+
+    list_filter = ('panorama',)

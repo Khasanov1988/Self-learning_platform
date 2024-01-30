@@ -17,25 +17,67 @@
                 </div>
             </div>
         </section>
-        <div class="position-relative overflow-hidden p-1 p-md-5 m-md-5 text-center bg-body-tertiary">
-            <div class="album py-5 bg-body-tertiary">
-                <div class="container-fluid">
-                    <div class="pano-image">
+        <div class="overflow-hidden p-0 pt-5 p-md-5 pb-md-2 m-md-5 text-center bg-body-tertiary">
+            <div class="position-relative album py-0 bg-body-tertiary">
 
-                    </div>
+                <div class="pano-image">
+
                 </div>
+
             </div>
         </div>
         <script src="/static/js/360view/three.min.js"></script>
         <script src="/static/js/360view/panolens.min.js"></script>
         <script>
             const panoImage = document.querySelector('.pano-image');
+            const imgId = '{{ object.pk }}';
             const imgPath = '{{ object.view | mediapath_filter }}';
-            console.log(imgPath)
+            const panoramaDict = JSON.parse('{{ pano_view_dict | escapejs }}');
+            const infoSpotDict = JSON.parse('{{ info_spot_dict | escapejs }}');
+            const infoSpotCoordList = JSON.parse('{{ info_spot_coordinates_list | escapejs }}');
+            let infoSpotCoordListForCurrentId = [];
+            let infoSpot;
+
+            console.log(imgId);
+            console.log(imgPath);
+            console.log(panoramaDict);
+            console.log(infoSpotDict);
+            console.log(infoSpotCoordList);
+
             const panorama = new PANOLENS.ImagePanorama(imgPath);
             const viewer = new PANOLENS.Viewer({
-                container: panoImage
+                container: panoImage, // A Element container
+                autoRotate: true,
+                autoRotateSpeed: 0.2,
+                controlBar: true, // Vsibility of bottom control bar
+                controlButtons: ['fullscreen', 'video'], // Buttons array in the control bar. Default to ['fullscreen', 'setting', 'video']
+                autoHideControlBar: false, // Auto hide control bar
+                autoHideInfospot: true, // Auto hide infospots
+                horizontalView: false, // Allow only horizontal camera control
+                cameraFov: 70, // Camera field of view in degree
+                reverseDragging: false, // Reverse orbit control direction
+                enableReticle: false, // Enable reticle for mouseless interaction
+                dwellTime: 1500, // Dwell time for reticle selection in millisecond
+                autoReticleSelect: true, // Auto select a clickable target after dwellTime
+                viewIndicator: true, // Adds an angle view indicator in upper left corner
+                indicatorSize: 60, // Size of View Indicator
+                output: 'console' // Whether and where to output infospot position. Could be 'console' or 'overlay'
             });
+
+            for (let item of infoSpotCoordList) {
+                if (item['panorama_id'] == imgId) {
+                    infoSpot = new PANOLENS.Infospot(350, PANOLENS.DataImage.Info);
+                    infoSpot.position.set(item['coord_X'], item['coord_Y'], item['coord_Z']);
+                    infoSpot.addHoverText(infoSpotDict[item['info_spot_id']]['title']);
+                    panorama.add(infoSpot);
+                    infoSpotCoordListForCurrentId.push(infoSpot)
+                    console.log(item);
+                }
+
+
+            }
+
+
             viewer.add(panorama);
         </script>
     </main>
