@@ -33,18 +33,16 @@
             const imgId = '{{ object.pk }}';
             const imgPath = '{{ object.view | mediapath_filter }}';
             const panoramaDict = JSON.parse('{{ pano_view_dict | escapejs }}');
+            const panoramaList = Object.values(panoramaDict);
             const infoSpotDict = JSON.parse('{{ info_spot_dict | escapejs }}');
             const infoSpotCoordList = JSON.parse('{{ info_spot_coordinates_list | escapejs }}');
+            const linkSpotCoordList = JSON.parse('{{ link_spot_coordinates_list | escapejs }}');
+        </script>
+        <script>
             let infoSpotCoordListForCurrentId = [];
             let infoSpot;
-
-            console.log(imgId);
-            console.log(imgPath);
-            console.log(panoramaDict);
-            console.log(infoSpotDict);
-            console.log(infoSpotCoordList);
-
-            const panorama = new PANOLENS.ImagePanorama(imgPath);
+            let panorama_to;
+            let viewerPanoList = [];
             const viewer = new PANOLENS.Viewer({
                 container: panoImage, // A Element container
                 autoRotate: true,
@@ -64,21 +62,40 @@
                 output: 'console' // Whether and where to output infospot position. Could be 'console' or 'overlay'
             });
 
-            for (let item of infoSpotCoordList) {
-                if (item['panorama_id'] == imgId) {
-                    infoSpot = new PANOLENS.Infospot(350, PANOLENS.DataImage.Info);
-                    infoSpot.position.set(item['coord_X'], item['coord_Y'], item['coord_Z']);
-                    infoSpot.addHoverText(infoSpotDict[item['info_spot_id']]['title']);
-                    panorama.add(infoSpot);
-                    infoSpotCoordListForCurrentId.push(infoSpot)
-                    console.log(item);
+            if (imgId) {
+                const panorama = new PANOLENS.ImagePanorama(imgPath);
+
+                for (let item of infoSpotCoordList) {
+                    if (item['panorama_id'] == imgId) {
+                        infoSpot = new PANOLENS.Infospot(250, PANOLENS.DataImage.Info);
+                        infoSpot.position.set(item['coord_X'], item['coord_Y'], item['coord_Z']);
+                        infoSpot.addHoverText(infoSpotDict[item['info_spot_id']]['title']);
+                        panorama.add(infoSpot);
+                        infoSpotCoordListForCurrentId.push(infoSpot);
+                    }
                 }
 
+                viewerPanoList.push(panorama);
 
+
+            } else {
+                for (let item of linkSpotCoordList) {
+                    if (item['panorama_from_id'] == imgId) {
+                        panorama_to = new PANOLENS.ImagePanorama(panoramaDict[item['panorama_to_id']]['view']);
+                        panorama_to.addEventListener('progress', function (e) {
+                            console.log(e.progress);
+                        });
+                        panorama.link(panorama_to, new THREE.Vector3(item['coord_X'], item['coord_Y'], item['coord_Z']));
+                        viewerPanoList.push(panorama_to);
+                        console.log(panoramaDict[item['panorama_to_id']]);
+                    }
+
+                }
+                console.log(panoramaDict);
             }
+            viewer.add(...viewerPanoList);
 
 
-            viewer.add(panorama);
         </script>
     </main>
 {% endblock %}

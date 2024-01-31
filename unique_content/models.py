@@ -1,8 +1,6 @@
-from PIL.ExifTags import TAGS
 from django.db import models
 from django.utils import timezone
 from config import settings
-from PIL import Image
 
 from unique_content.services import get_metadata_from_img
 
@@ -132,7 +130,7 @@ class InfoSpotForPanorama(models.Model):
     """
     Info spots for Panorama
     """
-    title = models.CharField(max_length=100, verbose_name='Text')
+    title = models.CharField(max_length=100, verbose_name='Title')
     description = models.CharField(max_length=2000, null=True, blank=True, verbose_name='Description')
     link = models.URLField(null=True, blank=True, verbose_name='link')
 
@@ -160,3 +158,24 @@ class InfoSpotCoordinates(models.Model):
     class Meta:
         verbose_name = 'Info spot coordinates'
         verbose_name_plural = 'Info spot coordinates'
+
+
+class LinkSpotCoordinates(models.Model):
+    """
+    Link spots Coordinates
+    """
+    panorama_from = models.ForeignKey('unique_content.Figure360View', on_delete=models.CASCADE,
+                                      related_name='panorama_from_coordinates')
+    panorama_to = models.ForeignKey('unique_content.Figure360View', on_delete=models.CASCADE,
+                                    related_name='panorama_to_coordinates')
+    title = models.CharField(max_length=100, null=True, blank=True, verbose_name='Title')
+    coord_X = models.FloatField(verbose_name='X coord')
+    coord_Y = models.FloatField(verbose_name='Y coord')
+    coord_Z = models.FloatField(verbose_name='Z coord')
+
+    def __str__(self):
+        return f'Link spot coordinates for panorama id: {self.panorama_from} to panorama id: {self.panorama_to}'
+
+    class Meta:
+        verbose_name = 'Link spot coordinates'
+        verbose_name_plural = 'Link spot coordinates'
