@@ -7,6 +7,96 @@
             width: 100%;
             height: 80vh;
         }
+
+        #desc-container {
+            max-width: 500px;
+            max-height: 500px;
+            min-width: 200px;
+            min-height: 250px;
+            background: #000000;
+            color: #ffffff;
+            border-radius: 10px;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .youtube_iframe {
+            border: none;
+            width: 100%;
+            height: 250px;
+        }
+
+        .preview_image {
+            border: none;
+            width: 500px;
+            max-height: 250px;
+            object-fit: cover;
+        }
+
+        .title {
+            font-size: 1.5em;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .text {
+            padding: 0 20px 20px 20px;
+        }
+
+        .md_image-container {
+            position: relative;
+            display: inline-block;
+            width: 500px;
+            height: 250px;
+        }
+
+        .md_overlay-text_left {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-100%, -60%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none; /* Чтобы overlay-text не мешал кликам на изображение */
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .md_overlay-text_right {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(0%, -60%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none; /* Чтобы overlay-text не мешал кликам на изображение */
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .md_image-container:hover .md_overlay-text_left {
+            opacity: 0.95;
+        }
+
+        .md_image-container:hover .md_overlay-text_right {
+            opacity: 0.95;
+        }
+
+        .wrapper {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .figure_3d_iframe_class {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     </style>
     <main class="form-signin w-100 m-auto">
         <section class="py-3 text-center container">
@@ -26,6 +116,36 @@
 
             </div>
         </div>
+
+        <div id="desc-container" style="display:none">
+
+                <div class="wrapper">
+                    <iframe id="figure_3d_iframe" class="figure_3d_iframe_class" width="100%" height="100%" allowfullscreen loading="lazy"
+                            frameborder="0"
+                            src=""></iframe>
+                </div>
+
+            <div id="figure_thin_section_window" class="md_image-container">
+                <a href="">
+                    <img id="figure_thin_section_window_img" src="" class="md_image"
+                         style="width: 500px; height: 250px; object-fit: cover;" alt="">
+                    <div class="md_overlay-text_left d-none d-md-block">
+                        <img class="mb-0" src="/media/decor/favicon.ico" alt="" width="128" height="128">
+                        <h6 class="text-white">CLICK TO OPEN IN VIRTUAL MICROSCOPE MODE</h6>
+                    </div>
+                    <div class="md_overlay-text_right d-none d-md-block">
+                        <img class="mb-0" src="/media/decor/favicon.ico" alt="" width="128" height="128">
+                        <h6 class="text-white">CLICK TO OPEN IN VIRTUAL MICROSCOPE MODE</h6>
+                    </div>
+
+                </a>
+            </div>
+            <img class="preview_image" src="" alt="">
+            <iframe class="youtube_iframe" src=""></iframe>
+            <div class="title"></div>
+            <div class="text"></div>
+        </div>
+
         <script src="/static/js/360view/three.min.js"></script>
         <script src="/static/js/360view/panolens.min.js"></script>
         <script>
@@ -43,35 +163,77 @@
             let infoSpot;
             let panorama_to;
             let viewerPanoList = [];
-            const viewer = new PANOLENS.Viewer({
-                container: panoImage, // A Element container
-                autoRotate: true,
-                autoRotateSpeed: 0.2,
-                controlBar: true, // Vsibility of bottom control bar
-                controlButtons: ['fullscreen', 'video'], // Buttons array in the control bar. Default to ['fullscreen', 'setting', 'video']
-                autoHideControlBar: false, // Auto hide control bar
-                autoHideInfospot: true, // Auto hide infospots
-                horizontalView: false, // Allow only horizontal camera control
-                cameraFov: 70, // Camera field of view in degree
-                reverseDragging: false, // Reverse orbit control direction
-                enableReticle: false, // Enable reticle for mouseless interaction
-                dwellTime: 1500, // Dwell time for reticle selection in millisecond
-                autoReticleSelect: true, // Auto select a clickable target after dwellTime
-                viewIndicator: true, // Adds an angle view indicator in upper left corner
-                indicatorSize: 60, // Size of View Indicator
-                output: 'console' // Whether and where to output infospot position. Could be 'console' or 'overlay'
-            });
 
             if (imgId) {
-                const panorama = new PANOLENS.ImagePanorama(imgPath);
+                let panorama = new PANOLENS.ImagePanorama(imgPath);
 
                 for (let item of infoSpotCoordList) {
                     if (item['panorama_id'] == imgId) {
+                        const currentInfoSpot = infoSpotDict[item['info_spot_id']]
+                        const title_text = currentInfoSpot['title'];
+                        const description = currentInfoSpot['description'];
+                        const figure_3d_id = currentInfoSpot['figure_3d_id'];
+                        const figure_thin_section_id = currentInfoSpot['figure_thin_section_id'];
+                        const preview = currentInfoSpot['preview'];
+                        const youtube = currentInfoSpot['youtube'];
+                        const figure_thin_section_preview = currentInfoSpot['figure_thin_section_preview'];
+                        const figure_3d_link_for_iframe = currentInfoSpot['figure_3d_link_for_iframe'];
+
                         infoSpot = new PANOLENS.Infospot(250, PANOLENS.DataImage.Info);
                         infoSpot.position.set(item['coord_X'], item['coord_Y'], item['coord_Z']);
-                        infoSpot.addHoverText(infoSpotDict[item['info_spot_id']]['title']);
+
+                        if (description || figure_3d_id || figure_thin_section_id || preview || youtube) {
+                            // Getting a reference to DOM elements
+                            let container = document.getElementById('desc-container');
+                            let figure_3d = document.querySelector('#desc-container .figure_3d');
+                            let figure_thin_section = document.querySelector('#desc-container .figure_thin_section');
+                            let image = document.querySelector('#desc-container .preview_image');
+                            let iframe = document.querySelector('#desc-container .youtube_iframe');
+                            let title = document.querySelector('#desc-container .title');
+                            let text = document.querySelector('#desc-container .text');
+                            let thin_section_link = document.querySelector('#figure_thin_section_window a');
+                            let thin_section_img = document.getElementById('figure_thin_section_window_img');
+                            let figure_3d_iframe = document.getElementById('figure_3d_iframe');
+
+                            // Adding text to tags with the title and text classes
+                            if (figure_3d_id) {
+                                figure_3d_iframe.src = figure_3d_link_for_iframe + '+spin+bg-000000ff+dl,share,link,border-hidden';
+                            } else {
+                                figure_3d.style.display = 'none';
+                            }
+                            // Adding figure_thin_section
+                            if (figure_thin_section_id) {
+                                thin_section_link.href = `/applications/virtual_microscope/${figure_thin_section_id}/`
+                                thin_section_img.src = '/media/' + figure_thin_section_preview;
+                            } else {
+                                figure_thin_section.style.display = 'none';
+                            }
+                            // Changing the src of the img tag
+                            if (preview) {
+                                image.src = '/media/' + preview;
+                            } else {
+                                image.style.display = 'none';
+                            }
+                            // Changing the src of the iframe tag
+                            if (youtube) {
+                                iframe.src = youtube
+                            } else {
+                                iframe.style.display = 'none';
+                            }
+                            // Adding text to tags with the title and text classes
+                            title.textContent = title_text;
+                            if (description) {
+                                text.textContent = description;
+                            } else {
+                                text.style.display = 'none';
+                            }
+                            infoSpot.addHoverElement(container, 250);
+                        } else {
+                            infoSpot.addHoverText(title_text);
+                        }
                         panorama.add(infoSpot);
                         infoSpotCoordListForCurrentId.push(infoSpot);
+                        console.log(currentInfoSpot)
                     }
                 }
 
@@ -93,6 +255,26 @@
                 }
                 console.log(panoramaDict);
             }
+
+
+            const viewer = new PANOLENS.Viewer({
+                container: panoImage, // A Element container
+                autoRotate: true,
+                autoRotateSpeed: 0.2,
+                controlBar: true, // Vsibility of bottom control bar
+                controlButtons: ['fullscreen', 'video'], // Buttons array in the control bar. Default to ['fullscreen', 'setting', 'video']
+                autoHideControlBar: false, // Auto hide control bar
+                autoHideInfospot: true, // Auto hide infospots
+                horizontalView: false, // Allow only horizontal camera control
+                cameraFov: 70, // Camera field of view in degree
+                reverseDragging: false, // Reverse orbit control direction
+                enableReticle: false, // Enable reticle for mouseless interaction
+                dwellTime: 1500, // Dwell time for reticle selection in millisecond
+                autoReticleSelect: true, // Auto select a clickable target after dwellTime
+                viewIndicator: true, // Adds an angle view indicator in upper left corner
+                indicatorSize: 60, // Size of View Indicator
+                output: 'console' // Whether and where to output infospot position. Could be 'console' or 'overlay'
+            });
             viewer.add(...viewerPanoList);
 
 

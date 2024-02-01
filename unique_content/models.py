@@ -133,6 +133,13 @@ class InfoSpotForPanorama(models.Model):
     title = models.CharField(max_length=100, verbose_name='Title')
     description = models.CharField(max_length=2000, null=True, blank=True, verbose_name='Description')
     link = models.URLField(null=True, blank=True, verbose_name='link')
+    figure_3d = models.ForeignKey('unique_content.FigureFromP3din', null=True, blank=True, on_delete=models.SET_NULL)
+    figure_thin_section = models.ForeignKey('unique_content.FigureThinSection', null=True, blank=True, on_delete=models.SET_NULL)
+    preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
+    youtube = models.URLField(null=True, blank=True, verbose_name='Video link')
+    latitude = models.FloatField(null=True, blank=True, verbose_name='Latitude')
+    longitude = models.FloatField(null=True, blank=True, verbose_name='Longitude')
+    height = models.FloatField(null=True, blank=True, verbose_name='Height')
 
     def __str__(self):
         return f'{self.title}'
