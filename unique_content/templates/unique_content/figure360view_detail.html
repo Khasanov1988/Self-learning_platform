@@ -8,12 +8,12 @@
             height: 80vh;
         }
 
-        #desc-container {
+        .desc-container_class {
             max-width: 500px;
             max-height: 500px;
             min-width: 200px;
             min-height: 250px;
-            background: #000000;
+            background: #2b3035ff;
             color: #ffffff;
             border-radius: 10px;
             overflow: auto;
@@ -21,9 +21,8 @@
         }
 
         .youtube_iframe {
-            border: none;
             width: 100%;
-            height: 250px;
+            height: 100%;
         }
 
         .preview_image {
@@ -117,17 +116,18 @@
             </div>
         </div>
 
-        <div id="desc-container" style="display:none">
+        <div id="desc-container" class="desc-container_class" style="display:none">
 
-                <div class="wrapper">
-                    <iframe id="figure_3d_iframe" class="figure_3d_iframe_class" width="100%" height="100%" allowfullscreen loading="lazy"
-                            frameborder="0"
-                            src=""></iframe>
-                </div>
+            <div class="wrapper">
+                <iframe id="figure_3d_iframe" class="figure_3d_iframe_class" width="100%" height="100%" allowfullscreen
+                        loading="lazy"
+                        frameborder="0"
+                        src=""></iframe>
+            </div>
 
-            <div id="figure_thin_section_window" class="md_image-container">
-                <a href="">
-                    <img id="figure_thin_section_window_img" src="" class="md_image"
+            <div id="figures_thin_section_window" class="md_image-container">
+                <a class="md_image-container_href" href="">
+                    <img id="figures_thin_section_window_img" src="" class="md_image"
                          style="width: 500px; height: 250px; object-fit: cover;" alt="">
                     <div class="md_overlay-text_left d-none d-md-block">
                         <img class="mb-0" src="/media/decor/favicon.ico" alt="" width="128" height="128">
@@ -141,7 +141,7 @@
                 </a>
             </div>
             <img class="preview_image" src="" alt="">
-            <iframe class="youtube_iframe" src=""></iframe>
+            <iframe class="youtube_iframe" src="" title="" allow="autoplay; encrypted-media" allowfullscreen style="width: 500px; height: 250px;"></iframe>
             <div class="title"></div>
             <div class="text"></div>
         </div>
@@ -159,7 +159,6 @@
             const linkSpotCoordList = JSON.parse('{{ link_spot_coordinates_list | escapejs }}');
         </script>
         <script>
-            let infoSpotCoordListForCurrentId = [];
             let infoSpot;
             let panorama_to;
             let viewerPanoList = [];
@@ -172,41 +171,41 @@
                         const currentInfoSpot = infoSpotDict[item['info_spot_id']]
                         const title_text = currentInfoSpot['title'];
                         const description = currentInfoSpot['description'];
-                        const figure_3d_id = currentInfoSpot['figure_3d_id'];
-                        const figure_thin_section_id = currentInfoSpot['figure_thin_section_id'];
+                        const figures_3d_id = currentInfoSpot['figure_3d_id'];
+                        const figures_thin_section_id = currentInfoSpot['figure_thin_section_id'];
                         const preview = currentInfoSpot['preview'];
                         const youtube = currentInfoSpot['youtube'];
-                        const figure_thin_section_preview = currentInfoSpot['figure_thin_section_preview'];
-                        const figure_3d_link_for_iframe = currentInfoSpot['figure_3d_link_for_iframe'];
+                        const figures_thin_section_preview = currentInfoSpot['figure_thin_section_preview'];
+                        const figures_3d_link_for_iframe = currentInfoSpot['figure_3d_link_for_iframe'];
 
                         infoSpot = new PANOLENS.Infospot(250, PANOLENS.DataImage.Info);
                         infoSpot.position.set(item['coord_X'], item['coord_Y'], item['coord_Z']);
 
-                        if (description || figure_3d_id || figure_thin_section_id || preview || youtube) {
+                        if (description || figures_3d_id || figures_thin_section_id || preview || youtube) {
                             // Getting a reference to DOM elements
-                            let container = document.getElementById('desc-container');
-                            let figure_3d = document.querySelector('#desc-container .figure_3d');
-                            let figure_thin_section = document.querySelector('#desc-container .figure_thin_section');
-                            let image = document.querySelector('#desc-container .preview_image');
-                            let iframe = document.querySelector('#desc-container .youtube_iframe');
-                            let title = document.querySelector('#desc-container .title');
-                            let text = document.querySelector('#desc-container .text');
-                            let thin_section_link = document.querySelector('#figure_thin_section_window a');
-                            let thin_section_img = document.getElementById('figure_thin_section_window_img');
-                            let figure_3d_iframe = document.getElementById('figure_3d_iframe');
+                            let container = document.getElementById('desc-container').cloneNode(true);
+                            let figures_3d = container.querySelector('#desc-container .wrapper');
+                            let figures_thin_section = container.querySelector('#desc-container .md_image-container');
+                            let image = container.querySelector('#desc-container .preview_image');
+                            let iframe = container.querySelector('#desc-container .youtube_iframe');
+                            let title = container.querySelector('#desc-container .title');
+                            let text = container.querySelector('#desc-container .text');
+                            let thin_section_link = container.querySelector('#figures_thin_section_window .md_image-container_href');
+                            let thin_section_img = container.querySelector('#figures_thin_section_window .md_image');
+                            let figures_3d_iframe = container.querySelector('#desc-container .figure_3d_iframe_class');
 
                             // Adding text to tags with the title and text classes
-                            if (figure_3d_id) {
-                                figure_3d_iframe.src = figure_3d_link_for_iframe + '+spin+bg-000000ff+dl,share,link,border-hidden';
+                            if (figures_3d_id) {
+                                figures_3d_iframe.src = figures_3d_link_for_iframe + '+spin+bg-2b3035ff+dl,share,link,border-hidden';
                             } else {
-                                figure_3d.style.display = 'none';
+                                figures_3d.style.display = 'none';
                             }
-                            // Adding figure_thin_section
-                            if (figure_thin_section_id) {
-                                thin_section_link.href = `/applications/virtual_microscope/${figure_thin_section_id}/`
-                                thin_section_img.src = '/media/' + figure_thin_section_preview;
+                            // Adding figures_thin_section
+                            if (figures_thin_section_id) {
+                                thin_section_link.href = `/applications/virtual_microscope/${figures_thin_section_id}/`;
+                                thin_section_img.src = '/media/' + figures_thin_section_preview;
                             } else {
-                                figure_thin_section.style.display = 'none';
+                                figures_thin_section.style.display = 'none';
                             }
                             // Changing the src of the img tag
                             if (preview) {
@@ -216,7 +215,8 @@
                             }
                             // Changing the src of the iframe tag
                             if (youtube) {
-                                iframe.src = youtube
+                                iframe.src = youtube;
+                                iframe.title = title;
                             } else {
                                 iframe.style.display = 'none';
                             }
@@ -227,13 +227,11 @@
                             } else {
                                 text.style.display = 'none';
                             }
-                            infoSpot.addHoverElement(container, 250);
+                            infoSpot.addHoverElement(container, 270);
                         } else {
                             infoSpot.addHoverText(title_text);
                         }
                         panorama.add(infoSpot);
-                        infoSpotCoordListForCurrentId.push(infoSpot);
-                        console.log(currentInfoSpot)
                     }
                 }
 

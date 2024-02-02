@@ -58,7 +58,6 @@ class Figure360ViewDetailView(LoginRequiredWithChoiceMixin, DetailView):
             figure_3d_link_for_iframe=F('figure_3d__link_for_iframe'))
 
         info_spot_list = list(info_spot_queryset.values())
-        print(info_spot_list)
         info_spot_dict = {view['id']: view for view in info_spot_list}
         info_spot_coordinates_list = list(InfoSpotCoordinates.objects.all().values())
         link_spot_coordinates_list = list(LinkSpotCoordinates.objects.all().values())

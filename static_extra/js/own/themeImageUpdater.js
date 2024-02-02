@@ -101,13 +101,33 @@ function updateStageImg() {
     }
 }
 
+function updateDescContainerStyle() {
+    const theme = getCurrentTheme();
+    let descContainerElements = document.querySelectorAll('.desc-container_class');
+
+    // Set different src depending on current theme
+    if (theme === 'light') {
+        // Set fill for the entire class 'fil0'
+        descContainerElements.forEach(element => {
+            element.style.background = '#f8f9faff';
+            element.style.color = '#000000';
+        });
+    } else if (theme === 'dark') {
+        // Set fill for the entire class 'fil0'
+        descContainerElements.forEach(element => {
+            element.style.background = '#2b3035ff';
+            element.style.color = '#ffffff';
+        });
+    }
+}
+
 let themeImage = document.getElementById('themeImage');
 const figureElements = document.querySelectorAll('[id^="figure_"]');
 const figureElements_card = document.querySelectorAll('[id^="figure_card_"]');
 const fil0Elements = document.querySelectorAll('.fil0');
 let polarizerImg = document.getElementById('polarizerImg');
 let stageImg = document.getElementById('stageImg');
-
+let descContainers = document.querySelectorAll('.desc-container_class');
 
 // Call a function when the page loads and the theme changes
 if (themeImage) {
@@ -135,4 +155,8 @@ if (polarizerImg) {
 if (stageImg) {
     window.addEventListener('load', updateStageImg);
     document.addEventListener('themeChanged', updateStageImg);
+}
+if (descContainers) {
+    window.addEventListener('load', updateDescContainerStyle);
+    document.addEventListener('themeChanged', updateDescContainerStyle);
 }
