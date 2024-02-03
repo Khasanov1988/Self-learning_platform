@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from config import settings
 
-from unique_content.services import get_metadata_from_img
+from unique_content.services import get_metadata_from_img, get_youtube_for_iframe_from_youtube, image_compression
 
 
 class FigureFromP3din(models.Model):
@@ -100,7 +100,9 @@ class Figure360View(models.Model):
 
     title = models.CharField(max_length=100, verbose_name='Title')
     description = models.CharField(max_length=500, verbose_name='Description')
+    autor = models.CharField(max_length=100, null=True, blank=True, verbose_name='Autor')
     view = models.ImageField(verbose_name='View')
+    preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     made_date = models.DateTimeField(default=timezone.now, verbose_name='Creation time')
     last_update = models.DateTimeField(default=timezone.now, verbose_name='Last update time')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
@@ -117,8 +119,11 @@ class Figure360View(models.Model):
 
     def save(self, *args, **kwargs):
         if self.view:
-            print(self.view.path)
             self.image_creation_date, self.latitude, self.longitude, self.height = get_metadata_from_img(self.view)
+            compression_quality = 50
+            resize_percent = 5
+            compressed_image = image_compression(self.view, compression_quality, resize_percent)
+            self.preview.save(f'{self.view.name[:-4]}_compressed{self.view.name[-4:]}', content=compressed_image, save=False)
         super().save(*args, **kwargs)
 
     class Meta:
@@ -137,12 +142,18 @@ class InfoSpotForPanorama(models.Model):
     figure_thin_section = models.ForeignKey('unique_content.FigureThinSection', null=True, blank=True, on_delete=models.SET_NULL)
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     youtube = models.URLField(null=True, blank=True, verbose_name='Video link')
+    youtube_for_iframe = models.URLField(null=True, blank=True, verbose_name='Iframe video link')
     latitude = models.FloatField(null=True, blank=True, verbose_name='Latitude')
     longitude = models.FloatField(null=True, blank=True, verbose_name='Longitude')
     height = models.FloatField(null=True, blank=True, verbose_name='Height')
 
     def __str__(self):
         return f'{self.title}'
+
+    def save(self, *args, **kwargs):
+        if self.youtube:
+            self.youtube_for_iframe = get_youtube_for_iframe_from_youtube(self.youtube)
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Info spot'
@@ -160,7 +171,7 @@ class InfoSpotCoordinates(models.Model):
     coord_Z = models.FloatField(verbose_name='Z coord')
 
     def __str__(self):
-        return f'Info spot coordinates for spot id: {self.info_spot}'
+        return f'{self.panorama} --> {self.info_spot}'
 
     class Meta:
         verbose_name = 'Info spot coordinates'
@@ -181,7 +192,7 @@ class LinkSpotCoordinates(models.Model):
     coord_Z = models.FloatField(verbose_name='Z coord')
 
     def __str__(self):
-        return f'Link spot coordinates for panorama id: {self.panorama_from} to panorama id: {self.panorama_to}'
+        return f'{self.panorama_from} --> {self.panorama_to}'
 
     class Meta:
         verbose_name = 'Link spot coordinates'

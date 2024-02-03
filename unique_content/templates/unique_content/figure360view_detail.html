@@ -43,7 +43,8 @@
         }
 
         .text {
-            padding: 0 10px 10px 10px;
+            padding: 0 15px 15px 15px;
+            text-align: justify;
         }
 
         .md_image-container {
@@ -111,11 +112,16 @@
             </div>
         </section>
         <div class="overflow-hidden p-0 pt-5 p-md-5 pb-md-2 m-md-5 text-center bg-body-tertiary">
-            <div class="position-relative album py-0 bg-body-tertiary">
-
-                <div class="pano-image">
+            <div class="album py-0 bg-body-tertiary">
+                <h5 style="text-align: left">360 view:</h5>
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <i>Created by: {% if object.autor %}{{ object.autor }}{% else %}unknown{% endif %}</i>
+                    <i>Taken time: {{ object.image_creation_date }}</i>
+                </div>
+                <div class="position-relative pano-image">
 
                 </div>
+                <h5 style="text-align: left">Location of the 360 viewpoint:</h5>
                 <iframe id="map_iframe" class="maps_iframe_class"
                         width="500"
                         height="500"
@@ -192,7 +198,7 @@
                         const figures_3d_id = currentInfoSpot['figure_3d_id'];
                         const figures_thin_section_id = currentInfoSpot['figure_thin_section_id'];
                         const preview = currentInfoSpot['preview'];
-                        const youtube = currentInfoSpot['youtube'];
+                        const youtube = currentInfoSpot['youtube_for_iframe'];
                         const figures_thin_section_preview = currentInfoSpot['figure_thin_section_preview'];
                         const figures_3d_link_for_iframe = currentInfoSpot['figure_3d_link_for_iframe'];
 

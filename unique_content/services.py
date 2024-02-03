@@ -1,3 +1,5 @@
+from io import BytesIO
+
 from PIL import Image
 from PIL.ExifTags import TAGS
 from django.utils import timezone
@@ -45,3 +47,38 @@ def get_metadata_from_img(path):
             height = float(altitude)
 
     return image_creation_date, latitude, longitude, height
+
+
+def image_compression(image_field, quality: int, resize_percent=None):
+    """
+    Compresses the given image with the specified quality and returns the compressed image.
+    Optionally resizes the image by the given percentage.
+    """
+    # Opening an image using Pillow
+    image = Image.open(image_field)
+    # Creating a Buffer for a Compressed Image
+    compressed_img_buffer = BytesIO()
+
+    # Compressing an image and saving it to a buffer
+    img = image.copy()
+    if resize_percent:
+        # Calculate new image dimensions
+        width, height = img.size
+        new_width = int(width * (resize_percent / 100))
+        new_height = int(height * (resize_percent / 100))
+
+        # Resize Image
+        img = img.resize((new_width, new_height), Image.LANCZOS)
+
+    # Compressing an image and saving it to a buffer
+    img.save(compressed_img_buffer, format=image.format, quality=quality)
+
+    return compressed_img_buffer
+
+
+def get_youtube_for_iframe_from_youtube(youtube: str):
+    """
+        Function transfer YouTube link to YouTube link for InfoSpot iframe
+    """
+    video_id = youtube.split('v=')[1]
+    return f'https://www.youtube.com/embed/{video_id}?&amp;autoplay=1&mute=1&disablekb=1&loop=1&playlist={video_id}&controls=0&iv_load_policy=3'
