@@ -25,6 +25,10 @@
             height: 100%;
         }
 
+        .maps_iframe_class {
+            width: 100%;
+        }
+
         .preview_image {
             border: none;
             width: 500px;
@@ -39,7 +43,7 @@
         }
 
         .text {
-            padding: 0 20px 20px 20px;
+            padding: 0 10px 10px 10px;
         }
 
         .md_image-container {
@@ -112,7 +116,15 @@
                 <div class="pano-image">
 
                 </div>
-
+                <iframe id="map_iframe" class="maps_iframe_class"
+                        width="500"
+                        height="500"
+                        frameborder="0"
+                        style="border:0"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBLm1b3FFisaX7FvbChYS_MkI9MhqifCJI&q=51.87045222223263,56.632171944501266&maptype=satellite"
+                        allowfullscreen>
+                </iframe>
             </div>
         </div>
 
@@ -141,7 +153,8 @@
                 </a>
             </div>
             <img class="preview_image" src="" alt="">
-            <iframe class="youtube_iframe" src="" title="" allow="autoplay; encrypted-media" allowfullscreen style="width: 500px; height: 250px;"></iframe>
+            <iframe class="youtube_iframe" src="" title="" allow="autoplay; encrypted-media" allowfullscreen
+                    style="width: 500px; height: 281px;"></iframe>
             <div class="title"></div>
             <div class="text"></div>
         </div>
@@ -151,6 +164,8 @@
         <script>
             const panoImage = document.querySelector('.pano-image');
             const imgId = '{{ object.pk }}';
+            const infoPointLatitude = '{{ object.latitude }}';
+            const infoPointLongitude = '{{ object.longitude }}';
             const imgPath = '{{ object.view | mediapath_filter }}';
             const panoramaDict = JSON.parse('{{ pano_view_dict | escapejs }}');
             const panoramaList = Object.values(panoramaDict);
@@ -165,6 +180,9 @@
 
             if (imgId) {
                 let panorama = new PANOLENS.ImagePanorama(imgPath);
+                let map = document.getElementById('map_iframe')
+
+                map.src = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBLm1b3FFisaX7FvbChYS_MkI9MhqifCJI&q=${infoPointLatitude},${infoPointLongitude}&maptype=satellite`;
 
                 for (let item of infoSpotCoordList) {
                     if (item['panorama_id'] == imgId) {
