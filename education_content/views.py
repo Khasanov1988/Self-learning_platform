@@ -12,6 +12,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 
+from config.settings import GOOGLE_MAPS_KEY
 from education_content.forms import ChapterForm, MaterialForm, MaterialUpdateForm, \
     MaterialPhotosForm
 from education_content.models import Chapter, Material, MaterialPhotos

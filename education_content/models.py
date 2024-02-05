@@ -77,6 +77,7 @@ class MaterialPhotos(models.Model):
                                     blank=True, verbose_name='Model from p3d.in')
     pano_view = models.ForeignKey('unique_content.Figure360View', on_delete=models.CASCADE, default=None, null=True,
                                   blank=True, verbose_name='360 view')
+    map = models.BooleanField(default=False, verbose_name='Map implementation')
     material = models.ForeignKey('education_content.Material', on_delete=models.CASCADE, verbose_name='Material')
 
     def __str__(self):

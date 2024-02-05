@@ -17,6 +17,11 @@
 
 
 
+
+
+
+
+
                         {{ material_photos_by_pk.<CURRENT_PK>.p3din_model.link_for_iframe }}+spin+bg-2b3035ff+dl,share,link,border-hidden"
                 style="position: absolute;
             top: 0;
@@ -66,6 +71,11 @@
         .md_image-container:hover .md_overlay-text_right {
             opacity: 0.95;
         }
+
+        #map {
+            height: 500px; /* The height is 400 pixels */
+            width: 100%; /* The width is the width of the web page */
+        }
     </style>
     <div class="md_image-container">
         <a href="{% url 'unique_content:thin_section_view' pk=material_photos_by_pk.<CURRENT_PK>.thin_section.pk %}">
@@ -86,6 +96,14 @@
     <div id="pano-image_<CURRENT_PK>" class="position-relative pano-image">
 
     </div>
+{% elif material_photos_by_pk.<CURRENT_PK>.map %}
+    <!--The div element for the map -->
+    <div id="map"></div>
+    <script
+            src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_KEY }}&callback=initMap&v=weekly"
+            defer
+    ></script>
+    <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
 {% else %}
     <p style="text-align: center;">{figure-
         <CURRENT_PK>}

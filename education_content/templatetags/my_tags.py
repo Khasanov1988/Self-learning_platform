@@ -3,7 +3,7 @@ import os
 from django import template
 from django.template import Context, Template
 
-from config.settings import BASE_DIR
+from config.settings import BASE_DIR, GOOGLE_MAPS_KEY
 
 register = template.Library()
 
@@ -54,7 +54,8 @@ def replace_figure_tags(input_html, material_photos_list):
         material_photos_by_pk[material_photo.pk] = material_photo
 
     # Create a Context object if you need to pass additional variables to the template
-    context = Context({'material_photos_by_pk': material_photos_by_pk})
+    context = Context({'material_photos_by_pk': material_photos_by_pk,
+                       'GOOGLE_MAPS_KEY': GOOGLE_MAPS_KEY})
 
     # We go through all the matches found
     for match in matches:
