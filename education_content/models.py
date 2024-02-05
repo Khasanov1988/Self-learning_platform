@@ -75,6 +75,8 @@ class MaterialPhotos(models.Model):
                                      null=True, blank=True, verbose_name='Thin Section')
     p3din_model = models.ForeignKey('unique_content.FigureFromP3din', on_delete=models.CASCADE, default=None, null=True,
                                     blank=True, verbose_name='Model from p3d.in')
+    pano_view = models.ForeignKey('unique_content.Figure360View', on_delete=models.CASCADE, default=None, null=True,
+                                  blank=True, verbose_name='360 view')
     material = models.ForeignKey('education_content.Material', on_delete=models.CASCADE, verbose_name='Material')
 
     def __str__(self):
