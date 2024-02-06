@@ -1,19 +1,25 @@
+import json
+
 from django.apps import apps
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
+from django.core.serializers import serialize
+from django.db.models import Q, F
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 
+from config.settings import GOOGLE_MAPS_KEY
 from education_content.forms import ChapterForm, MaterialForm, MaterialUpdateForm, \
     MaterialPhotosForm
 from education_content.models import Chapter, Material, MaterialPhotos
+from education_content.templatetags.my_tags import mediapath_filter
 from tests.models import Test
-from unique_content.models import FigureFromP3din, FigureThinSection
+from unique_content.models import FigureFromP3din, FigureThinSection, Figure360View, LinkSpotCoordinates, \
+    InfoSpotForPanorama, InfoSpotCoordinates
 from users.services import update_last_activity
 
 
@@ -229,7 +235,7 @@ class MaterialUpdateView(LoginRequiredMixin, GetLastUpdateMixin, GetPublicationS
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model', )
+        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model', 'pano_view' )
         material_photos_list = material_photos_list.order_by('pk')
         context_data['material_photos_list'] = material_photos_list
         return context_data
@@ -267,9 +273,31 @@ class MaterialDetailView(LoginRequiredWithChoiceMixin, GetFinalConditionsMixin, 
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model', )
+        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model', 'pano_view')
         material_photos_list = material_photos_list.order_by('pk')
         context_data['material_photos_list'] = material_photos_list
+        material_photos_list_json = serialize('json', material_photos_list)
+        context_data['material_photos_list_json'] = material_photos_list_json
+        pano_view_pks = [material_photo.pano_view.pk for material_photo in material_photos_list if material_photo.pano_view]
+        pano_view_queryset = Figure360View.objects.filter(pk__in=pano_view_pks).values('pk', 'title', 'view', 'latitude', 'longitude', 'height', 'pano_type')
+        pano_view_list = list(pano_view_queryset)
+        # Edit view field to make it URL
+        for item in pano_view_list:
+            item['view'] = mediapath_filter(item['view'])
+        pano_view_dict = {view['pk']: view for view in pano_view_list}
+        context_data['pano_view_dict'] = json.dumps(pano_view_dict)
+        link_spot_coordinates_list = list(LinkSpotCoordinates.objects.all().values())
+        context_data['link_spot_coordinates_list'] = json.dumps(link_spot_coordinates_list)
+        info_spot_queryset = InfoSpotForPanorama.objects.all().annotate(
+            figure_thin_section_preview=F('figure_thin_section__preview'),
+            figure_3d_link_for_iframe=F('figure_3d__link_for_iframe'))
+        info_spot_list = list(info_spot_queryset.values())
+        info_spot_dict = {view['id']: view for view in info_spot_list}
+        info_spot_coordinates_list = list(InfoSpotCoordinates.objects.all().values())
+        context_data['info_spot_dict'] = json.dumps(info_spot_dict)
+        context_data['info_spot_coordinates_list'] = json.dumps(info_spot_coordinates_list)
+
+
         try:
             context_data['test'] = Test.objects.get(material=self.object.pk)
         except Test.DoesNotExist:
@@ -297,6 +325,8 @@ class MaterialPhotosCreateMaterialView(LoginRequiredMixin, CreateView):
         context_data['p3din_model_list'] = p3din_model_list
         thin_section_list = FigureThinSection.objects.all()
         context_data['thin_section_list'] = thin_section_list
+        pano_view_list = Figure360View.objects.all()
+        context_data['pano_view_list'] = pano_view_list
         return context_data
 
     def get_success_url(self):
@@ -318,6 +348,8 @@ class MaterialPhotosCreateView(LoginRequiredMixin, CreateView):
         context_data['p3din_model_list'] = p3din_model_list
         thin_section_list = FigureThinSection.objects.all()
         context_data['thin_section_list'] = thin_section_list
+        pano_view_list = Figure360View.objects.all()
+        context_data['pano_view_list'] = pano_view_list
         return context_data
 
 

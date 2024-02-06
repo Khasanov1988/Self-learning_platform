@@ -199,3 +199,6 @@ AUTHENTICATION_BACKENDS = (
 # django-recaptcha’s settings
 RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
+
+# google maps settings
+GOOGLE_MAPS_KEY = os.getenv('GOOGLE_MAPS_KEY')

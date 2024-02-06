@@ -47,7 +47,7 @@
             text-align: justify;
         }
 
-        .md_image-container {
+        .md_image-container_for_window {
             position: relative;
             display: inline-block;
             width: 500px;
@@ -78,11 +78,11 @@
             font-weight: bold;
         }
 
-        .md_image-container:hover .md_overlay-text_left {
+        .md_image-container_for_window:hover .md_overlay-text_left {
             opacity: 0.95;
         }
 
-        .md_image-container:hover .md_overlay-text_right {
+        .md_image-container_for_window:hover .md_overlay-text_right {
             opacity: 0.95;
         }
 
@@ -116,7 +116,8 @@
                 <h5 style="text-align: left">360 view:</h5>
                 <div class="d-flex justify-content-between align-items-center w-100">
                     <i>Created by: {% if object.autor %}{{ object.autor }}{% else %}unknown{% endif %}</i>
-                    <i>Taken time: {{ object.image_creation_date }}</i>
+                    <i>Taken time: {% if object.image_creation_date %}{{ object.image_creation_date }}{% else %}unknown{% endif %}</i>
+                    <i>Height above sea level: {% if object.height %}{{ object.height|floatformat:"0" }}m{% else %}unknown{% endif %}</i>
                 </div>
                 <div class="position-relative pano-image">
 
@@ -128,7 +129,7 @@
                         frameborder="0"
                         style="border:0"
                         referrerpolicy="no-referrer-when-downgrade"
-                        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBLm1b3FFisaX7FvbChYS_MkI9MhqifCJI&q=51.87045222223263,56.632171944501266&maptype=satellite"
+                        src="https://www.google.com/maps/embed/v1/place?key={{ GOOGLE_MAPS_KEY }}&q=51.87045222223263,56.632171944501266&maptype=satellite"
                         allowfullscreen>
                 </iframe>
             </div>
@@ -143,7 +144,7 @@
                         src=""></iframe>
             </div>
 
-            <div id="figures_thin_section_window" class="md_image-container">
+            <div id="figures_thin_section_window" class="md_image-container_for_window">
                 <a class="md_image-container_href" href="">
                     <img id="figures_thin_section_window_img" src="" class="md_image"
                          style="width: 500px; height: 250px; object-fit: cover;" alt="">
@@ -168,138 +169,17 @@
         <script src="/static/js/360view/three.min.js"></script>
         <script src="/static/js/360view/panolens.min.js"></script>
         <script>
-            const panoImage = document.querySelector('.pano-image');
+
             const imgId = '{{ object.pk }}';
             const infoPointLatitude = '{{ object.latitude }}';
             const infoPointLongitude = '{{ object.longitude }}';
             const imgPath = '{{ object.view | mediapath_filter }}';
-            const panoramaDict = JSON.parse('{{ pano_view_dict | escapejs }}');
-            const panoramaList = Object.values(panoramaDict);
+            const panoramaDict = null;
+            const panoramaList = null;
             const infoSpotDict = JSON.parse('{{ info_spot_dict | escapejs }}');
             const infoSpotCoordList = JSON.parse('{{ info_spot_coordinates_list | escapejs }}');
-            const linkSpotCoordList = JSON.parse('{{ link_spot_coordinates_list | escapejs }}');
+            const linkSpotCoordList = null;
         </script>
-        <script>
-            let infoSpot;
-            let panorama_to;
-            let viewerPanoList = [];
-
-            if (imgId) {
-                let panorama = new PANOLENS.ImagePanorama(imgPath);
-                let map = document.getElementById('map_iframe')
-
-                map.src = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBLm1b3FFisaX7FvbChYS_MkI9MhqifCJI&q=${infoPointLatitude},${infoPointLongitude}&maptype=satellite`;
-
-                for (let item of infoSpotCoordList) {
-                    if (item['panorama_id'] == imgId) {
-                        const currentInfoSpot = infoSpotDict[item['info_spot_id']]
-                        const title_text = currentInfoSpot['title'];
-                        const description = currentInfoSpot['description'];
-                        const figures_3d_id = currentInfoSpot['figure_3d_id'];
-                        const figures_thin_section_id = currentInfoSpot['figure_thin_section_id'];
-                        const preview = currentInfoSpot['preview'];
-                        const youtube = currentInfoSpot['youtube_for_iframe'];
-                        const figures_thin_section_preview = currentInfoSpot['figure_thin_section_preview'];
-                        const figures_3d_link_for_iframe = currentInfoSpot['figure_3d_link_for_iframe'];
-
-                        infoSpot = new PANOLENS.Infospot(250, PANOLENS.DataImage.Info);
-                        infoSpot.position.set(item['coord_X'], item['coord_Y'], item['coord_Z']);
-
-                        if (description || figures_3d_id || figures_thin_section_id || preview || youtube) {
-                            // Getting a reference to DOM elements
-                            let container = document.getElementById('desc-container').cloneNode(true);
-                            let figures_3d = container.querySelector('#desc-container .wrapper');
-                            let figures_thin_section = container.querySelector('#desc-container .md_image-container');
-                            let image = container.querySelector('#desc-container .preview_image');
-                            let iframe = container.querySelector('#desc-container .youtube_iframe');
-                            let title = container.querySelector('#desc-container .title');
-                            let text = container.querySelector('#desc-container .text');
-                            let thin_section_link = container.querySelector('#figures_thin_section_window .md_image-container_href');
-                            let thin_section_img = container.querySelector('#figures_thin_section_window .md_image');
-                            let figures_3d_iframe = container.querySelector('#desc-container .figure_3d_iframe_class');
-
-                            // Adding text to tags with the title and text classes
-                            if (figures_3d_id) {
-                                figures_3d_iframe.src = figures_3d_link_for_iframe + '+spin+bg-2b3035ff+dl,share,link,border-hidden';
-                            } else {
-                                figures_3d.style.display = 'none';
-                            }
-                            // Adding figures_thin_section
-                            if (figures_thin_section_id) {
-                                thin_section_link.href = `/applications/virtual_microscope/${figures_thin_section_id}/`;
-                                thin_section_img.src = '/media/' + figures_thin_section_preview;
-                            } else {
-                                figures_thin_section.style.display = 'none';
-                            }
-                            // Changing the src of the img tag
-                            if (preview) {
-                                image.src = '/media/' + preview;
-                            } else {
-                                image.style.display = 'none';
-                            }
-                            // Changing the src of the iframe tag
-                            if (youtube) {
-                                iframe.src = youtube;
-                                iframe.title = title;
-                            } else {
-                                iframe.style.display = 'none';
-                            }
-                            // Adding text to tags with the title and text classes
-                            title.textContent = title_text;
-                            if (description) {
-                                text.textContent = description;
-                            } else {
-                                text.style.display = 'none';
-                            }
-                            infoSpot.addHoverElement(container, 270);
-                        } else {
-                            infoSpot.addHoverText(title_text);
-                        }
-                        panorama.add(infoSpot);
-                    }
-                }
-
-                viewerPanoList.push(panorama);
-
-
-            } else {
-                for (let item of linkSpotCoordList) {
-                    if (item['panorama_from_id'] == imgId) {
-                        panorama_to = new PANOLENS.ImagePanorama(panoramaDict[item['panorama_to_id']]['view']);
-                        panorama_to.addEventListener('progress', function (e) {
-                            console.log(e.progress);
-                        });
-                        panorama.link(panorama_to, new THREE.Vector3(item['coord_X'], item['coord_Y'], item['coord_Z']));
-                        viewerPanoList.push(panorama_to);
-                        console.log(panoramaDict[item['panorama_to_id']]);
-                    }
-
-                }
-                console.log(panoramaDict);
-            }
-
-
-            const viewer = new PANOLENS.Viewer({
-                container: panoImage, // A Element container
-                autoRotate: true,
-                autoRotateSpeed: 0.2,
-                controlBar: true, // Vsibility of bottom control bar
-                controlButtons: ['fullscreen', 'video'], // Buttons array in the control bar. Default to ['fullscreen', 'setting', 'video']
-                autoHideControlBar: false, // Auto hide control bar
-                autoHideInfospot: true, // Auto hide infospots
-                horizontalView: false, // Allow only horizontal camera control
-                cameraFov: 70, // Camera field of view in degree
-                reverseDragging: false, // Reverse orbit control direction
-                enableReticle: false, // Enable reticle for mouseless interaction
-                dwellTime: 1500, // Dwell time for reticle selection in millisecond
-                autoReticleSelect: true, // Auto select a clickable target after dwellTime
-                viewIndicator: true, // Adds an angle view indicator in upper left corner
-                indicatorSize: 60, // Size of View Indicator
-                output: 'console' // Whether and where to output infospot position. Could be 'console' or 'overlay'
-            });
-            viewer.add(...viewerPanoList);
-
-
-        </script>
+        <script src="/static/js/pano_view_widget/pano_view_widget.js"></script>
     </main>
 {% endblock %}
