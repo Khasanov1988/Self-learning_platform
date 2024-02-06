@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F
 from django.views.generic import DetailView, ListView
 
+from config.settings import GOOGLE_MAPS_KEY
 from education_content.templatetags.my_tags import mediapath_filter
 from education_content.views import LoginRequiredWithChoiceMixin
 from unique_content.models import FigureThinSection, FigureFromP3din, Figure360View, InfoSpotForPanorama, \
@@ -55,6 +56,7 @@ class Figure360ViewDetailView(LoginRequiredWithChoiceMixin, DetailView):
         info_spot_coordinates_list = list(InfoSpotCoordinates.objects.all().values())
         context_data['info_spot_dict'] = json.dumps(info_spot_dict)
         context_data['info_spot_coordinates_list'] = json.dumps(info_spot_coordinates_list)
+        context_data['GOOGLE_MAPS_KEY'] = GOOGLE_MAPS_KEY
         return context_data
 
 
