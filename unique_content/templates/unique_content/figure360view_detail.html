@@ -24,9 +24,9 @@
             width: 100%;
             height: 100%;
         }
-
-        .maps_iframe_class {
-            width: 100%;
+        #map {
+            height: 500px; /* The height is 400 pixels */
+            width: 100%; /* The width is the width of the web page */
         }
 
         .preview_image {
@@ -116,22 +116,21 @@
                 <h5 style="text-align: left">360 view:</h5>
                 <div class="d-flex justify-content-between align-items-center w-100">
                     <i>Created by: {% if object.autor %}{{ object.autor }}{% else %}unknown{% endif %}</i>
-                    <i>Taken time: {% if object.image_creation_date %}{{ object.image_creation_date }}{% else %}unknown{% endif %}</i>
-                    <i>Height above sea level: {% if object.height %}{{ object.height|floatformat:"0" }}m{% else %}unknown{% endif %}</i>
+                    <i>Taken time: {% if object.image_creation_date %}{{ object.image_creation_date }}{% else %}
+                        unknown{% endif %}</i>
+                    <i>Height above sea level:
+                        {% if object.height %}{{ object.height|floatformat:"0" }}m{% else %}unknown{% endif %}</i>
                 </div>
                 <div class="position-relative pano-image">
 
                 </div>
                 <h5 style="text-align: left">Location of the 360 viewpoint:</h5>
-                <iframe id="map_iframe" class="maps_iframe_class"
-                        width="500"
-                        height="500"
-                        frameborder="0"
-                        style="border:0"
-                        referrerpolicy="no-referrer-when-downgrade"
-                        src="https://www.google.com/maps/embed/v1/place?key={{ GOOGLE_MAPS_KEY }}&q=51.87045222223263,56.632171944501266&maptype=satellite"
-                        allowfullscreen>
-                </iframe>
+                <div id="map"></div>
+                <script
+                        src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_KEY }}&callback=initMap&v=weekly"
+                        defer
+                ></script>
+                <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
             </div>
         </div>
 
@@ -172,10 +171,12 @@
 
             const imgId = '{{ object.pk }}';
             const infoPointLatitude = '{{ object.latitude }}';
+            const infoPointTitle = '{{ object.title }}';
+            const infoPointPanoType = '{{ object.pano_type }}';
             const infoPointLongitude = '{{ object.longitude }}';
             const imgPath = '{{ object.view | mediapath_filter }}';
             const panoramaDict = null;
-            const panoramaList = null;
+            const panoramaList = [];
             const infoSpotDict = JSON.parse('{{ info_spot_dict | escapejs }}');
             const infoSpotCoordList = JSON.parse('{{ info_spot_coordinates_list | escapejs }}');
             const linkSpotCoordList = null;

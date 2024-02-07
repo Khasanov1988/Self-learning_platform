@@ -288,10 +288,13 @@ class MaterialDetailView(LoginRequiredWithChoiceMixin, GetFinalConditionsMixin, 
         context_data['pano_view_dict'] = json.dumps(pano_view_dict)
         link_spot_coordinates_list = list(LinkSpotCoordinates.objects.all().values())
         context_data['link_spot_coordinates_list'] = json.dumps(link_spot_coordinates_list)
+        pano_view_ids = [pano_view['pk'] for pano_view in pano_view_list]
         info_spot_queryset = InfoSpotForPanorama.objects.all().annotate(
             figure_thin_section_preview=F('figure_thin_section__preview'),
             figure_3d_link_for_iframe=F('figure_3d__link_for_iframe'))
-        info_spot_list = list(info_spot_queryset.values())
+        info_spot_queryset_filtered = (info_spot_queryset.filter(
+            Q(infospotcoordinates__panorama_id__in=pano_view_ids)))
+        info_spot_list = list(info_spot_queryset_filtered.values())
         info_spot_dict = {view['id']: view for view in info_spot_list}
         info_spot_coordinates_list = list(InfoSpotCoordinates.objects.all().values())
         context_data['info_spot_dict'] = json.dumps(info_spot_dict)

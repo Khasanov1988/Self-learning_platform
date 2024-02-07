@@ -1,22 +1,3 @@
-let animationTimeout;
-
-function toggleBounce() {
-    if (marker.getAnimation() === null) {
-        // Запустить анимацию
-        marker.setAnimation(google.maps.Animation.BOUNCE);
-
-        // Остановить анимацию через 750 миллисекунд (один цикл анимации)
-        animationTimeout = setTimeout(() => {
-            marker.setAnimation(null);
-        }, 750);
-    } else {
-        // Остановить анимацию, если она уже запущена
-        marker.setAnimation(null);
-        // Очистить таймаут, чтобы избежать повторного запуска анимации
-        clearTimeout(animationTimeout);
-    }
-}
-
 function mapMaker(infoPointLatitude, infoPointLongitude) {
     // Make map window from map_iframe with marker with special coordinates
     let map = document.getElementById('map_iframe');
@@ -267,11 +248,8 @@ function initMap() {
         content: "",
         disableAutoPan: true,
     });
-    // Create an array of alphabetical characters used to label the markers.
-    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     // Add some markers to the map.
     const markers = my_markers.map((my_marker, i) => {
-        const label = labels[i % labels.length];
         const position = my_marker.coords;
         const title = my_marker.title;
         const type = my_marker.type;
@@ -360,6 +338,16 @@ function initMap() {
 
 let my_markers = [];
 let locations = [];
+
+if (panoramaList.length === 0) {
+    panoramaList.push({
+        'latitude': Number(infoPointLatitude),
+        'longitude': Number(infoPointLongitude),
+        'title': infoPointTitle,
+        'pano_type': infoPointPanoType,
+        'pk': imgId,
+    });
+}
 
 for (let item of panoramaList) {
     locations.push({
