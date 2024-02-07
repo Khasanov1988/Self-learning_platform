@@ -9,7 +9,7 @@ class Chapter(models.Model):
     Chapter class
     """
     title = models.CharField(max_length=100, verbose_name='Title')
-    description = models.CharField(max_length=500, verbose_name='Description')
+    description = models.CharField(null=True, blank=True, max_length=2000, verbose_name='Description')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     made_date = models.DateTimeField(default=timezone.now, verbose_name='Creation time')
     last_update = models.DateTimeField(default=timezone.now, verbose_name='Last update time')
@@ -38,7 +38,7 @@ class Material(models.Model):
     Educational material class
     """
     topic = models.CharField(max_length=100, verbose_name='Topic')
-    description = models.CharField(max_length=300, null=True, blank=True, verbose_name='Description')
+    description = models.CharField(max_length=2000, null=True, blank=True, verbose_name='Description')
     text = models.TextField(null=True, blank=True, verbose_name='Text')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     made_date = models.DateTimeField(default=timezone.now, verbose_name='Creation time')

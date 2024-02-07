@@ -10,7 +10,7 @@ class FigureFromP3din(models.Model):
     3d figures from p3d.in class
     """
     title = models.CharField(max_length=100, verbose_name='Title')
-    description = models.CharField(max_length=500, verbose_name='Description')
+    description = models.CharField(null=True, blank=True, max_length=2000, verbose_name='Description')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     link = models.URLField(max_length=300, verbose_name='Link to p3d.in')
     link_for_iframe = models.URLField(max_length=302, null=True, blank=True, verbose_name='Link to p3d.in iframe')
@@ -33,7 +33,7 @@ class FigureThinSection(models.Model):
     Figure for thin sections
     """
     title = models.CharField(max_length=100, verbose_name='Rock title')
-    description = models.CharField(max_length=500, verbose_name='Description')
+    description = models.CharField(null=True, blank=True, max_length=2000, verbose_name='Description')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     preview_ppl = models.ImageField(null=True, blank=True, verbose_name='Preview PPL')
     preview_cpl = models.ImageField(null=True, blank=True, verbose_name='Preview CPL')
@@ -99,7 +99,7 @@ class Figure360View(models.Model):
     ]
 
     title = models.CharField(max_length=100, verbose_name='Title')
-    description = models.CharField(max_length=500, verbose_name='Description')
+    description = models.CharField(null=True, blank=True, max_length=2000, verbose_name='Description')
     autor = models.CharField(max_length=100, null=True, blank=True, verbose_name='Autor')
     view = models.ImageField(verbose_name='View')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
