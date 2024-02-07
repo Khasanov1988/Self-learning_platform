@@ -1,3 +1,22 @@
+let animationTimeout;
+
+function toggleBounce() {
+    if (marker.getAnimation() === null) {
+        // Запустить анимацию
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+
+        // Остановить анимацию через 750 миллисекунд (один цикл анимации)
+        animationTimeout = setTimeout(() => {
+            marker.setAnimation(null);
+        }, 750);
+    } else {
+        // Остановить анимацию, если она уже запущена
+        marker.setAnimation(null);
+        // Очистить таймаут, чтобы избежать повторного запуска анимации
+        clearTimeout(animationTimeout);
+    }
+}
+
 function mapMaker(infoPointLatitude, infoPointLongitude) {
     // Make map window from map_iframe with marker with special coordinates
     let map = document.getElementById('map_iframe');
@@ -293,7 +312,7 @@ function initMap() {
 
         const svgMarker = {
             path: icon_path,
-            fillColor: "rgb(255,7,7)",
+            fillColor: "rgb(96,7,7)",
             fillOpacity: 0.85,
             strokeWeight: 0,
             rotation: 0,
@@ -322,7 +341,6 @@ function initMap() {
                 const panoramaId = my_marker.panoramaPk;
                 // Сменить панораму во viewer
                 viewersList[0].setPanorama(viewerPanoDict[panoramaId].panorama);
-
             });
         }
         return marker;
