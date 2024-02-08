@@ -1,9 +1,3 @@
-function mapMaker(infoPointLatitude, infoPointLongitude) {
-    // Make map window from map_iframe with marker with special coordinates
-    let map = document.getElementById('map_iframe');
-    map.src = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBLm1b3FFisaX7FvbChYS_MkI9MhqifCJI&q=${infoPointLatitude},${infoPointLongitude}&maptype=satellite`;
-}
-
 function mapMultyPointMaker() {
     // Make map window from map field with markers with special coordinates
 
@@ -248,11 +242,8 @@ function initMap() {
         content: "",
         disableAutoPan: true,
     });
-    // Create an array of alphabetical characters used to label the markers.
-    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     // Add some markers to the map.
     const markers = my_markers.map((my_marker, i) => {
-        const label = labels[i % labels.length];
         const position = my_marker.coords;
         const title = my_marker.title;
         const type = my_marker.type;
@@ -293,7 +284,7 @@ function initMap() {
 
         const svgMarker = {
             path: icon_path,
-            fillColor: "rgb(255,7,7)",
+            fillColor: "rgb(96,7,7)",
             fillOpacity: 0.85,
             strokeWeight: 0,
             rotation: 0,
@@ -322,7 +313,6 @@ function initMap() {
                 const panoramaId = my_marker.panoramaPk;
                 // Сменить панораму во viewer
                 viewersList[0].setPanorama(viewerPanoDict[panoramaId].panorama);
-
             });
         }
         return marker;
@@ -332,16 +322,31 @@ function initMap() {
     //new MarkerClusterer({markers, map});
     const markerCluster = new markerClusterer.MarkerClusterer({map, markers});
 
+    // Create a new instance of google.maps.LatLngBounds() to represent a rectangular geographical area.
     let bounds = new google.maps.LatLngBounds();
+
+    // Iterate over each position in the locations array.
     locations.forEach(position => {
+        // Extend the bounds to include the current position.
         bounds.extend(position);
     });
 
+    // Adjust the map viewport to fit the bounds, ensuring that all included positions are visible.
     map.fitBounds(bounds);
 }
 
 let my_markers = [];
 let locations = [];
+
+if (panoramaList.length === 0) {
+    panoramaList.push({
+        'latitude': Number(infoPointLatitude),
+        'longitude': Number(infoPointLongitude),
+        'title': infoPointTitle,
+        'pano_type': infoPointPanoType,
+        'pk': imgId,
+    });
+}
 
 for (let item of panoramaList) {
     locations.push({
@@ -359,22 +364,25 @@ for (let item of panoramaList) {
         }
     });
 }
-
-for (let item of Object.values(infoSpotDict)) {
-    locations.push({
-        lat: item.latitude,
-        lng: item.longitude
-    });
-    my_markers.push({
-        title: item.title,
-        type: 'info_spot',
-        panorama_pk: null,
-        infoSpotPk: item.id,
-        coords: {
+if (Object.keys(infoSpotDict).length > 0) {
+    for (let item of Object.values(infoSpotDict)) {
+        locations.push({
             lat: item.latitude,
             lng: item.longitude
-        }
-    })
+        });
+        my_markers.push({
+            title: item.title,
+            type: 'info_spot',
+            panorama_pk: null,
+            infoSpotPk: item.id,
+            coords: {
+                lat: item.latitude,
+                lng: item.longitude
+            }
+        })
+    }
+
 }
+
 
 window.initMap = initMap;

@@ -22,6 +22,7 @@
 
 
 
+
                         {{ material_photos_by_pk.<CURRENT_PK>.p3din_model.link_for_iframe }}+spin+bg-2b3035ff+dl,share,link,border-hidden"
                 style="position: absolute;
             top: 0;
@@ -71,22 +72,17 @@
         .md_image-container:hover .md_overlay-text_right {
             opacity: 0.95;
         }
-
-        #map {
-            height: 500px; /* The height is 400 pixels */
-            width: 100%; /* The width is the width of the web page */
-        }
     </style>
     <div class="md_image-container">
         <a href="{% url 'unique_content:thin_section_view' pk=material_photos_by_pk.<CURRENT_PK>.thin_section.pk %}">
             <img src="{{ material_photos_by_pk.<CURRENT_PK>.thin_section.preview|mediapath_filter }}" class="md_image"
                  style="width: 100%;">
             <div class="md_overlay-text_left d-none d-md-block">
-                <img class="mb-0" src="/media/decor/favicon.ico" alt="" width="128" height="128">
+                <img class="mb-0" src="/media/asserts/favicon.ico" alt="" width="128" height="128">
                 <h2 class="text-white">CLICK TO OPEN IN VIRTUAL MICROSCOPE MODE</h2>
             </div>
             <div class="md_overlay-text_right d-none d-md-block">
-                <img class="mb-0" src="/media/decor/favicon.ico" alt="" width="128" height="128">
+                <img class="mb-0" src="/media/asserts/favicon.ico" alt="" width="128" height="128">
                 <h2 class="text-white">CLICK TO OPEN IN VIRTUAL MICROSCOPE MODE</h2>
             </div>
 
@@ -98,6 +94,12 @@
     </div>
 {% elif material_photos_by_pk.<CURRENT_PK>.map %}
     <!--The div element for the map -->
+    <style>
+        #map {
+            height: 500px; /* The height is 400 pixels */
+            width: 100%; /* The width is the width of the web page */
+        }
+    </style>
     <div id="map"></div>
     <script
             src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_KEY }}&callback=initMap&v=weekly"

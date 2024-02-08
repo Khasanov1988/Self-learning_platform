@@ -65,12 +65,12 @@ function toggleMode() {
         modeButton.textContent = 'Switch to XPL mode';
         videoPlayer.src = URL.createObjectURL(videoBlobB);
         let temp = modeImage.src
-        modeImage.src = '/media/decor/Polarizer' + temp.slice(-6);
+        modeImage.src = '/media/asserts/Polarizer' + temp.slice(-6);
     } else {
         modeButton.textContent = 'Switch to PPL mode';
         videoPlayer.src = URL.createObjectURL(videoBlobA);
         let temp = modeImage.src
-        modeImage.src = '/media/decor/Polarizer-Analyzer' + temp.slice(-6);
+        modeImage.src = '/media/asserts/Polarizer-Analyzer' + temp.slice(-6);
     }
 
     updateFrame();

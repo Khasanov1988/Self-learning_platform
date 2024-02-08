@@ -11,9 +11,9 @@ function updateImageSrc() {
 
     // Set different src depending on current theme
     if (theme === 'light') {
-        image.src = '/media/decor/favicon_bl.ico';
+        image.src = '/media/asserts/favicon_bl.ico';
     } else if (theme === 'dark') {
-        image.src = '/media/decor/favicon.ico';
+        image.src = '/media/asserts/favicon.ico';
     }
 }
 
@@ -95,9 +95,9 @@ function updateStageImg() {
 
     // Set different src depending on current theme
     if (theme === 'light') {
-        image.src = '/media/decor/Stage_b.png';
+        image.src = '/media/asserts/Stage_b.png';
     } else if (theme === 'dark') {
-        image.src = '/media/decor/Stage_w.png';
+        image.src = '/media/asserts/Stage_w.png';
     }
 }
 

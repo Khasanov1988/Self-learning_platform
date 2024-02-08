@@ -10,7 +10,7 @@ class Test(models.Model):
     Class for tests
     """
     title = models.CharField(max_length=100, verbose_name='Title')
-    description = models.CharField(max_length=500, null=True, blank=True, verbose_name='Description')
+    description = models.CharField(max_length=2000, null=True, blank=True, verbose_name='Description')
     material = models.OneToOneField('education_content.Material', on_delete=models.CASCADE)
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     made_date = models.DateTimeField(default=timezone.now, verbose_name='Creation time')

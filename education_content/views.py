@@ -279,21 +279,25 @@ class MaterialDetailView(LoginRequiredWithChoiceMixin, GetFinalConditionsMixin, 
         material_photos_list_json = serialize('json', material_photos_list)
         context_data['material_photos_list_json'] = material_photos_list_json
         pano_view_pks = [material_photo.pano_view.pk for material_photo in material_photos_list if material_photo.pano_view]
-        pano_view_queryset = Figure360View.objects.filter(pk__in=pano_view_pks).values('pk', 'title', 'view', 'latitude', 'longitude', 'height', 'pano_type')
-        pano_view_list = list(pano_view_queryset)
+        pano_view_queryset = Figure360View.objects.filter(pk__in=pano_view_pks)
+        pano_view_queryset_new = pano_view_queryset.values('pk', 'title', 'view', 'latitude', 'longitude', 'height', 'pano_type')
+        pano_view_list = list(pano_view_queryset_new)
         # Edit view field to make it URL
         for item in pano_view_list:
             item['view'] = mediapath_filter(item['view'])
         pano_view_dict = {view['pk']: view for view in pano_view_list}
         context_data['pano_view_dict'] = json.dumps(pano_view_dict)
-        link_spot_coordinates_list = list(LinkSpotCoordinates.objects.all().values())
+        link_spot_coordinates_list = list(LinkSpotCoordinates.objects.filter(panorama_to__in=pano_view_queryset).values())
         context_data['link_spot_coordinates_list'] = json.dumps(link_spot_coordinates_list)
+        pano_view_ids = [pano_view['pk'] for pano_view in pano_view_list]
         info_spot_queryset = InfoSpotForPanorama.objects.all().annotate(
             figure_thin_section_preview=F('figure_thin_section__preview'),
             figure_3d_link_for_iframe=F('figure_3d__link_for_iframe'))
-        info_spot_list = list(info_spot_queryset.values())
+        info_spot_queryset_filtered = (info_spot_queryset.filter(
+            Q(infospotcoordinates__panorama_id__in=pano_view_ids)))
+        info_spot_list = list(info_spot_queryset_filtered.values())
         info_spot_dict = {view['id']: view for view in info_spot_list}
-        info_spot_coordinates_list = list(InfoSpotCoordinates.objects.all().values())
+        info_spot_coordinates_list = list(InfoSpotCoordinates.objects.filter(info_spot__in=info_spot_queryset_filtered).values())
         context_data['info_spot_dict'] = json.dumps(info_spot_dict)
         context_data['info_spot_coordinates_list'] = json.dumps(info_spot_coordinates_list)
 
@@ -371,4 +375,4 @@ class MaterialPhotosDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         material_pk = self.object.material.pk
-        return reverse_lazy('education_content:material_view', kwargs={'pk': material_pk})
+        return reverse_lazy('education_content:material_edit', kwargs={'pk': material_pk})
