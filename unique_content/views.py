@@ -56,7 +56,7 @@ class Figure360ViewDetailView(LoginRequiredWithChoiceMixin, DetailView):
             Q(infospotcoordinates__panorama_id__in=pano_view_ids)))
         info_spot_list = list(info_spot_queryset_filtered.values())
         info_spot_dict = {view['id']: view for view in info_spot_list}
-        info_spot_coordinates_list = list(InfoSpotCoordinates.objects.all().values())
+        info_spot_coordinates_list = list(InfoSpotCoordinates.objects.filter(info_spot__in=info_spot_queryset_filtered).values())
         context_data['info_spot_dict'] = json.dumps(info_spot_dict)
         context_data['info_spot_coordinates_list'] = json.dumps(info_spot_coordinates_list)
         context_data['GOOGLE_MAPS_KEY'] = GOOGLE_MAPS_KEY
