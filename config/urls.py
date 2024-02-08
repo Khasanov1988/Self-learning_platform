@@ -28,6 +28,7 @@ urlpatterns = [
     path('applications/', include('unique_content.urls', namespace='unique_content')),  # Include tests app URLs
     path('summernote/', include('django_summernote.urls')),
     path('auth/', include('social_django.urls', namespace='social')),
+    path('info/', include('info.urls', namespace='info')), # Include info app URLs
 ]
 
 # Serve media files during development if DEBUG is True
