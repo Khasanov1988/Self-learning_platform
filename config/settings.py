@@ -81,6 +81,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'social_django.context_processors.backends',
             ],
         },
     },
@@ -190,6 +192,7 @@ CSRF_TRUSTED_ORIGINS = ['https://geotest.tech', 'https://www.geotest.tech']
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile', 'https://www.googleapis.com/auth/userinfo.profile']
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 AUTHENTICATION_BACKENDS = (
