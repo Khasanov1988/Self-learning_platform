@@ -56,7 +56,8 @@ class Figure360ViewDetailView(LoginRequiredWithChoiceMixin, DetailView):
             Q(infospotcoordinates__panorama_id__in=pano_view_ids)))
         info_spot_list = list(info_spot_queryset_filtered.values())
         info_spot_dict = {view['id']: view for view in info_spot_list}
-        info_spot_coordinates_list = list(InfoSpotCoordinates.objects.filter(info_spot__in=info_spot_queryset_filtered).values())
+        info_spot_coordinates_list = list(
+            InfoSpotCoordinates.objects.filter(info_spot__in=info_spot_queryset_filtered).values())
         context_data['info_spot_dict'] = json.dumps(info_spot_dict)
         context_data['info_spot_coordinates_list'] = json.dumps(info_spot_coordinates_list)
         context_data['GOOGLE_MAPS_KEY'] = GOOGLE_MAPS_KEY
@@ -66,3 +67,17 @@ class Figure360ViewDetailView(LoginRequiredWithChoiceMixin, DetailView):
 class Figure360ViewListView(LoginRequiredMixin, ListView):
     model = Figure360View
     ordering = ['-pk']
+
+    def get_context_data(self, **kwargs):
+        update_last_activity(self.request.user)
+        context_data = super().get_context_data()
+        pano_view_queryset_new = context_data['object_list'].values('pk', 'title', 'view', 'latitude', 'longitude', 'height',
+                                                           'pano_type')
+        pano_view_list = list(pano_view_queryset_new)
+        # Edit view field to make it URL
+        for item in pano_view_list:
+            item['view'] = mediapath_filter(item['view'])
+        pano_view_dict = {view['pk']: view for view in pano_view_list}
+        context_data['pano_view_dict'] = json.dumps(pano_view_dict)
+        context_data['GOOGLE_MAPS_KEY'] = GOOGLE_MAPS_KEY
+        return context_data

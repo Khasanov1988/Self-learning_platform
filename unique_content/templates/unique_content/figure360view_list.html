@@ -14,6 +14,20 @@
 
         <div class="album py-5 bg-body-tertiary">
             <div class="container-fluid">
+                <style>
+                    #map {
+                        height: 600px; /* The height is 500 pixels */
+                        width: 100%; /* The width is the width of the web page */
+                    }
+                </style>
+                <div class="row row-cols-12 m-2 mb-5">
+                    <div id="map"></div>
+                </div>
+                <script
+                        src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_KEY }}&callback=initMap&v=weekly"
+                        defer
+                ></script>
+                <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                     {% for object in object_list %}
                         {% include 'unique_content/includes/inc_360view_card.html' %}
@@ -21,6 +35,15 @@
                 </div>
             </div>
         </div>
+        <script>
+            let panoramaDict
+            let panoramaList
+            if ('{{ pano_view_dict }}') {
+                panoramaDict = JSON.parse('{{ pano_view_dict | escapejs }}');
+                panoramaList = Object.values(panoramaDict);
+            }
+        </script>
+        <script src="/static/js/pano_view_widget/pano_view_widget_for_360view_list.js"></script>
 
     </main>
 {% endblock %}

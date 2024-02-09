@@ -1,8 +1,3 @@
-function mapMultyPointMaker() {
-    // Make map window from map field with markers with special coordinates
-
-}
-
 function infoSpotMaker(item, infoSpotData) {
     // Prepare infoSpot data for panorama
     const currentInfoSpot = infoSpotData
@@ -223,8 +218,8 @@ if (panoramaDict) {
     let finalPanoramas = [];
     let viewerPanoList = Object.values(viewerPanoDict);
     for (let obj of viewerPanoList) {
-        const panorama = obj.panorama; // Получаем значение по ключу panorama
-        finalPanoramas.push(panorama); // Собираем все панорамы в массив
+        const panorama = obj.panorama; // Get the value by the key panorama
+        finalPanoramas.push(panorama); // Collect all panoramas into an array
     }
 
     viewer.add(...finalPanoramas);
@@ -309,9 +304,9 @@ function initMap() {
         });
         if (my_marker.panoramaPk) {
             marker.addListener("click", function () {
-                // Получить идентификатор панорамы, связанной с этим маркером
+                // Get the identifier of the panorama associated with this marker
                 const panoramaId = my_marker.panoramaPk;
-                // Сменить панораму во viewer
+                // Change the panorama in the viewer
                 viewersList[0].setPanorama(viewerPanoDict[panoramaId].panorama);
             });
         }
