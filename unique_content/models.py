@@ -34,6 +34,7 @@ class FigureThinSection(models.Model):
     """
     title = models.CharField(max_length=100, verbose_name='Rock title')
     description = models.CharField(null=True, blank=True, max_length=2000, verbose_name='Description')
+    view = models.ImageField(null=True, blank=True, verbose_name='View')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     preview_ppl = models.ImageField(null=True, blank=True, verbose_name='Preview PPL')
     preview_cpl = models.ImageField(null=True, blank=True, verbose_name='Preview CPL')
@@ -47,6 +48,15 @@ class FigureThinSection(models.Model):
 
     def __str__(self):
         return f'{self.title}'
+
+    def save(self, *args, **kwargs):
+        if self.view:
+            compression_quality = 50
+            new_size = {'width': 800, 'height': 400}
+            compressed_image = image_compression(self.view, compression_quality, new_size)
+            self.preview.save(f'{self.view.name[:-4]}_compressed{self.view.name[-4:]}', content=compressed_image,
+                              save=False)
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Thin Section'
@@ -121,9 +131,10 @@ class Figure360View(models.Model):
         if self.view:
             self.image_creation_date, self.latitude, self.longitude, self.height = get_metadata_from_img(self.view)
             compression_quality = 50
-            resize_percent = 5
-            compressed_image = image_compression(self.view, compression_quality, resize_percent)
-            self.preview.save(f'{self.view.name[:-4]}_compressed{self.view.name[-4:]}', content=compressed_image, save=False)
+            new_size = {'width': 400, 'height': 200}
+            compressed_image = image_compression(self.view, compression_quality, new_size)
+            self.preview.save(f'{self.view.name[:-4]}_compressed{self.view.name[-4:]}', content=compressed_image,
+                              save=False)
         super().save(*args, **kwargs)
 
     class Meta:
@@ -139,7 +150,8 @@ class InfoSpotForPanorama(models.Model):
     description = models.CharField(max_length=2000, null=True, blank=True, verbose_name='Description')
     link = models.URLField(null=True, blank=True, verbose_name='link')
     figure_3d = models.ForeignKey('unique_content.FigureFromP3din', null=True, blank=True, on_delete=models.SET_NULL)
-    figure_thin_section = models.ForeignKey('unique_content.FigureThinSection', null=True, blank=True, on_delete=models.SET_NULL)
+    figure_thin_section = models.ForeignKey('unique_content.FigureThinSection', null=True, blank=True,
+                                            on_delete=models.SET_NULL)
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     youtube = models.URLField(null=True, blank=True, verbose_name='Video link')
     youtube_for_iframe = models.URLField(null=True, blank=True, verbose_name='Iframe video link')

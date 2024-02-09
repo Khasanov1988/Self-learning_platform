@@ -49,7 +49,7 @@ def get_metadata_from_img(path):
     return image_creation_date, latitude, longitude, height
 
 
-def image_compression(image_field, quality: int, resize_percent=None):
+def image_compression(image_field, quality: int, new_size: dict = None):
     """
     Compresses the given image with the specified quality and returns the compressed image.
     Optionally resizes the image by the given percentage.
@@ -61,11 +61,11 @@ def image_compression(image_field, quality: int, resize_percent=None):
 
     # Compressing an image and saving it to a buffer
     img = image.copy()
-    if resize_percent:
+    if new_size:
         # Calculate new image dimensions
         width, height = img.size
-        new_width = int(width * (resize_percent / 100))
-        new_height = int(height * (resize_percent / 100))
+        new_width = int(new_size['width'])
+        new_height = int(new_size['height'])
 
         # Resize Image
         img = img.resize((new_width, new_height), Image.LANCZOS)

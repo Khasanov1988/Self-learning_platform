@@ -29,4 +29,4 @@ class FigureFromP3dinForm(StyleFormMixin, forms.ModelForm):
 class FigureThinSectionForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = FigureThinSection
-        fields = ('title', 'description', 'preview', 'file_ppl', 'file_cpl',)
+        fields = ('title', 'description', 'view', 'file_ppl', 'file_cpl',)
