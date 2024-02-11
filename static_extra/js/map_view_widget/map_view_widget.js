@@ -73,10 +73,45 @@ function initMap() {
         marker.addListener("mouseout", () => {
             infoWindow.close();
         });
+        // Mark first panorama
+        if (my_marker.panoramaPk == mainPanorama) {
+            currentMarker = marker;
+            currentMarker.setIcon({
+                path: currentMarker.icon.path,
+                fillColor: "rgb(255,0,0)",
+                fillOpacity: currentMarker.icon.fillOpacity,
+                strokeWeight: currentMarker.icon.strokeWeight,
+                rotation: currentMarker.icon.rotation,
+                scale: marker.icon.scale * 1.4,
+                anchor: currentMarker.icon.anchor,
+            });
+        }
+        // Make click event
         if (my_marker.panoramaPk) {
             marker.addListener("click", function () {
                 // Get the identifier of the panorama associated with this marker
                 const panoramaId = my_marker.panoramaPk;
+                if (currentMarker) {
+                    currentMarker.setIcon({
+                        path: currentMarker.icon.path,
+                        fillColor: "rgb(96,7,7)",
+                        fillOpacity: currentMarker.icon.fillOpacity,
+                        strokeWeight: currentMarker.icon.strokeWeight,
+                        rotation: currentMarker.icon.rotation,
+                        scale: currentMarker.icon.scale / 1.4,
+                        anchor: currentMarker.icon.anchor,
+                    });
+                }
+                currentMarker = marker;
+                currentMarker.setIcon({
+                    path: currentMarker.icon.path,
+                    fillColor: "rgb(255,0,0)",
+                    fillOpacity: currentMarker.icon.fillOpacity,
+                    strokeWeight: currentMarker.icon.strokeWeight,
+                    rotation: currentMarker.icon.rotation,
+                    scale: marker.icon.scale * 1.4,
+                    anchor: currentMarker.icon.anchor,
+                });
                 // Change the panorama in the viewer
                 viewersList[0].setPanorama(viewerPanoDict[panoramaId].panorama);
             });
@@ -103,6 +138,7 @@ function initMap() {
 
 let my_markers = [];
 let locations = [];
+let currentMarker;
 
 if (panoramaList.length === 0) {
     panoramaList.push({
@@ -153,6 +189,5 @@ if (Object.keys(infoSpotDict).length > 0) {
     }
 
 }
-
 
 window.initMap = initMap;

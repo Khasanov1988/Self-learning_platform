@@ -23,6 +23,7 @@
 
 
 
+
                         {{ material_photos_by_pk.<CURRENT_PK>.p3din_model.link_for_iframe }}+spin+bg-2b3035ff+dl,share,link,border-hidden"
                 style="position: absolute;
             top: 0;
@@ -92,6 +93,9 @@
     <div id="pano-image_<CURRENT_PK>" class="position-relative pano-image">
 
     </div>
+    <script>
+        let mainPanorama = '{{ material_photos_by_pk.<CURRENT_PK>.pano_view.pk }}';
+    </script>
 {% elif material_photos_by_pk.<CURRENT_PK>.map %}
     <!--The div element for the map -->
     <style>

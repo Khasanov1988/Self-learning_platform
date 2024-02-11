@@ -221,8 +221,9 @@
         <script src="/static/js/360view/three.min.js"></script>
         <script src="/static/js/360view/panolens.min.js"></script>
         <script>
-            let panoramaDict
-            let panoramaList
+            let panoramaDict;
+            let panoramaList;
+            let mainPanoramaId;
             if ('{{ pano_view_dict }}') {
                 panoramaDict = JSON.parse('{{ pano_view_dict | escapejs }}');
                 panoramaList = Object.values(panoramaDict);
