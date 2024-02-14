@@ -105,7 +105,7 @@ function initMap() {
                 currentMarker = marker;
                 currentMarker.setIcon({
                     path: currentMarker.icon.path,
-                    fillColor: "rgb(255,0,0)",
+                    fillColor: "rgb(7,7,96)",
                     fillOpacity: currentMarker.icon.fillOpacity,
                     strokeWeight: currentMarker.icon.strokeWeight,
                     rotation: currentMarker.icon.rotation,
@@ -116,6 +116,10 @@ function initMap() {
                 viewersList[0].setPanorama(viewerPanoDict[panoramaId].panorama);
             });
         }
+        viewerPanoDict[my_marker.panoramaPk] = {
+            ...viewerPanoDict[my_marker.panoramaPk], // save all existing attributes
+            'map_marker': marker // add a new attribute with the key 'marker' and the value marker
+        };
         return marker;
     });
 

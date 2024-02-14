@@ -111,79 +111,110 @@ if (panoramaDict) {
     const panoramaWindows = document.querySelectorAll('.pano-image');
     panoramaWindows.forEach((panoramaWindow) => {
 
-        const currentFigureId = panoramaWindow.id.split('_')[1];
-        let mainPanoramaId;
+            const currentFigureId = panoramaWindow.id.split('_')[1];
+            let mainPanoramaId;
 
 
-        for (let item of material_photos_list) {
-            if (item.pk == currentFigureId) {
-                mainPanoramaId = item.fields.pano_view;
-            }
-        }
-
-        const mainPanoramaPath = panoramaDict[mainPanoramaId].view
-        for (let item of panoramaList) {
-            let panoramaId = item['pk'];
-            let panoramaPath = item['view'];
-            viewerPanoDict[panoramaId] = panoramaMaker(panoramaPath, panoramaId, infoSpotCoordList, infoSpotDict, linkSpotCoordList)
-        }
-
-        let viewerPanoList2 = Object.values(viewerPanoDict);
-        for (let panoFrom of viewerPanoList2) {
-            if (panoFrom.linkSpotsIdList) {
-                for (let panorama_to of panoFrom.linkSpotsIdList) {
-                    let logo_path;
-                    if (panoramaDict[panorama_to.id].pano_type === 'air') {
-                        logo_path = customAirPanoIcon;
-                    } else if (panoramaDict[panorama_to.id].pano_type === 'ground') {
-                        logo_path = customGroundPanoIcon;
-                    } else {
-                        logo_path = customOtherPanoIcon;
-                    }
-                    panoFrom.panorama.link(viewerPanoDict[panorama_to.id].panorama, new THREE.Vector3(panorama_to.coord_X, panorama_to.coord_Y, panorama_to.coord_Z), 350, logo_path);
+            for (let item of material_photos_list) {
+                if (item.pk == currentFigureId) {
+                    mainPanoramaId = item.fields.pano_view;
                 }
             }
-        }
 
-        let viewer = new PANOLENS.Viewer({
-            container: panoramaWindow, // A Element container
-            autoRotate: true,
-            autoRotateSpeed: 0.2,
-            controlBar: true, // Vsibility of bottom control bar
-            controlButtons: ['fullscreen', 'video'], // Buttons array in the control bar. Default to ['fullscreen', 'setting', 'video']
-            autoHideControlBar: false, // Auto hide control bar
-            autoHideInfospot: true, // Auto hide infospots
-            horizontalView: false, // Allow only horizontal camera control
-            cameraFov: 70, // Camera field of view in degree
-            reverseDragging: false, // Reverse orbit control direction
-            enableReticle: false, // Enable reticle for mouseless interaction
-            dwellTime: 1500, // Dwell time for reticle selection in millisecond
-            autoReticleSelect: true, // Auto select a clickable target after dwellTime
-            viewIndicator: true, // Adds an angle view indicator in upper left corner
-            indicatorSize: 60, // Size of View Indicator
-            output: 'console' // Whether and where to output infospot position. Could be 'console' or 'overlay'
-        });
-
-        let finalPanoramas = [];
-        let viewerPanoList = Object.values(viewerPanoDict);
-        for (let obj of viewerPanoList) {
-            const panorama = obj.panorama; // Получаем значение по ключу panorama
-            finalPanoramas.push(panorama); // Собираем все панорамы в массив
-        }
-        // We rebuild the list so that the initial panorama is at the end and thus is ordered by default
-        let finalPanoramasSwapped = [];
-        let temp;
-        for (let item of finalPanoramas) {
-            if (item.src === mainPanoramaPath) {
-                temp = item;
-            } else {
-                finalPanoramasSwapped.push(item);
+            const mainPanoramaPath = panoramaDict[mainPanoramaId].view
+            for (let item of panoramaList) {
+                let panoramaId = item['pk'];
+                let panoramaPath = item['view'];
+                viewerPanoDict[panoramaId] = panoramaMaker(panoramaPath, panoramaId, infoSpotCoordList, infoSpotDict, linkSpotCoordList)
             }
+
+            let viewerPanoList2 = Object.values(viewerPanoDict);
+            for (let panoFrom of viewerPanoList2) {
+                if (panoFrom.linkSpotsIdList) {
+                    for (let panorama_to of panoFrom.linkSpotsIdList) {
+                        let logo_path;
+                        if (panoramaDict[panorama_to.id].pano_type === 'air') {
+                            logo_path = customAirPanoIcon;
+                        } else if (panoramaDict[panorama_to.id].pano_type === 'ground') {
+                            logo_path = customGroundPanoIcon;
+                        } else {
+                            logo_path = customOtherPanoIcon;
+                        }
+                        panoFrom.panorama.link(viewerPanoDict[panorama_to.id].panorama, new THREE.Vector3(panorama_to.coord_X, panorama_to.coord_Y, panorama_to.coord_Z), 350, logo_path);
+
+                        // Get the last created Infospot (assuming it is at the end of the linkedSpots array)
+                        let spot = panoFrom.panorama.linkedSpots[panoFrom.panorama.linkedSpots.length - 1];
+
+                        // Add our own logic for processing the 'click' event to the Infospot object
+                        spot.addEventListener('click', function () {
+                            // Logic for processing the 'click' event
+                            if (currentMarker) {
+                                currentMarker.setIcon({
+                                    path: currentMarker.icon.path,
+                                    fillColor: "rgb(96,7,7)",
+                                    fillOpacity: currentMarker.icon.fillOpacity,
+                                    strokeWeight: currentMarker.icon.strokeWeight,
+                                    rotation: currentMarker.icon.rotation,
+                                    scale: currentMarker.icon.scale / 1.4,
+                                    anchor: currentMarker.icon.anchor,
+                                });
+                            }
+                            currentMarker = viewerPanoDict[panorama_to.id]['map_marker'];
+                            currentMarker.setIcon({
+                                path: currentMarker.icon.path,
+                                fillColor: "rgb(7,7,96)",
+                                fillOpacity: currentMarker.icon.fillOpacity,
+                                strokeWeight: currentMarker.icon.strokeWeight,
+                                rotation: currentMarker.icon.rotation,
+                                scale: currentMarker.icon.scale * 1.4,
+                                anchor: currentMarker.icon.anchor,
+                            });
+                        });
+                    }
+                }
+            }
+
+            let viewer = new PANOLENS.Viewer({
+                container: panoramaWindow, // A Element container
+                autoRotate: true,
+                autoRotateSpeed: 0.2,
+                controlBar: true, // Vsibility of bottom control bar
+                controlButtons: ['fullscreen', 'video'], // Buttons array in the control bar. Default to ['fullscreen', 'setting', 'video']
+                autoHideControlBar: false, // Auto hide control bar
+                autoHideInfospot: true, // Auto hide infospots
+                horizontalView: false, // Allow only horizontal camera control
+                cameraFov: 70, // Camera field of view in degree
+                reverseDragging: false, // Reverse orbit control direction
+                enableReticle: false, // Enable reticle for mouseless interaction
+                dwellTime: 1500, // Dwell time for reticle selection in millisecond
+                autoReticleSelect: true, // Auto select a clickable target after dwellTime
+                viewIndicator: true, // Adds an angle view indicator in upper left corner
+                indicatorSize: 60, // Size of View Indicator
+                output: 'console' // Whether and where to output infospot position. Could be 'console' or 'overlay'
+            });
+
+            let finalPanoramas = [];
+            let viewerPanoList = Object.values(viewerPanoDict);
+            for (let obj of viewerPanoList) {
+                const panorama = obj.panorama; // Get the value from the panorama key
+                finalPanoramas.push(panorama); // Collect all panoramas into an array
+            }
+            // We rebuild the list so that the initial panorama is at the end and thus is ordered by default
+            let finalPanoramasSwapped = [];
+            let temp;
+            for (let item of finalPanoramas) {
+                if (item.src === mainPanoramaPath) {
+                    temp = item;
+                } else {
+                    finalPanoramasSwapped.push(item);
+                }
+            }
+            finalPanoramasSwapped.unshift(temp)
+            viewer.add(...finalPanoramasSwapped);
+            viewersList.push(viewer);
         }
-        finalPanoramasSwapped.unshift(temp)
-        viewer.add(...finalPanoramasSwapped);
-        viewersList.push(viewer);
-    });
+    )
+    ;
 
 
 } else {
