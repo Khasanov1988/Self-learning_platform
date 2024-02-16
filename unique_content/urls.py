@@ -1,7 +1,7 @@
 from django.urls import path
 from unique_content.apps import UniqueContentConfig
 from unique_content.views import FigureThinSectionDetailView, FigureFromP3dinDetailView, FigureThinSectionListView, \
-    FigureFromP3dinListView, Figure360ViewDetailView, Figure360ViewListView
+    FigureFromP3dinListView, Figure360ViewDetailView, Figure360ViewListView, FigureMapDetailView, FigureMapListView
 
 app_name = UniqueContentConfig.name
 
@@ -13,4 +13,6 @@ urlpatterns = [
     path('3d_model_list/', FigureFromP3dinListView.as_view(), name='model_3d_list'),
     path('360view/<int:pk>/', Figure360ViewDetailView.as_view(), name='360view_view'),
     path('360view_list/', Figure360ViewListView.as_view(), name='360view_list'),
+    path('map/<int:pk>/', FigureMapDetailView.as_view(), name='map_view'),
+    path('map_list/', FigureMapListView.as_view(), name='map_list'),
 ]

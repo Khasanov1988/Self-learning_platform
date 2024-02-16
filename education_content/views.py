@@ -19,7 +19,7 @@ from education_content.models import Chapter, Material, MaterialPhotos
 from education_content.templatetags.my_tags import mediapath_filter
 from tests.models import Test
 from unique_content.models import FigureFromP3din, FigureThinSection, Figure360View, LinkSpotCoordinates, \
-    InfoSpotForPanorama, InfoSpotCoordinates
+    InfoSpotForPanorama, InfoSpotCoordinates, FigureMap
 from users.services import update_last_activity
 
 
@@ -273,7 +273,13 @@ class MaterialDetailView(LoginRequiredWithChoiceMixin, GetFinalConditionsMixin, 
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model', 'pano_view')
+        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model', 'pano_view', 'map_id')
+        map_list = []
+        for item in material_photos_list:
+            if item.map_id:
+                map_list.append(item.map_id)
+        map_list_json = serialize('json', map_list)
+        context_data['map_list_json'] = map_list_json
         material_photos_list = material_photos_list.order_by('pk')
         context_data['material_photos_list'] = material_photos_list
         material_photos_list_json = serialize('json', material_photos_list)
@@ -331,6 +337,8 @@ class MaterialPhotosCreateMaterialView(LoginRequiredMixin, CreateView):
         context_data['thin_section_list'] = thin_section_list
         pano_view_list = Figure360View.objects.all()
         context_data['pano_view_list'] = pano_view_list
+        map_list = FigureMap.objects.all()
+        context_data['map_list'] = map_list
         return context_data
 
     def get_success_url(self):
@@ -354,6 +362,8 @@ class MaterialPhotosCreateView(LoginRequiredMixin, CreateView):
         context_data['thin_section_list'] = thin_section_list
         pano_view_list = Figure360View.objects.all()
         context_data['pano_view_list'] = pano_view_list
+        map_list = FigureMap.objects.all()
+        context_data['map_list'] = map_list
         return context_data
 
 

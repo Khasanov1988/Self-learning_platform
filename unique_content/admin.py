@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from unique_content.models import FigureFromP3din, FigureThinSection, Mineral, Label, Figure360View, \
-    InfoSpotForPanorama, InfoSpotCoordinates, LinkSpotCoordinates
+    InfoSpotForPanorama, InfoSpotCoordinates, LinkSpotCoordinates, FigureMap
 
 
 @admin.register(FigureFromP3din)
@@ -52,3 +52,9 @@ class LinkSpotCoordinatesAdmin(admin.ModelAdmin):
     # Define how the LinkSpotCoordinates model is displayed in the Django admin panel.
 
     list_filter = ('panorama_from',)
+
+@admin.register(FigureMap)
+class FigureMapAdmin(admin.ModelAdmin):
+    # Define how the FigureMap model is displayed in the Django admin panel.
+
+    list_filter = ('title',)

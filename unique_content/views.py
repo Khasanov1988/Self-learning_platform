@@ -8,7 +8,7 @@ from config.settings import GOOGLE_MAPS_KEY
 from education_content.templatetags.my_tags import mediapath_filter
 from education_content.views import LoginRequiredWithChoiceMixin
 from unique_content.models import FigureThinSection, FigureFromP3din, Figure360View, InfoSpotForPanorama, \
-    InfoSpotCoordinates, LinkSpotCoordinates
+    InfoSpotCoordinates, LinkSpotCoordinates, FigureMap
 from users.services import update_last_activity
 
 
@@ -71,8 +71,9 @@ class Figure360ViewListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         update_last_activity(self.request.user)
         context_data = super().get_context_data()
-        pano_view_queryset_new = context_data['object_list'].values('pk', 'title', 'view', 'latitude', 'longitude', 'height',
-                                                           'pano_type')
+        pano_view_queryset_new = context_data['object_list'].values('pk', 'title', 'view', 'latitude', 'longitude',
+                                                                    'height',
+                                                                    'pano_type')
         pano_view_list = list(pano_view_queryset_new)
         # Edit view field to make it URL
         for item in pano_view_list:
@@ -81,3 +82,18 @@ class Figure360ViewListView(LoginRequiredMixin, ListView):
         context_data['pano_view_dict'] = json.dumps(pano_view_dict)
         context_data['GOOGLE_MAPS_KEY'] = GOOGLE_MAPS_KEY
         return context_data
+
+
+class FigureMapDetailView(LoginRequiredWithChoiceMixin, DetailView):
+    model = FigureMap
+
+    def get_context_data(self, **kwargs):
+        update_last_activity(self.request.user)
+        context_data = super().get_context_data()
+        context_data['GOOGLE_MAPS_KEY'] = GOOGLE_MAPS_KEY
+        return context_data
+
+
+class FigureMapListView(LoginRequiredMixin, ListView):
+    model = FigureMap
+    ordering = ['-pk']

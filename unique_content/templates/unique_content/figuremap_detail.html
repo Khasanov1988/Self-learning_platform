@@ -1,0 +1,55 @@
+{% extends 'education_content/base.html' %}
+
+{% block content %}
+    {% load my_tags %}
+    <style>
+         #map {
+            height: 800px; /* The height is 400 pixels */
+            width: 100%; /* The width is the width of the web page */
+        }
+
+        .custom-map-control-button {
+            background-color: #fff; /* Цвет фона кнопки */
+            color: #333; /* Цвет текста кнопки */
+            border: 1px solid #ccc; /* Граница кнопки */
+            border-radius: 2px; /* Закругление углов кнопки */
+            cursor: pointer;
+            margin-left: 10px; /* Отступы кнопки */
+            padding: 5px 10px; /* Внутренние отступы кнопки */
+        }
+
+        .custom-map-control-button:hover {
+            background-color: #ff0000; /* Цвет фона кнопки при наведении */
+        }
+    </style>
+    <main class="form-signin w-100 m-auto">
+        <section class="py-3 text-center container">
+            <div class="row py-lg-5">
+                <div class="col-lg-12 col-md-8 mx-auto">
+                    <h1 class="fw-light">{{ object }}</h1>
+                    <p class="lead text-body-secondary">{{ object.description }}</p>
+                </div>
+            </div>
+        </section>
+        <div class="overflow-hidden p-0 pt-5 p-md-5 pb-md-2 m-md-5 text-center bg-body-tertiary">
+            <div class="album py-0 bg-body-tertiary">
+                <h5 style="text-align: left">Maps:</h5>
+                <div class="d-flex justify-content-between align-items-left w-100">
+                    <i>Created by: {% if object.autor %}{{ object.autor }}{% else %}unknown{% endif %}</i>
+                </div>
+                <div id="map"></div>
+                <script
+                        src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_KEY }}&callback=initMap&v=weekly"
+                        defer
+                ></script>
+                <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+            </div>
+        </div>
+
+        <script>
+
+            const mapFileName = '{{ object.map_file }}';
+        </script>
+        <script src="/static/js/map_view_widget/map_view_widget_for_map_detail.js"></script>
+    </main>
+{% endblock %}

@@ -1,3 +1,4 @@
+from PIL import Image
 from django.db import models
 from django.utils import timezone
 from config import settings
@@ -209,3 +210,49 @@ class LinkSpotCoordinates(models.Model):
     class Meta:
         verbose_name = 'Link spot coordinates'
         verbose_name_plural = 'Link spot coordinates'
+
+
+class FigureMap(models.Model):
+    """
+    Figure for Map
+    """
+
+    title = models.CharField(max_length=100, verbose_name='Title')
+    description = models.CharField(null=True, blank=True, max_length=2000, verbose_name='Description')
+    autor = models.CharField(max_length=100, null=True, blank=True, verbose_name='Autor')
+    view = models.ImageField(null=True, blank=True, verbose_name='View')
+    preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
+    map_file = models.FileField(null=True, blank=True, verbose_name='Map file')
+    made_date = models.DateTimeField(default=timezone.now, verbose_name='Creation time')
+    last_update = models.DateTimeField(default=timezone.now, verbose_name='Last update time')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                              verbose_name='Owner')
+    is_login_required = models.BooleanField(default=True, verbose_name='Login required status')
+
+    def __str__(self):
+        return f'{self.title}'
+
+    def save(self, *args, **kwargs):
+        if self.view:
+            compression_quality = 50
+            new_height = 400  # explicitly set only the height
+            try:
+                # Open the image using PIL
+                with Image.open(self.view) as img:
+                    # Get the original width and height
+                    original_width, original_height = img.size
+                    if original_width and original_height:
+                        aspect_ratio = original_width / original_height
+                        new_width = int(new_height * aspect_ratio)
+                        new_size = {'width': new_width, 'height': new_height}
+                        compressed_image = image_compression(self.view, compression_quality, new_size)
+                        self.preview.save(f'{self.view.name[:-4]}_compressed{self.view.name[-4:]}',
+                                          content=compressed_image,
+                                          save=False)
+            except Exception as e:
+                print(f"Error: {e}")
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = 'Map'
+        verbose_name_plural = 'Maps'

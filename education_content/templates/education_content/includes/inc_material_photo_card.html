@@ -22,8 +22,8 @@
             {% elif material_photo.pano_view %}
                 <img src="{{ material_photo.pano_view.preview|mediapath_filter }}" alt=""
                      style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px 5px 0 0;">
-            {% elif material_photo.map %}
-                <img src="/media/asserts/Google-Maps.gif" alt="No image"
+            {% elif material_photo.map_id %}
+                <img src={% if material_photo.map_id.preview %}{{ material_photo.map_id.preview|mediapath_filter }}{% else %}"/media/asserts/Google-Maps.gif"{% endif %} alt="No image"
                      style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px 5px 0 0;">
             {% else %}
                 <img src="" alt="Bulk figure"

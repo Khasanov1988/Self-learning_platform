@@ -1,9 +1,54 @@
+function initKMZLayer(title, file_name, map) {
+    // Get the current host and protocol
+    const host = window.location.host;
+    const protocol = window.location.protocol;
+
+    // Generate a URL to the KML file based on the current host and protocol
+    const kmlUrl = `${protocol}//${host}/media/${file_name}`;
+    let kmzLayer = new google.maps.KmlLayer({
+        url: kmlUrl,
+        map: map,
+        suppressInfoWindows: true,
+        preserveViewport: true,
+    });
+
+
+    const toggleKmlLayerButton = document.createElement('button');
+    toggleKmlLayerButton.textContent = `Toggle ${title} map Layer`;
+    toggleKmlLayerButton.classList.add('custom-map-control-button');
+    map.controls[google.maps.ControlPosition.LEFT_TOP].push(toggleKmlLayerButton);
+    kmzLayer.setMap(null);
+
+
+    toggleKmlLayerButton.addEventListener('click', function () {
+        if (kmzLayer.getMap() === null) {
+            kmzLayer.setMap(map);
+            toggleKmlLayerButton.textContent = `Hide ${title} map Layer`;
+        } else {
+            kmzLayer.setMap(null);
+            toggleKmlLayerButton.textContent = `Show ${title} map Layer`;
+        }
+    });
+
+
+}
+
 function initMap() {
     const map = new google.maps.Map(document.getElementById("map"), {
         zoom: 3,
         center: {lat: -28.024, lng: 140.887},
         mapTypeId: 'satellite',
     });
+
+    map_list.forEach((customMap) => {
+
+        let title = customMap['fields']['title'];
+        let file_name = customMap['fields']['map_file'];
+        initKMZLayer(title, file_name, map);
+
+    });
+
+
     const infoWindow = new google.maps.InfoWindow({
         content: "",
         disableAutoPan: true,

@@ -229,6 +229,7 @@
                 panoramaList = Object.values(panoramaDict);
             }
             const material_photos_list = JSON.parse('{{ material_photos_list_json | safe }}');
+            const map_list = JSON.parse('{{ map_list_json | safe }}');
             const infoSpotDict = JSON.parse('{{ info_spot_dict | escapejs }}');
             const infoSpotCoordList = JSON.parse('{{ info_spot_coordinates_list | escapejs }}');
             const linkSpotCoordList = JSON.parse('{{ link_spot_coordinates_list | escapejs }}');
