@@ -61,6 +61,12 @@ class Figure360ViewDetailView(LoginRequiredWithChoiceMixin, DetailView):
         context_data['info_spot_dict'] = json.dumps(info_spot_dict)
         context_data['info_spot_coordinates_list'] = json.dumps(info_spot_coordinates_list)
         context_data['GOOGLE_MAPS_KEY'] = GOOGLE_MAPS_KEY
+
+        figure_360_view_interpretation_list = self.object.figure360viewinterpretation_set.all().values('title', 'autor',
+                                                                                                       'panorama',
+                                                                                                       'view', )
+        figure_360_view_interpretation_dict = {self.object.pk: list(figure_360_view_interpretation_list)}
+        context_data['figure_360_view_interpretation_dict'] = json.dumps(figure_360_view_interpretation_dict)
         return context_data
 
 

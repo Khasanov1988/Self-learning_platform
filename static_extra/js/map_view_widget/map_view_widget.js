@@ -40,13 +40,13 @@ function initMap() {
         mapTypeId: 'satellite',
     });
 
-    map_list.forEach((customMap) => {
-
-        let title = customMap['fields']['title'];
-        let file_name = customMap['fields']['map_file'];
-        initKMZLayer(title, file_name, map);
-
-    });
+    if (map_list) {
+        map_list.forEach((customMap) => {
+            let title = customMap['fields']['title'];
+            let file_name = customMap['fields']['map_file'];
+            initKMZLayer(title, file_name, map);
+        });
+    }
 
 
     const infoWindow = new google.maps.InfoWindow({

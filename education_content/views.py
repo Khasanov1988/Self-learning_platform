@@ -235,7 +235,8 @@ class MaterialUpdateView(LoginRequiredMixin, GetLastUpdateMixin, GetPublicationS
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model', 'pano_view' )
+        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model',
+                                                                                   'pano_view')
         material_photos_list = material_photos_list.order_by('pk')
         context_data['material_photos_list'] = material_photos_list
         return context_data
@@ -273,8 +274,10 @@ class MaterialDetailView(LoginRequiredWithChoiceMixin, GetFinalConditionsMixin, 
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data()
-        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model', 'pano_view', 'map_id')
+        material_photos_list = self.object.materialphotos_set.all().select_related('thin_section', 'p3din_model',
+                                                                                   'pano_view', 'map_id')
         map_list = []
+        figure_360_view_interpretation_dict = {}
         for item in material_photos_list:
             if item.map_id:
                 map_list.append(item.map_id)
@@ -284,16 +287,28 @@ class MaterialDetailView(LoginRequiredWithChoiceMixin, GetFinalConditionsMixin, 
         context_data['material_photos_list'] = material_photos_list
         material_photos_list_json = serialize('json', material_photos_list)
         context_data['material_photos_list_json'] = material_photos_list_json
-        pano_view_pks = [material_photo.pano_view.pk for material_photo in material_photos_list if material_photo.pano_view]
+        pano_view_pks = [material_photo.pano_view.pk for material_photo in material_photos_list if
+                         material_photo.pano_view]
         pano_view_queryset = Figure360View.objects.filter(pk__in=pano_view_pks)
-        pano_view_queryset_new = pano_view_queryset.values('pk', 'title', 'view', 'latitude', 'longitude', 'height', 'pano_type')
+
+        for item in pano_view_queryset:
+            figure_360_view_interpretation_list = item.figure360viewinterpretation_set.all().values('title',
+                                                                                                    'autor',
+                                                                                                    'panorama',
+                                                                                                    'view', )
+            if figure_360_view_interpretation_list:
+                figure_360_view_interpretation_dict[item.pk] = list(figure_360_view_interpretation_list)
+
+        pano_view_queryset_new = pano_view_queryset.values('pk', 'title', 'view', 'latitude', 'longitude', 'height',
+                                                           'pano_type')
         pano_view_list = list(pano_view_queryset_new)
         # Edit view field to make it URL
         for item in pano_view_list:
             item['view'] = mediapath_filter(item['view'])
         pano_view_dict = {view['pk']: view for view in pano_view_list}
         context_data['pano_view_dict'] = json.dumps(pano_view_dict)
-        link_spot_coordinates_list = list(LinkSpotCoordinates.objects.filter(panorama_to__in=pano_view_queryset).values())
+        link_spot_coordinates_list = list(
+            LinkSpotCoordinates.objects.filter(panorama_to__in=pano_view_queryset).values())
         context_data['link_spot_coordinates_list'] = json.dumps(link_spot_coordinates_list)
         pano_view_ids = [pano_view['pk'] for pano_view in pano_view_list]
         info_spot_queryset = InfoSpotForPanorama.objects.all().annotate(
@@ -303,10 +318,11 @@ class MaterialDetailView(LoginRequiredWithChoiceMixin, GetFinalConditionsMixin, 
             Q(infospotcoordinates__panorama_id__in=pano_view_ids)))
         info_spot_list = list(info_spot_queryset_filtered.values())
         info_spot_dict = {view['id']: view for view in info_spot_list}
-        info_spot_coordinates_list = list(InfoSpotCoordinates.objects.filter(info_spot__in=info_spot_queryset_filtered).values())
+        info_spot_coordinates_list = list(
+            InfoSpotCoordinates.objects.filter(info_spot__in=info_spot_queryset_filtered).values())
         context_data['info_spot_dict'] = json.dumps(info_spot_dict)
         context_data['info_spot_coordinates_list'] = json.dumps(info_spot_coordinates_list)
-
+        context_data['figure_360_view_interpretation_dict'] = json.dumps(figure_360_view_interpretation_dict)
 
         try:
             context_data['test'] = Test.objects.get(material=self.object.pk)

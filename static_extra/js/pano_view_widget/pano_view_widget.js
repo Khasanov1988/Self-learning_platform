@@ -66,7 +66,7 @@ function infoSpotMaker(item, infoSpotData) {
     return infoSpot;
 }
 
-function panoramaMaker(imagePath, panoramaId, infoSpotCoordList, infoSpotDict, linkSpotCoordList = null) {
+function panoramaMaker(imagePath, panoramaId, infoSpotCoordList, infoSpotDict, linkSpotCoordList = null, panoramaWindow = null) {
     // Prepare panorama for Viewer
     let panorama = new PANOLENS.ImagePanorama(imagePath);
     let linkSpotsIdDict = {};
@@ -92,10 +92,57 @@ function panoramaMaker(imagePath, panoramaId, infoSpotCoordList, infoSpotDict, l
             }
         }
     }
+    let intertretatoinCardsList = []
+    if (panoramaDict && panoramaInterpretationDict[panoramaId]) {
+        const path = '/media/';
+        // Add card for original panorama
+        let photo = document.createElement('div');
+        let url = imagePath;
+        photo.classList.add('photo');
+        photo.style.backgroundImage = 'url(' + url + ')';
+        photo.texture = new THREE.TextureLoader().load(url);
+        photo.setAttribute('title-text', 'Original Panorama');
+        photo.addEventListener('click', function () {
+            viewerPanoDict[panoramaId]['panorama'].updateTexture(this.texture);
+        });
+        intertretatoinCardsList.push(photo);
+        // Add cards for interpretations
+        for (let item of panoramaInterpretationDict[panoramaId]) {
+            let photo = document.createElement('div');
+            let url = path + item['view'];
+            photo.classList.add('photo');
+            photo.style.backgroundImage = 'url(' + url + ')';
+            photo.texture = new THREE.TextureLoader().load(url);
+            photo.setAttribute('title-text', `${item['title']} by ${item['autor']}`);
+            photo.addEventListener('click', function () {
+                viewerPanoDict[panoramaId]['panorama'].updateTexture(this.texture);
+            });
+            intertretatoinCardsList.push(photo);
+        }
+    }
+
+    panorama.addEventListener('enter', function () {
+        // Получаем все элементы .photo внутри родительского элемента
+        const photoElements = panoramaWindow.querySelectorAll('.photo');
+
+        // Перебираем массив элементов и удаляем каждый из них
+        photoElements.forEach(photoElement => {
+            photoElement.remove();
+        });
+
+        if (viewerPanoDict[panoramaId]['interpretationCards'].length > 0) {
+            for (let item of viewerPanoDict[panoramaId]['interpretationCards']) {
+                panoramaWindow.appendChild(item);
+            }
+
+        }
+    });
+
     return {
         panorama: panorama,
         linkSpotsIdDict: linkSpotsIdDict,
-        linkSpotsIdList: Object.values(linkSpotsIdDict)
+        linkSpotsIdList: Object.values(linkSpotsIdDict),
+        interpretationCards: intertretatoinCardsList,
     };
 }
 
@@ -125,7 +172,7 @@ if (panoramaDict) {
             for (let item of panoramaList) {
                 let panoramaId = item['pk'];
                 let panoramaPath = item['view'];
-                viewerPanoDict[panoramaId] = panoramaMaker(panoramaPath, panoramaId, infoSpotCoordList, infoSpotDict, linkSpotCoordList)
+                viewerPanoDict[panoramaId] = panoramaMaker(panoramaPath, panoramaId, infoSpotCoordList, infoSpotDict, linkSpotCoordList, panoramaWindow)
             }
 
             let viewerPanoList2 = Object.values(viewerPanoDict);
@@ -169,7 +216,9 @@ if (panoramaDict) {
                                 scale: currentMarker.icon.scale * 1.4,
                                 anchor: currentMarker.icon.anchor,
                             });
+
                         });
+
                     }
                 }
             }
@@ -245,6 +294,34 @@ if (panoramaDict) {
         indicatorSize: 60, // Size of View Indicator
         output: 'console' // Whether and where to output infospot position. Could be 'console' or 'overlay'
     });
+
+    if (panoramaInterpretationDict[imgId].length > 0) {
+        const path = '/media/';
+        // Add card for original panorama
+        let photo = document.createElement('div');
+        let url = imgPath;
+        photo.classList.add('photo');
+        photo.style.backgroundImage = 'url(' + url + ')';
+        photo.texture = new THREE.TextureLoader().load(url);
+        photo.setAttribute('title-text', 'Original Panorama');
+        photo.addEventListener('click', function () {
+            viewerPanoDict[imgId]['panorama'].updateTexture(this.texture);
+        });
+        panoramaWindow.appendChild(photo);
+        // Add cards for interpretations
+        for (let item of panoramaInterpretationDict[imgId]) {
+            let photo = document.createElement('div');
+            let url = path + item['view'];
+            photo.classList.add('photo');
+            photo.style.backgroundImage = 'url(' + url + ')';
+            photo.texture = new THREE.TextureLoader().load(url);
+            photo.setAttribute('title-text', `${item['title']} by ${item['autor']}`);
+            photo.addEventListener('click', function () {
+                viewerPanoDict[imgId]['panorama'].updateTexture(this.texture);
+            });
+            panoramaWindow.appendChild(photo);
+        }
+    }
 
     let finalPanoramas = [];
     let viewerPanoList = Object.values(viewerPanoDict);
