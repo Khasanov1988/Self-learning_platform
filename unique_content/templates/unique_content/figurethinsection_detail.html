@@ -14,6 +14,9 @@
         </section>
         <div class="position-relative overflow-hidden p-1 p-md-5 m-md-5 text-center bg-body-tertiary">
             <div class="album py-5 bg-body-tertiary">
+                <div class="d-flex justify-content-between align-items-left w-100">
+                    <i>Created by: {% if object.autor %}{{ object.autor }}{% else %}unknown{% endif %}</i>
+                </div>
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12 col-md-6">
@@ -53,7 +56,8 @@
                                             </div>
                                         </div>
                                         <div class="col-6">
-                                            <img id="stageImg" src="/media/asserts/Stage_w.png" width="100%" height="auto"
+                                            <img id="stageImg" src="/media/asserts/Stage_w.png" width="100%"
+                                                 height="auto"
                                                  alt=""
                                                  style="user-select: none; user-drag: none; -moz-user-select: none; -webkit-user-drag: none; -webkit-user-select: none; -ms-user-select: none;">
                                             <h6 class="mt-2 d-none d-lg-block" style="user-select: none;">Stage rotation

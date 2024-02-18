@@ -37,10 +37,15 @@
                 </div>
             </div>
         </section>
-        <div class="position-relative overflow-hidden m-md-5 text-center bg-body-tertiary" style="max-height: 80vh; overflow: hidden;">
+        <div class="position-relative overflow-hidden m-md-5 text-center bg-body-tertiary"
+             style="max-height: 80vh; overflow: hidden;">
+            <div class="d-flex justify-content-between align-items-left w-100">
+                <i>Created by: {% if object.autor %}{{ object.autor }}{% else %}unknown{% endif %}</i>
+            </div>
             <div class="container-fluid">
                 <div class="wrapper">
-                    <iframe id="figure_{{ object.pk }}" width="100%" height="100%" allowfullscreen loading="lazy" frameborder="0"
+                    <iframe id="figure_{{ object.pk }}" width="100%" height="100%" allowfullscreen loading="lazy"
+                            frameborder="0"
                             src="{{ object.link_for_iframe }}+spin+bg-2b3035ff+dl,share,link,border-hidden"></iframe>
                 </div>
             </div>

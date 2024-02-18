@@ -142,7 +142,41 @@ class Figure360View(models.Model):
 
     class Meta:
         verbose_name = '360 view'
-        verbose_name_plural = '360 view'
+        verbose_name_plural = '360 views'
+
+
+class Figure360ViewInterpretation(models.Model):
+    """
+    360 view interpretated view
+    """
+
+    title = models.CharField(max_length=100, verbose_name='Title')
+    description = models.CharField(null=True, blank=True, max_length=2000, verbose_name='Description')
+    autor = models.CharField(max_length=100, null=True, blank=True, verbose_name='Autor')
+    panorama = models.ForeignKey('unique_content.Figure360View', null=True, blank=True, on_delete=models.SET_NULL)
+    view = models.ImageField(verbose_name='View')
+    preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
+    made_date = models.DateTimeField(default=timezone.now, verbose_name='Creation time')
+    last_update = models.DateTimeField(default=timezone.now, verbose_name='Last update time')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                              verbose_name='Owner')
+    is_login_required = models.BooleanField(default=True, verbose_name='Login required status')
+
+    def __str__(self):
+        return f'{self.title} for {self.panorama}'
+
+    def save(self, *args, **kwargs):
+        if self.view:
+            compression_quality = 50
+            new_size = {'width': 400, 'height': 200}
+            compressed_image = image_compression(self.view, compression_quality, new_size)
+            self.preview.save(f'{self.view.name[:-4]}_compressed{self.view.name[-4:]}', content=compressed_image,
+                              save=False)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = '360 view interpretation'
+        verbose_name_plural = '360 view interpretations'
 
 
 class InfoSpotForPanorama(models.Model):
