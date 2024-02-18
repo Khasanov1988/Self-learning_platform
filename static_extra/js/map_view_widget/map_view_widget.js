@@ -123,7 +123,7 @@ function initMap() {
             currentMarker = marker;
             currentMarker.setIcon({
                 path: currentMarker.icon.path,
-                fillColor: "rgb(255,0,0)",
+                fillColor: "rgb(7,7,96)",
                 fillOpacity: currentMarker.icon.fillOpacity,
                 strokeWeight: currentMarker.icon.strokeWeight,
                 rotation: currentMarker.icon.rotation,

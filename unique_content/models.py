@@ -12,6 +12,7 @@ class FigureFromP3din(models.Model):
     """
     title = models.CharField(max_length=100, verbose_name='Title')
     description = models.CharField(null=True, blank=True, max_length=2000, verbose_name='Description')
+    autor = models.CharField(max_length=100, null=True, blank=True, verbose_name='Autor')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     link = models.URLField(max_length=300, verbose_name='Link to p3d.in')
     link_for_iframe = models.URLField(max_length=302, null=True, blank=True, verbose_name='Link to p3d.in iframe')
@@ -36,6 +37,7 @@ class FigureThinSection(models.Model):
     title = models.CharField(max_length=100, verbose_name='Rock title')
     description = models.CharField(null=True, blank=True, max_length=2000, verbose_name='Description')
     view = models.ImageField(null=True, blank=True, verbose_name='View')
+    autor = models.CharField(max_length=100, null=True, blank=True, verbose_name='Autor')
     preview = models.ImageField(null=True, blank=True, verbose_name='Preview')
     preview_ppl = models.ImageField(null=True, blank=True, verbose_name='Preview PPL')
     preview_cpl = models.ImageField(null=True, blank=True, verbose_name='Preview CPL')
