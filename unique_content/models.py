@@ -126,6 +126,7 @@ class Figure360View(models.Model):
     height = models.FloatField(null=True, blank=True, verbose_name='Height')
     image_creation_date = models.DateTimeField(null=True, blank=True, verbose_name='Image Creation Date')
     pano_type = models.CharField(max_length=6, default='air', choices=TYPES, verbose_name='Panorama type')
+    north_correction_angle = models.FloatField(default=0, verbose_name='North correction')
 
     def __str__(self):
         return f'{self.title}'
@@ -215,9 +216,11 @@ class InfoSpotCoordinates(models.Model):
     """
     panorama = models.ForeignKey('unique_content.Figure360View', on_delete=models.CASCADE)
     info_spot = models.ForeignKey('unique_content.InfoSpotForPanorama', on_delete=models.CASCADE)
+    is_reference = models.BooleanField(default=True, verbose_name='Is using as reference')
     coord_X = models.FloatField(verbose_name='X coord')
     coord_Y = models.FloatField(verbose_name='Y coord')
     coord_Z = models.FloatField(verbose_name='Z coord')
+    correction_angle = models.FloatField(null=True, blank=True, verbose_name='North correction angle')
 
     def __str__(self):
         return f'{self.panorama} --> {self.info_spot}'

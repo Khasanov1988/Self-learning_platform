@@ -12,7 +12,6 @@ from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 
-from config.settings import GOOGLE_MAPS_KEY
 from education_content.forms import ChapterForm, MaterialForm, MaterialUpdateForm, \
     MaterialPhotosForm
 from education_content.models import Chapter, Material, MaterialPhotos
@@ -300,7 +299,7 @@ class MaterialDetailView(LoginRequiredWithChoiceMixin, GetFinalConditionsMixin, 
                 figure_360_view_interpretation_dict[item.pk] = list(figure_360_view_interpretation_list)
 
         pano_view_queryset_new = pano_view_queryset.values('pk', 'title', 'view', 'latitude', 'longitude', 'height',
-                                                           'pano_type')
+                                                           'pano_type', 'north_correction_angle')
         pano_view_list = list(pano_view_queryset_new)
         # Edit view field to make it URL
         for item in pano_view_list:

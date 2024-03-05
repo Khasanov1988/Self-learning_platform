@@ -1,7 +1,11 @@
 import json
 
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F, Q
+from django.http import Http404
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import DetailView, ListView
 
 from config.settings import GOOGLE_MAPS_KEY
@@ -9,7 +13,40 @@ from education_content.templatetags.my_tags import mediapath_filter
 from education_content.views import LoginRequiredWithChoiceMixin
 from unique_content.models import FigureThinSection, FigureFromP3din, Figure360View, InfoSpotForPanorama, \
     InfoSpotCoordinates, LinkSpotCoordinates, FigureMap
+from unique_content.services import north_correction
 from users.services import update_last_activity
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def calculate_real_north(request, pk: int):
+    """
+    Calculating the true north of a panorama based on its coordinates and the coordinates of the InfoPoints it refers to
+    """
+    panorama = Figure360View.objects.get(pk=pk)
+    info_spot_coords = (((InfoSpotCoordinates.objects.all().filter(panorama=pk, is_reference=True).exclude(
+        coord_X=None)).exclude(coord_Y=None)).exclude(coord_Z=None))
+
+    if len(info_spot_coords) > 0:
+        info_spots = InfoSpotForPanorama.objects.all()
+        north_correction(panorama, info_spot_coords, info_spots)
+    else:
+        raise Http404("Not enough links to InfoPoints")
+
+    return redirect(reverse(f'unique_content:360view_view', kwargs={'pk': pk}))
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def set_north_to_zero(request, pk: int):
+    """
+    Set North correction on current panorama to zero
+    """
+    panorama = Figure360View.objects.get(pk=pk)
+    panorama.north_correction_angle = 0
+    panorama.save()
+
+    return redirect(reverse(f'unique_content:360view_view', kwargs={'pk': pk}))
 
 
 class FigureThinSectionDetailView(LoginRequiredWithChoiceMixin, DetailView):

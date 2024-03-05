@@ -9470,7 +9470,7 @@ Viewer.prototype = Object.assign( Object.create( EventDispatcher.prototype ), {
             const setIndicatorD = function () {
 
                 scope.radius = scope.viewIndicatorSize * 0.225;
-                scope.currentPanoAngle = scope.camera.rotation.y - Math$1.degToRad( 90 );
+                scope.currentPanoAngle = scope.camera.rotation.y + Math$1.degToRad( 90 ) + Math$1.degToRad( scope.options.panoramaAngleCorrection );
                 scope.fovAngle = Math$1.degToRad( scope.camera.fov ) ;
                 scope.leftAngle = -scope.currentPanoAngle - scope.fovAngle / 2;
                 scope.rightAngle = -scope.currentPanoAngle + scope.fovAngle / 2;

@@ -7436,6 +7436,7 @@
 	 * @param {boolean} [options.autoRotate=false] - Auto rotate
 	 * @param {number}  [options.autoRotateSpeed=2.0] - Auto rotate speed as in degree per second. Positive is counter-clockwise and negative is clockwise.
 	 * @param {number}  [options.autoRotateActivationDuration=5000] - Duration before auto rotatation when no user interactivity in ms
+	 * @param {number}  [options.panoramaAngleCorrection=0] - Angle correcting north direction (if necessary)
 	 */
 	function Viewer ( options ) {
 
@@ -7459,6 +7460,7 @@
 	    options.autoRotate = options.autoRotate || false;
 	    options.autoRotateSpeed = options.autoRotateSpeed || 2.0;
 	    options.autoRotateActivationDuration = options.autoRotateActivationDuration || 5000;
+		options.panoramaAngleCorrection = options.panoramaAngleCorrection || 0;
 
 	    this.options = options;
 
@@ -9474,7 +9476,7 @@
 	            const setIndicatorD = function () {
 
 	                scope.radius = scope.viewIndicatorSize * 0.225;
-	                scope.currentPanoAngle = scope.camera.rotation.y - THREE.Math.degToRad( 90 );
+	                scope.currentPanoAngle = scope.camera.rotation.y + THREE.Math.degToRad( 90 ) + THREE.Math.degToRad( scope.options.panoramaAngleCorrection );
 	                scope.fovAngle = THREE.Math.degToRad( scope.camera.fov ) ;
 	                scope.leftAngle = -scope.currentPanoAngle - scope.fovAngle / 2;
 	                scope.rightAngle = -scope.currentPanoAngle + scope.fovAngle / 2;

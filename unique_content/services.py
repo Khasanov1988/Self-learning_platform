@@ -4,6 +4,8 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 from django.utils import timezone
 
+import numpy as np
+
 
 def get_metadata_from_img(path):
     """
@@ -82,3 +84,60 @@ def get_youtube_for_iframe_from_youtube(youtube: str):
     """
     video_id = youtube.split('v=')[1]
     return f'https://www.youtube.com/embed/{video_id}?&amp;autoplay=1&mute=1&disablekb=1&loop=1&playlist={video_id}&controls=0&iv_load_policy=3'
+
+
+def north_correction(panorama, info_point_coords, info_point_list):
+    angles = []
+    # Исходные данные
+    main_latitude = panorama.latitude
+    main_longitude = panorama.longitude
+    info_points = []
+
+    # Перевод географических координат в декартовы
+    main_X = np.cos(np.radians(main_latitude)) * np.cos(np.radians(main_longitude))
+    main_Y = np.cos(np.radians(main_latitude)) * np.sin(np.radians(main_longitude))
+    main_Z = np.sin(np.radians(main_latitude))
+    kopt = np.array([main_X, main_Y, main_Z])
+
+    # Вычисление угла между севером и направлением на точку от коптера - alfa
+    sever = np.array([0, 0, 1])  # Координаты севера в декартовой системе
+    vector_north = sever - kopt
+
+    info_point_coord_list = list(info_point_coords)
+
+    for info_point_coord in info_point_coord_list:
+        if info_point_coord.is_reference:
+            object_info_point = info_point_list.get(pk=info_point_coord.info_spot.pk)
+            X = np.cos(np.radians(object_info_point.latitude)) * np.cos(
+                np.radians(object_info_point.longitude))
+            Y = np.cos(np.radians(object_info_point.latitude)) * np.sin(
+                np.radians(object_info_point.longitude))
+            Z = np.sin(np.radians(object_info_point.latitude))
+            info_point_vector = np.array([X, Y, Z]) - kopt
+            alfa = np.degrees(np.arccos(np.dot(vector_north, info_point_vector) / (np.linalg.norm(vector_north) * np.linalg.norm(info_point_vector))))
+            if main_longitude > object_info_point.longitude:
+                alfa = 360 - alfa
+            betta = np.degrees(np.arccos(info_point_coord.coord_Z / np.sqrt(5000 ** 2 - info_point_coord.coord_Y ** 2)))
+            if info_point_coord.coord_X < 0:
+                betta = 360 - betta
+
+            correction_angle = (alfa - betta + 360) % 360
+
+            info_points.append(info_point_coord)
+            angles.append(correction_angle)
+            info_point_coord.correction_angle = correction_angle
+            info_point_coord.save()
+
+
+    # Сортировка данных
+    sorted_data = sorted(angles)
+
+    # Находим медианное значение
+    mid = len(sorted_data) // 2
+    if len(sorted_data) % 2 == 0:
+        median = (sorted_data[mid - 1] + sorted_data[mid]) / 2
+    else:
+        median = sorted_data[mid]
+
+    panorama.north_correction_angle = 180 - median
+    panorama.save()
