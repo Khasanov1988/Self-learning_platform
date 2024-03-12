@@ -2,6 +2,7 @@ from io import BytesIO
 
 from PIL import Image
 from PIL.ExifTags import TAGS
+from django.core.files.storage import default_storage
 from django.utils import timezone
 
 import numpy as np
@@ -114,7 +115,8 @@ def north_correction(panorama, info_point_coords, info_point_list):
                 np.radians(object_info_point.longitude))
             Z = np.sin(np.radians(object_info_point.latitude))
             info_point_vector = np.array([X, Y, Z]) - kopt
-            alfa = np.degrees(np.arccos(np.dot(vector_north, info_point_vector) / (np.linalg.norm(vector_north) * np.linalg.norm(info_point_vector))))
+            alfa = np.degrees(np.arccos(np.dot(vector_north, info_point_vector) / (
+                    np.linalg.norm(vector_north) * np.linalg.norm(info_point_vector))))
             if main_longitude > object_info_point.longitude:
                 alfa = 360 - alfa
             betta = np.degrees(np.arccos(info_point_coord.coord_Z / np.sqrt(5000 ** 2 - info_point_coord.coord_Y ** 2)))
@@ -128,7 +130,6 @@ def north_correction(panorama, info_point_coords, info_point_list):
             info_point_coord.correction_angle = correction_angle
             info_point_coord.save()
 
-
     # Сортировка данных
     sorted_data = sorted(angles)
 
@@ -141,3 +142,15 @@ def north_correction(panorama, info_point_coords, info_point_list):
 
     panorama.north_correction_angle = 180 - median
     panorama.save()
+
+
+def clean_old_data_for_view_field(instance, model_class):
+    if instance.pk:  # Check if object has been saved previously
+        try:
+            old_instance = model_class.objects.get(pk=instance.pk)
+            if old_instance.view and instance.view != old_instance.view:
+                default_storage.delete(old_instance.view.name)
+            if old_instance.preview:
+                default_storage.delete(old_instance.preview.name)
+        except model_class.DoesNotExist:
+            pass

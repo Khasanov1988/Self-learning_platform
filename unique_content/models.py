@@ -3,7 +3,8 @@ from django.db import models
 from django.utils import timezone
 from config import settings
 
-from unique_content.services import get_metadata_from_img, get_youtube_for_iframe_from_youtube, image_compression
+from unique_content.services import get_metadata_from_img, get_youtube_for_iframe_from_youtube, image_compression, \
+    clean_old_data_for_view_field
 
 
 class FigureFromP3din(models.Model):
@@ -54,6 +55,7 @@ class FigureThinSection(models.Model):
 
     def save(self, *args, **kwargs):
         if self.view:
+            clean_old_data_for_view_field(self, FigureThinSection)  # Call the function to clean old data
             compression_quality = 50
             new_size = {'width': 800, 'height': 400}
             compressed_image = image_compression(self.view, compression_quality, new_size)
@@ -132,8 +134,18 @@ class Figure360View(models.Model):
         return f'{self.title}'
 
     def save(self, *args, **kwargs):
+        clean_old_data_for_view_field(self, Figure360View)  # Call the function to clean old data
         if self.view:
-            self.image_creation_date, self.latitude, self.longitude, self.height = get_metadata_from_img(self.view)
+            image_creation_date_from_file, latitude_from_file, longitude_from_file, height_from_file = get_metadata_from_img(self.view)
+            if not self.image_creation_date:
+                self.image_creation_date = image_creation_date_from_file
+            if not self.latitude:
+                self.latitude = latitude_from_file
+            if not self.longitude:
+                self.longitude = longitude_from_file
+            if not self.height:
+                self.height = height_from_file
+
             compression_quality = 50
             new_size = {'width': 400, 'height': 200}
             compressed_image = image_compression(self.view, compression_quality, new_size)
@@ -167,6 +179,7 @@ class Figure360ViewInterpretation(models.Model):
         return f'{self.title} for {self.panorama}'
 
     def save(self, *args, **kwargs):
+        clean_old_data_for_view_field(self, Figure360ViewInterpretation)  # Call the function to clean old data
         if self.view:
             compression_quality = 50
             new_size = {'width': 400, 'height': 200}
@@ -273,6 +286,7 @@ class FigureMap(models.Model):
 
     def save(self, *args, **kwargs):
         if self.view:
+            clean_old_data_for_view_field(self, FigureMap)  # Call the function to clean old data
             compression_quality = 50
             new_height = 400  # explicitly set only the height
             try:
