@@ -276,6 +276,19 @@ class LinkSpotCoordinates(models.Model):
     def __str__(self):
         return f'{self.panorama_from} --> {self.panorama_to}'
 
+    def save(self, *args, **kwargs):
+        if not self.distance:
+            if self.panorama_from.latitude and self.panorama_from.longitude and self.panorama_to.latitude and self.panorama_to.longitude:
+                pano_from = self.panorama_from
+                pano_to = self.panorama_to
+                self.distance = haversine(pano_from.latitude, pano_from.longitude, pano_to.latitude, pano_to.longitude,
+                                          pano_from.height, pano_to.height)
+            else:
+                raise Http404(
+                    'Impossible to canculate distance. One of your panoramas has no coordinates. '
+                    'You can set distance manually or include coordinates to both panoramas')
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = 'Link spot coordinates'
         verbose_name_plural = 'Link spot coordinates'
