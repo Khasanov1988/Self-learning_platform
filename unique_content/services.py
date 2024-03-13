@@ -173,7 +173,10 @@ def haversine(lat1, lon1, lat2, lon2, elev1=0, elev2=0):
     a = math.sin(dlat/2) * math.sin(dlat/2) + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2) * math.sin(dlon/2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     distance = R * c
-    elevation = abs(elev2 - elev1)/1000
+    if elev2 and elev1:
+        elevation = abs(elev2 - elev1)/1000
+    else:
+        elevation = 0
 
     # Учет высоты над уровнем моря
     abs_distance = math.sqrt(distance**2 + elevation**2)
