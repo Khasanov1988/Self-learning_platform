@@ -106,8 +106,8 @@ let locations = [];
 
 for (let item of panoramaList) {
     locations.push({
-        lat: item.latitude,
-        lng: item.longitude
+        lat: item.latitude ? item.latitude : 0,
+        lng: item.longitude ? item.longitude : 0
     });
     my_markers.push({
         title: item.title,
@@ -115,8 +115,8 @@ for (let item of panoramaList) {
         panoramaPk: item.pk,
         infoSpotPk: null,
         coords: {
-            lat: item.latitude,
-            lng: item.longitude
+            lat: item.latitude ? item.latitude : 0,
+            lng: item.longitude ? item.longitude : 0
         }
     });
 }

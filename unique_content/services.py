@@ -1,3 +1,4 @@
+import math
 from io import BytesIO
 
 from PIL import Image
@@ -154,3 +155,27 @@ def clean_old_data_for_view_field(instance, model_class):
                 default_storage.delete(old_instance.preview.name)
         except model_class.DoesNotExist:
             pass
+
+
+def haversine(lat1, lon1, lat2, lon2, elev1=0, elev2=0):
+    """ Calculation distance between 2 points on Earth"""
+    # Радиус Земли в километрах
+    R = 6371
+
+    # Преобразование градусов в радианы
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+
+    # Вычисление разницы между широтами и долготами
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+
+    # Вычисление расстояния с помощью формулы Гаверсинуса
+    a = math.sin(dlat/2) * math.sin(dlat/2) + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2) * math.sin(dlon/2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    distance = R * c
+    elevation = abs(elev2 - elev1)/1000
+
+    # Учет высоты над уровнем моря
+    abs_distance = math.sqrt(distance**2 + elevation**2)
+
+    return abs_distance * 1000

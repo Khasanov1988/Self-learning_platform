@@ -1,4 +1,4 @@
-function infoSpotMaker(item, infoSpotData) {
+function infoSpotMaker(item, infoSpotData, infoSpotSizeCorrection) {
     // Prepare infoSpot data for panorama
     const currentInfoSpot = infoSpotData
     const title_text = currentInfoSpot['title'];
@@ -10,7 +10,7 @@ function infoSpotMaker(item, infoSpotData) {
     const figures_thin_section_preview = currentInfoSpot['figure_thin_section_preview'];
     const figures_3d_link_for_iframe = currentInfoSpot['figure_3d_link_for_iframe'];
 
-    let infoSpot = new PANOLENS.Infospot(200, customInfoSpotIcon);
+    let infoSpot = new PANOLENS.Infospot(infoSpotSizeCorrection, customInfoSpotIcon);
     infoSpot.position.set(item['coord_X'], item['coord_Y'], item['coord_Z']);
 
     if (description || figures_3d_id || figures_thin_section_id || preview || youtube) {
@@ -70,11 +70,27 @@ function panoramaMaker(imagePath, panoramaId, infoSpotCoordList, infoSpotDict, v
     // Prepare panorama for Viewer
     let panorama = new PANOLENS.ImagePanorama(imagePath);
     let linkSpotsIdDict = {};
+    let koefA;
+    let koefB;
+    let type;
     if (infoSpotCoordList) {
         for (let item of infoSpotCoordList) {
             if (item['panorama_id'] == panoramaId) {
                 let infoSpotData = infoSpotDict[item['info_spot_id']];
-                let infoSpot = infoSpotMaker(item, infoSpotData);
+                if (panoramaDict) {
+                    type = panoramaDict[panoramaId]['pano_type'];
+                } else {
+                    type = infoPointPanoType;
+                }
+                if (type === 'air') {
+                    koefA = -9 / 70000;
+                    koefB = 79 / 70;
+                } else {
+                    koefA = -1 / 10;
+                    koefB = 3 / 2;
+                }
+                let infoSpotSizeCorrection = 200 * Math.max(0.5, Math.min((item['distance'] * koefA + koefB), 1.2));
+                let infoSpot = infoSpotMaker(item, infoSpotData, infoSpotSizeCorrection);
                 panorama.add(infoSpot);
             }
         }
@@ -87,6 +103,7 @@ function panoramaMaker(imagePath, panoramaId, infoSpotCoordList, infoSpotDict, v
                     'coord_X': linkSpot['coord_X'],
                     'coord_Y': linkSpot['coord_Y'],
                     'coord_Z': linkSpot['coord_Z'],
+                    'distance': linkSpot['distance'],
                 }
 
             }
@@ -201,18 +218,28 @@ if (panoramaDict) {
             }
 
             let viewerPanoList2 = Object.values(viewerPanoDict);
+            let koefA;
+            let koefB;
             for (let panoFrom of viewerPanoList2) {
                 if (panoFrom.linkSpotsIdList) {
                     for (let panorama_to of panoFrom.linkSpotsIdList) {
                         let logo_path;
                         if (panoramaDict[panorama_to.id].pano_type === 'air') {
                             logo_path = customAirPanoIcon;
+                            koefA = -9 / 70000;
+                            koefB = 79 / 70;
                         } else if (panoramaDict[panorama_to.id].pano_type === 'ground') {
                             logo_path = customGroundPanoIcon;
+                            koefA = -1 / 10;
+                            koefB = 3 / 2;
                         } else {
                             logo_path = customOtherPanoIcon;
+                            koefA = -1 / 10;
+                            koefB = 3 / 2;
                         }
-                        panoFrom.panorama.link(viewerPanoDict[panorama_to.id].panorama, new THREE.Vector3(panorama_to.coord_X, panorama_to.coord_Y, panorama_to.coord_Z), 350, logo_path);
+                        let infoSpotSizeCorrection = 350 * Math.max(0.5, Math.min((panorama_to.distance * koefA + koefB), 1.2));
+                        console.log(infoSpotSizeCorrection);
+                        panoFrom.panorama.link(viewerPanoDict[panorama_to.id].panorama, new THREE.Vector3(panorama_to.coord_X, panorama_to.coord_Y, panorama_to.coord_Z), infoSpotSizeCorrection, logo_path);
 
                         // Get the last created Infospot (assuming it is at the end of the linkedSpots array)
                         let spot = panoFrom.panorama.linkedSpots[panoFrom.panorama.linkedSpots.length - 1];

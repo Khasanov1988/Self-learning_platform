@@ -1,10 +1,11 @@
 from PIL import Image
 from django.db import models
+from django.http import Http404
 from django.utils import timezone
 from config import settings
 
 from unique_content.services import get_metadata_from_img, get_youtube_for_iframe_from_youtube, image_compression, \
-    clean_old_data_for_view_field
+    clean_old_data_for_view_field, haversine
 
 
 class FigureFromP3din(models.Model):
@@ -136,7 +137,8 @@ class Figure360View(models.Model):
     def save(self, *args, **kwargs):
         clean_old_data_for_view_field(self, Figure360View)  # Call the function to clean old data
         if self.view:
-            image_creation_date_from_file, latitude_from_file, longitude_from_file, height_from_file = get_metadata_from_img(self.view)
+            image_creation_date_from_file, latitude_from_file, longitude_from_file, height_from_file = get_metadata_from_img(
+                self.view)
             if not self.image_creation_date:
                 self.image_creation_date = image_creation_date_from_file
             if not self.latitude:
@@ -230,6 +232,7 @@ class InfoSpotCoordinates(models.Model):
     panorama = models.ForeignKey('unique_content.Figure360View', on_delete=models.CASCADE)
     info_spot = models.ForeignKey('unique_content.InfoSpotForPanorama', on_delete=models.CASCADE)
     is_reference = models.BooleanField(default=True, verbose_name='Is using as reference')
+    distance = models.FloatField(null=True, blank=True, verbose_name='Distance between Panorama and InfoSpot')
     coord_X = models.FloatField(verbose_name='X coord')
     coord_Y = models.FloatField(verbose_name='Y coord')
     coord_Z = models.FloatField(verbose_name='Z coord')
@@ -237,6 +240,19 @@ class InfoSpotCoordinates(models.Model):
 
     def __str__(self):
         return f'{self.panorama} --> {self.info_spot}'
+
+    def save(self, *args, **kwargs):
+        if not self.distance:
+            if self.panorama.latitude and self.panorama.longitude and self.info_spot.latitude and self.info_spot.longitude:
+                pano = self.panorama
+                info_sp = self.info_spot
+                self.distance = haversine(pano.latitude, pano.longitude, info_sp.latitude, info_sp.longitude,
+                                          pano.height, info_sp.height)
+            else:
+                raise Http404(
+                    'Impossible to canculate distance. One of your points has no coordinates. '
+                    'You can set distance manually or include coordinates to both points')
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Info spot coordinates'
@@ -252,6 +268,7 @@ class LinkSpotCoordinates(models.Model):
     panorama_to = models.ForeignKey('unique_content.Figure360View', on_delete=models.CASCADE,
                                     related_name='panorama_to_coordinates')
     title = models.CharField(max_length=100, null=True, blank=True, verbose_name='Title')
+    distance = models.FloatField(null=True, blank=True, verbose_name='Distance between Panorama_From and Panorama_To')
     coord_X = models.FloatField(verbose_name='X coord')
     coord_Y = models.FloatField(verbose_name='Y coord')
     coord_Z = models.FloatField(verbose_name='Z coord')
