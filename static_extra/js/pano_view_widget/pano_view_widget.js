@@ -86,8 +86,8 @@ function panoramaMaker(imagePath, panoramaId, infoSpotCoordList, infoSpotDict, v
                     koefA = -9 / 70000;
                     koefB = 79 / 70;
                 } else {
-                    koefA = -1 / 44;
-                    koefB = 13 / 11;
+                    koefA = -1 / 144;
+                    koefB = 19 / 18;
                 }
                 let infoSpotSizeCorrection = 200 * Math.max(0.5, Math.min((item['distance'] * koefA + koefB), 1.2));
                 let infoSpot = infoSpotMaker(item, infoSpotData, infoSpotSizeCorrection);
@@ -230,12 +230,12 @@ if (panoramaDict) {
                             koefB = 79 / 70;
                         } else if (panoramaDict[panorama_to.id].pano_type === 'ground') {
                             logo_path = customGroundPanoIcon;
-                            koefA = -1 / 44;
-                            koefB = 13 / 11;
+                            koefA = -1 / 144;
+                            koefB = 19 / 18;
                         } else {
                             logo_path = customOtherPanoIcon;
-                            koefA = -1 / 44;
-                            koefB = 13 / 11;
+                            koefA = -1 / 144;
+                            koefB = 19 / 18;
                         }
                         let infoSpotSizeCorrection = 350 * Math.max(0.5, Math.min((panorama_to.distance * koefA + koefB), 1.2));
                         panoFrom.panorama.link(viewerPanoDict[panorama_to.id].panorama, new THREE.Vector3(panorama_to.coord_X, panorama_to.coord_Y, panorama_to.coord_Z), infoSpotSizeCorrection, logo_path);
