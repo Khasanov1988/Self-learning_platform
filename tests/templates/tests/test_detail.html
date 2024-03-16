@@ -3,11 +3,11 @@
 {% block content %}
     <main>
 
-        <section class="py-3 text-center container">
+        <section class="py-3 text-center container-lg">
             <div class="row py-lg-5">
                 <div class="col-lg-12 col-md-8 mx-auto">
                     <h1 class="fw-light">{{ object }}</h1>
-                    <p class="lead text-body-secondary">{{ object.description }}</p>
+                    {% if object.description %}<p class="lead text-body-secondary">{{ object.description }}</p>{% else %}{% endif %}
                     {% if object.owner == user or user.is_staff %}
                         <p>
                             {% if not object.is_published %}
